@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">WifiLocalPositioning</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="tab_text_1">Тренировка</string>
+    <string name="tab_text_2">Определение</string>
+
+    <!--TrainingFragment-->
+    <string name="scanningTitle">Панель сканирования</string>
+    <string name="numberOfSuccessfulScans">Количество успешных сканирований: </string>
+    <string name="hintRequiredQuantity">Введите количество сканирований</string>
+    <string name="deleteTitle">Панель очищения сервера</string>
+    <string name="hintDeletePassword">Пароль для очистки сервера</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="startScanning">Начать сканирование</string>
+    <string name="startCleaning">Запустить очистку</string>
+    <string name="hintLat">Lat (Oy)</string>
+    <string name="hintLon">Lon (Ox)</string>
+    <string name="trainningMode">Режим тренировки</string>
+    <string name="defineMode">Режим определения</string>
+</resources>
