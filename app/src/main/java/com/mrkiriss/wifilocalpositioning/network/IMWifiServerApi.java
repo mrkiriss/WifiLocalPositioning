@@ -13,12 +13,18 @@ import retrofit2.http.POST;
 
 public interface IMWifiServerApi {
 
-    @HTTP(method = "POST", path = "/location/define", hasBody = true)
+    @HTTP(method = "POST", path = "define/coordinate", hasBody = true)
     Call<DefinedLocationPoint> defineLocation(@Body CalibrationLocationPoint calibrationLocationPoint);
 
-    @POST("/location")
-    Call<StringResponse> postLocationPointForCalibrationTraining(@Body CalibrationLocationPoint calibrationLocationPoint);
+    @HTTP(method = "POST", path = "define/cabinet", hasBody = true)
+    Call<DefinedLocationPoint> defineLocationWithCabinet(@Body CalibrationLocationPoint calibrationLocationPoint);
 
-    @DELETE("/location")
+    @POST("training/coordinate")
+    Call<StringResponse> postLPCalibrationWithCoordinateForTraining(@Body CalibrationLocationPoint calibrationLocationPoint);
+
+    @POST("training/cabinet")
+    Call<StringResponse> postLPCalibrationWithCabinetForTraining(@Body CalibrationLocationPoint calibrationLocationPoint);
+
+    @DELETE("location")
     Call<StringResponse> cleanServer();
 }

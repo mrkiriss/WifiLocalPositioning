@@ -17,7 +17,8 @@ public class NetworkModule {
     @Provides
     @Singleton
     public IMWifiServerApi provideIMWifiServerApi(){
-        String baseUrl = "http://192.168.31.136:8080";
+        String baseUrl = "https://indoormappingbywifi.herokuapp.com/location/";
+    //String baseUrl = "http://192.168.43.231:8080/";
 
         Gson gson = new GsonBuilder()
                 .setLenient()

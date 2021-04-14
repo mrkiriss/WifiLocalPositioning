@@ -64,4 +64,10 @@ public class TrainingFragment extends Fragment {
     private void addKitOfAPsOnRecyclerView(String apInfo){
         adapter.addToBack(apInfo);
     }
+
+    @Override
+    public void onDestroy(){
+        viewModel.unregisterWifiScannerCallBack();
+        super.onDestroy();
+    }
 }

@@ -9,6 +9,7 @@ import lombok.Data;
 public class CalibrationLocationPoint {
     private double lat;
     private double lon;
+    private String roomName;
     private List<List<AccessPoint>> calibrationSets;
 
     public CalibrationLocationPoint(){

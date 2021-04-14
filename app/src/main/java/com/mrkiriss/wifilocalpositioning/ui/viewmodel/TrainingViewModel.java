@@ -36,7 +36,8 @@ public class TrainingViewModel extends ViewModel {
     private ObservableField<String> inputPasswordToClear;
     private ObservableField<String> inputLat;
     private ObservableField<String> inputLon;
-    private int radioMode;
+    private ObservableField<String> inputCabId;
+    private ObservableInt radioMode;
 
     private final LiveData<List<ScanResult>> kitOfScanResults;
     private LiveData<String> requestToAddAPs;
@@ -58,16 +59,35 @@ public class TrainingViewModel extends ViewModel {
         inputLat=new ObservableField<>("");
         inputLon=new ObservableField<>("");
         requestToClearRV=new MutableLiveData<>();
+        radioMode=new ObservableInt(0);
+        inputCabId=new ObservableField<>("");
     }
 
     public void startScanning(View view){
-        if (inputNumberOfScanKits.get().equals("") || inputLat.get().equals("") || inputLon.get().equals("")){
-            toastContent.setValue("Пустые поля недопустимы!");
+        if (inputNumberOfScanKits.get().equals("") || (inputLat.get().equals("") && inputLon.get().equals("") && radioMode.get()==1)
+        || (inputCabId.get().equals("") && radioMode.get()==3)){
+            toastContent.setValue("Заполните все поля!");
             return;
         }
         resetElements();
-        trainingRepository.runScanInManager(Integer.parseInt(Objects.requireNonNull(inputNumberOfScanKits.get())),
-                Integer.parseInt(Objects.requireNonNull(inputLat.get())), Integer.parseInt(Objects.requireNonNull(inputLon.get())), radioMode);
+        switch (radioMode.get()){
+            case 1:
+                trainingRepository.runScanInManager(Integer.parseInt(Objects.requireNonNull(inputNumberOfScanKits.get())),
+                        Integer.parseInt(Objects.requireNonNull(inputLat.get())), Integer.parseInt(Objects.requireNonNull(inputLon.get())), radioMode.get());
+                break;
+            case 2:
+                trainingRepository.runScanInManager(Integer.parseInt(Objects.requireNonNull(inputNumberOfScanKits.get())),
+                        0, 0, radioMode.get());
+                break;
+            case 3:
+                trainingRepository.runScanInManager(Integer.parseInt(Objects.requireNonNull(inputNumberOfScanKits.get())),
+                        inputCabId.get(), radioMode.get());
+                break;
+            case 4:
+                trainingRepository.runScanInManager(Integer.parseInt(Objects.requireNonNull(inputNumberOfScanKits.get())),
+                        "", radioMode.get());
+                break;
+        }
     }
     public void onClearButtonClick(){
         if (inputPasswordToClear.get()==null || !inputPasswordToClear.get().equals("1992163a")) return;
@@ -81,10 +101,16 @@ public class TrainingViewModel extends ViewModel {
     public void onRadioButtonChange(RadioGroup rg, int id){
         switch (rg.getCheckedRadioButtonId()){
             case R.id.radioTraining:
-                radioMode= TrainingRepository.MODE_TRAINING;
+                radioMode.set(TrainingRepository.MODE_TRAINING);
                 break;
             case R.id.radioDefinition:
-                radioMode= TrainingRepository.MODE_DEFINITION;
+                radioMode.set(TrainingRepository.MODE_DEFINITION);
+                break;
+            case R.id.radioTraining2:
+                radioMode.set(TrainingRepository.MODE_TRAINING2);
+                break;
+            case R.id.radioDefinition2:
+                radioMode.set(TrainingRepository.MODE_DEFINITION2);
                 break;
         }
     }
@@ -97,5 +123,9 @@ public class TrainingViewModel extends ViewModel {
         //inputLon.set("");
         requestToClearRV.setValue(new ArrayList<>());
         resultOfScanningAfterCalibration.setValue("");
+    }
+
+    public void unregisterWifiScannerCallBack(){
+        trainingRepository.unregisterScanCallbacks();
     }
 }

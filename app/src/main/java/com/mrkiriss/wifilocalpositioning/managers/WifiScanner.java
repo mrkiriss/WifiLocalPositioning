@@ -25,7 +25,7 @@ public class WifiScanner {
     private BroadcastReceiver scanResultBR;
     private WifiManager.ScanResultsCallback scanResultsCallback;
 
-    private long scanDelay=1000;
+    private long scanDelay=1  ;
     private int numberOfScanning;
     final Handler handler;
     private boolean scanStarted;
@@ -34,10 +34,10 @@ public class WifiScanner {
 
     public WifiScanner(Context context){
         this.context=context;
-        wifiManager=(WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        this.wifiManager=(WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
         this.scanResults=new MutableLiveData<>();
-        handler = new Handler(Looper.getMainLooper());
+        this.handler = new Handler(Looper.getMainLooper());
         this.scanStarted=false;
 
         registerListeners();
@@ -61,7 +61,6 @@ public class WifiScanner {
             Log.println(Log.INFO, "START_ONE_SCANNING",
                     String.format("Parameters: remaining number of scans=%s", numberOfScanning));
             requestScanResults();
-            startScanningWithDelay();
         };
         handler.postDelayed(task, scanDelay);
     }
@@ -87,9 +86,10 @@ public class WifiScanner {
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     Log.println(Log.INFO, "SCAN_RESULTS_RECIVED",
-                            String.format("Parameters: remaining number of scans=%s", numberOfScanning));
+                            "successful");
                     scanResults.setValue(wifiManager.getScanResults());
                     scanStarted=false;
+                    startScanningWithDelay();
                 }
             };
         }

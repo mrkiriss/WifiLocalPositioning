@@ -16,6 +16,9 @@
     <string name="startCleaning">Запустить очистку</string>
     <string name="hintLat">Lat (Oy)</string>
     <string name="hintLon">Lon (Ox)</string>
-    <string name="trainningMode">Режим тренировки</string>
-    <string name="defineMode">Режим определения</string>
+    <string name="trainningMode">Режим тренировки(коорд)</string>
+    <string name="defineMode">Режим определения(коорд)</string>
+    <string name="trainingMode2">Режим тренировки(каб)</string>
+    <string name="defineMode2">Режим определения(каб)</string>
+    <string name="CabID">Идентификатор кабинета</string>
 </resources>

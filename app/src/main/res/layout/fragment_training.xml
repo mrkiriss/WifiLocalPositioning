@@ -2,6 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     <data>
+        <import type="android.view.View"/>
         <variable
             name="trainingVM"
             type="com.mrkiriss.wifilocalpositioning.ui.viewmodel.TrainingViewModel" />
@@ -33,7 +34,7 @@
                 android:id="@+id/scanningInfo"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="10"
+                android:layout_weight="8"
                 android:orientation="vertical"
                 android:weightSum="10">
 
@@ -74,7 +75,7 @@
                 android:id="@+id/scanningStart"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="7"
+                android:layout_weight="9"
                 android:orientation="vertical">
 
                 <RadioGroup
@@ -90,14 +91,32 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/trainningMode" />
+                        android:text="@string/trainningMode"
+                        android:textSize="12sp" />
 
                     <RadioButton
                         android:id="@+id/radioDefinition"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/defineMode" />
+                        android:text="@string/defineMode"
+                        android:textSize="12sp" />
+
+                    <RadioButton
+                        android:id="@+id/radioTraining2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/trainingMode2"
+                        android:textSize="12sp" />
+
+                    <RadioButton
+                        android:id="@+id/radioDefinition2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/defineMode2"
+                        android:textSize="12sp" />
                 </RadioGroup>
 
                 <LinearLayout
@@ -114,7 +133,8 @@
                         android:ems="10"
                         android:hint="@string/hintLat"
                         android:inputType="numberDecimal"
-                        android:text="@={trainingVM.inputLat}" />
+                        android:text="@={trainingVM.inputLat}"
+                        android:visibility="@{trainingVM.radioMode!=1 ? View.GONE:View.VISIBLE}" />
 
                     <EditText
                         android:id="@+id/editTextNumberPassword2"
@@ -124,7 +144,19 @@
                         android:ems="10"
                         android:hint="@string/hintLon"
                         android:inputType="numberDecimal"
-                        android:text="@={trainingVM.inputLon}" />
+                        android:text="@={trainingVM.inputLon}"
+                        android:visibility="@{trainingVM.radioMode!=1 ? View.GONE:View.VISIBLE}" />
+
+                    <EditText
+                        android:id="@+id/editTextCabinet"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:hint="@string/CabID"
+                        android:inputType="textPersonName"
+                        android:text="@={trainingVM.inputCabId}"
+                        android:visibility="@{trainingVM.radioMode!=3 ? View.GONE:View.VISIBLE}" />
                 </LinearLayout>
 
                 <LinearLayout
