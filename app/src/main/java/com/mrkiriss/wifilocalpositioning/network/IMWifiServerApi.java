@@ -1,13 +1,12 @@
 package com.mrkiriss.wifilocalpositioning.network;
 
-import com.mrkiriss.wifilocalpositioning.models.CalibrationLocationPoint;
-import com.mrkiriss.wifilocalpositioning.models.DefinedLocationPoint;
-import com.mrkiriss.wifilocalpositioning.models.StringResponse;
+import com.mrkiriss.wifilocalpositioning.models.server.CalibrationLocationPoint;
+import com.mrkiriss.wifilocalpositioning.models.server.DefinedLocationPoint;
+import com.mrkiriss.wifilocalpositioning.models.server.StringResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
-import retrofit2.http.GET;
 import retrofit2.http.HTTP;
 import retrofit2.http.POST;
 

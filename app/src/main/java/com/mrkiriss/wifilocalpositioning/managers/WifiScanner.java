@@ -25,8 +25,9 @@ public class WifiScanner {
     private BroadcastReceiver scanResultBR;
     private WifiManager.ScanResultsCallback scanResultsCallback;
 
-    private long scanDelay=1  ;
+    private long scanDelay=4000;
     private int numberOfScanning;
+    private boolean isInfinityScanning=false;
     final Handler handler;
     private boolean scanStarted;
 
@@ -49,12 +50,16 @@ public class WifiScanner {
         this.numberOfScanning=numberOfScanning;
         startScanningWithDelay();
     }
+    public void startInfinityScanning(){
+        isInfinityScanning=true;
+        startScanningWithDelay();
+    }
     private void startScanningWithDelay(){
         Runnable task = () -> {
 
             if (numberOfScanning>0){
                 numberOfScanning--;
-            }else{
+            }else if (!isInfinityScanning){
                 return;
             }
 
@@ -65,7 +70,7 @@ public class WifiScanner {
         handler.postDelayed(task, scanDelay);
     }
 
-    public void requestScanResults(){
+    private void requestScanResults(){
         scanStarted=true;
         if (Build.VERSION.SDK_INT<Build.VERSION_CODES.R){
             wifiManager.startScan();
@@ -85,7 +90,7 @@ public class WifiScanner {
             scanResultBR = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-                    Log.println(Log.INFO, "SCAN_RESULTS_RECIVED",
+                    Log.println(Log.INFO, "SCAN_RESULTS_RECEIVED",
                             "successful");
                     scanResults.setValue(wifiManager.getScanResults());
                     scanStarted=false;

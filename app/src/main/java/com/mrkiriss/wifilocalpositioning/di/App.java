@@ -8,7 +8,6 @@ public class App extends Application {
     private ComponentManager componentManager;
 
     public static App getInstance(){
-        if (instance==null) System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
         return instance;
     }
 

@@ -9,7 +9,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.mrkiriss.wifilocalpositioning.R;
-import com.mrkiriss.wifilocalpositioning.ui.view.LocationDetectoinFragment;
+import com.mrkiriss.wifilocalpositioning.ui.view.LocationDetectionFragment;
 import com.mrkiriss.wifilocalpositioning.ui.view.TrainingFragment;
 
 import java.util.Objects;
@@ -36,7 +36,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         if (chosenTitle.equals(mContext.getResources().getString(R.string.tab_text_1))){
             fragment=new TrainingFragment();
         }else{
-            fragment=new LocationDetectoinFragment();
+            fragment=new LocationDetectionFragment();
         }
         return fragment;
     }

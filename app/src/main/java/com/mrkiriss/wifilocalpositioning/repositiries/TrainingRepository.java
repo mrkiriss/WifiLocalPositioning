@@ -7,10 +7,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.mrkiriss.wifilocalpositioning.managers.WifiScanner;
-import com.mrkiriss.wifilocalpositioning.models.AccessPoint;
-import com.mrkiriss.wifilocalpositioning.models.CalibrationLocationPoint;
-import com.mrkiriss.wifilocalpositioning.models.DefinedLocationPoint;
-import com.mrkiriss.wifilocalpositioning.models.StringResponse;
+import com.mrkiriss.wifilocalpositioning.models.server.AccessPoint;
+import com.mrkiriss.wifilocalpositioning.models.server.CalibrationLocationPoint;
+import com.mrkiriss.wifilocalpositioning.models.server.DefinedLocationPoint;
+import com.mrkiriss.wifilocalpositioning.models.server.StringResponse;
 import com.mrkiriss.wifilocalpositioning.network.IMWifiServerApi;
 
 import java.util.ArrayList;
@@ -46,7 +46,8 @@ public class TrainingRepository {
         this.retrofit=retrofit;
         this.wifiScanner=wifiScanner;
 
-        kitOfScanResults=wifiScanner.getScanResults();
+        //kitOfScanResults=wifiScanner.getScanResults();
+        kitOfScanResults=new MutableLiveData<>();
 
         requestToAddAPs=new MutableLiveData<>();
         resultOfScanningAfterCalibration =new MutableLiveData<>();

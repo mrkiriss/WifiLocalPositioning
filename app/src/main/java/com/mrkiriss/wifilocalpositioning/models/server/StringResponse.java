@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.models;
+package com.mrkiriss.wifilocalpositioning.models.server;
 
 import lombok.Data;
 

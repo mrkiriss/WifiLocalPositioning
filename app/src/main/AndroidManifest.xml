@@ -19,6 +19,7 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".ui.view.MainActivity"
+            android:icon="@drawable/ic_location"
             android:label="@string/title_activity_main"
             android:theme="@style/Theme.WifiLocalPositioning.NoActionBar">
             <intent-filter>

@@ -12,4 +12,6 @@ import dagger.Component;
 @Singleton
 public interface AppComponent {
     TrainingSubcomponent.Builder trainingSubcomponentBuilder();
+    LocationDetectionSubcomponent.Builder locationDetectionSubcomponentBuilder();
+
 }

@@ -1,7 +1,6 @@
-package com.mrkiriss.wifilocalpositioning.models;
+package com.mrkiriss.wifilocalpositioning.models.server;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import lombok.Data;
 

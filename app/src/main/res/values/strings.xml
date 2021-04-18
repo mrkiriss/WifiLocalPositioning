@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">WifiLocalPositioning</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">IMLocation</string>
     <string name="tab_text_1">Тренировка</string>
     <string name="tab_text_2">Определение</string>
 

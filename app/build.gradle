@@ -2,6 +2,13 @@ plugins {
     id 'com.android.application'
 }
 
+allprojects {
+    repositories {
+        jcenter()
+        maven { url 'https://jitpack.io' }
+    }
+}
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
@@ -55,5 +62,8 @@ dependencies {
     implementation 'com.google.dagger:dagger:2.31.2'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.31.2'
     implementation "com.google.dagger:dagger-android-support:2.10"
+
+    implementation 'com.otaliastudios:zoomlayout:1.8.0'
+    implementation 'com.github.MikeOrtiz:TouchImageView:1.4.1'
 
 }
