@@ -1,20 +1,20 @@
-package com.mrkiriss.wifilocalpositioning.models.server;
+package com.mrkiriss.wifilocalpositioning.data.models.server;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import lombok.Data;
 
 @Data
 public class CalibrationLocationPoint {
-    private double lat;
-    private double lon;
     private String roomName;
     private List<List<AccessPoint>> calibrationSets;
 
     public CalibrationLocationPoint(){
-        calibrationSets= new ArrayList<>();
+        calibrationSets=new LinkedList<>();
     }
-    public void addCalibrationSet(List<AccessPoint> accessPoints){
-        calibrationSets.add(accessPoints);
+
+    public void addOneCalibrationSet(List<AccessPoint> oneSet){
+        calibrationSets.add(oneSet);
     }
 }

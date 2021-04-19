@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.network;
+package com.mrkiriss.wifilocalpositioning.data.sources;
 
 import com.mrkiriss.wifilocalpositioning.data.models.server.CalibrationLocationPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.DefinedLocationPoint;
@@ -13,14 +13,12 @@ import retrofit2.http.POST;
 public interface IMWifiServerApi {
 
     @POST("define/room")
-    Call<DefinedLocationPoint> defineLocationWithCabinet(@Body CalibrationLocationPoint calibrationLocationPoint);
+    Call<DefinedLocationPoint> defineLocation(@Body CalibrationLocationPoint calibrationLocationPoint);
 
     @POST("training/room/coordinates")
-    Call<StringResponse> postLPCalibrationWithCoordinateForTraining(@Body LocationPointInfo locationPointInfo);
+    Call<StringResponse> postCalibrationLPInfo(@Body LocationPointInfo locationPointInfo);
 
     @POST("training/room/aps")
-    Call<StringResponse> postLPCalibrationWithCabinetForTraining(@Body CalibrationLocationPoint calibrationLocationPoint);
+    Call<StringResponse> postCalibrationLPWithAPs(@Body CalibrationLocationPoint calibrationLocationPoint);
 
-    @DELETE("location")
-    Call<StringResponse> cleanServer();
 }

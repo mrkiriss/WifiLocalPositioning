@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.models.map;
+package com.mrkiriss.wifilocalpositioning.data.models.map;
 
 public enum FloorId {
     ZERO_FLOOR,
