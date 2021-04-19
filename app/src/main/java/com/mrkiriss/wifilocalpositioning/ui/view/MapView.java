@@ -14,10 +14,8 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.mrkiriss.wifilocalpositioning.R;
-import com.mrkiriss.wifilocalpositioning.di.App;
-import com.mrkiriss.wifilocalpositioning.models.map.Floor;
-import com.mrkiriss.wifilocalpositioning.models.map.FloorId;
-import com.mrkiriss.wifilocalpositioning.models.map.MapPoint;
+import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
+import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
 
 import java.io.IOException;
 import java.io.InputStream;

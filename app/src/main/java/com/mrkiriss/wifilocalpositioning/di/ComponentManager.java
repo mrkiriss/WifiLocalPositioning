@@ -10,8 +10,6 @@ import com.mrkiriss.wifilocalpositioning.di.modules.AppContextModule;
 import com.mrkiriss.wifilocalpositioning.di.modules.definition.DefinitionRepositoryModule;
 import com.mrkiriss.wifilocalpositioning.di.modules.training.TrainingRepositoryModule;
 
-import java.security.PublicKey;
-
 public class ComponentManager {
 
     private AppComponent appComponent;

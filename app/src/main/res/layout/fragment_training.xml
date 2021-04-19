@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <import type="android.view.View"/>
         <variable
             name="trainingVM"
             type="com.mrkiriss.wifilocalpositioning.ui.viewmodel.TrainingViewModel" />
     </data>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:weightSum="15"
+        android:weightSum="13"
         tools:context=".ui.view.TrainingFragment">
 
         <LinearLayout
@@ -60,7 +62,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@{String.valueOf(trainingVM.numberOfSuccessfulScans)}" />
+                        android:text="@{String.valueOf(trainingVM.remainingNumberOfScanning)}" />
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -75,23 +77,32 @@
                 android:id="@+id/scanningStart"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="9"
+                android:layout_weight="7"
                 android:orientation="vertical">
 
                 <RadioGroup
                     android:id="@+id/radioGroup"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_height="0dp"
+                    android:layout_weight="2"
+                    android:gravity="center"
                     android:onCheckedChanged="@{trainingVM.onRadioButtonChange}"
                     android:orientation="horizontal">
 
                     <RadioButton
-                        android:id="@+id/radioTraining"
+                        android:id="@+id/radioTrainingAPs"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/trainningMode"
+                        android:text="@string/trainningAPs"
+                        android:textSize="12sp" />
+
+                    <RadioButton
+                        android:id="@+id/radioTrainingCoord"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/trainingModeCoord"
                         android:textSize="12sp" />
 
                     <RadioButton
@@ -101,68 +112,64 @@
                         android:layout_weight="1"
                         android:text="@string/defineMode"
                         android:textSize="12sp" />
-
-                    <RadioButton
-                        android:id="@+id/radioTraining2"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/trainingMode2"
-                        android:textSize="12sp" />
-
-                    <RadioButton
-                        android:id="@+id/radioDefinition2"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/defineMode2"
-                        android:textSize="12sp" />
                 </RadioGroup>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
+                    android:layout_height="0dp"
+                    android:layout_weight="3"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:weightSum="7">
 
                     <EditText
-                        android:id="@+id/editTextNumberPassword"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/editY"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:ems="10"
-                        android:hint="@string/hintLat"
+                        android:hint="@string/hintY"
                         android:inputType="numberDecimal"
-                        android:text="@={trainingVM.inputLat}"
-                        android:visibility="@{trainingVM.radioMode!=1 ? View.GONE:View.VISIBLE}" />
+                        android:text="@={trainingVM.inputY}"
+                        android:visibility="@{trainingVM.radioMode==2 ? View.VISIBLE:View.GONE}" />
 
                     <EditText
-                        android:id="@+id/editTextNumberPassword2"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/editX"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:ems="10"
-                        android:hint="@string/hintLon"
+                        android:hint="@string/hintX"
                         android:inputType="numberDecimal"
-                        android:text="@={trainingVM.inputLon}"
-                        android:visibility="@{trainingVM.radioMode!=1 ? View.GONE:View.VISIBLE}" />
+                        android:text="@={trainingVM.inputX}"
+                        android:visibility="@{trainingVM.radioMode==2 ? View.VISIBLE:View.GONE}" />
 
                     <EditText
-                        android:id="@+id/editTextCabinet"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/editRoomName"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="3"
                         android:ems="10"
                         android:hint="@string/CabID"
                         android:inputType="textPersonName"
                         android:text="@={trainingVM.inputCabId}"
-                        android:visibility="@{trainingVM.radioMode!=3 ? View.GONE:View.VISIBLE}" />
+                        android:visibility="@{trainingVM.radioMode!=3 ? View.VISIBLE:View.GONE}" />
+
+                    <Spinner
+                        android:id="@+id/floorId"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:entries="@array/floorIds"
+                        android:visibility="@{trainingVM.radioMode==2 ? View.VISIBLE:View.GONE}"
+                        app:selectedValue="@={trainingVM.selectedFloorId}" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_height="0dp"
+                    android:layout_weight="3"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
                     <EditText
@@ -180,7 +187,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:onClick="@{(radioGroup)->trainingVM.startScanning(radioGroup)}"
+                        android:enabled="@{!trainingVM.isScanningStarted}"
+                        android:onClick="@{()->trainingVM.startScanning()}"
                         android:text="@string/startScanning" />
                 </LinearLayout>
 
@@ -204,46 +212,6 @@
                 </LinearLayout>
             </ScrollView>
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/clearing"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="2"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/clearingTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/deleteTitle"
-                android:textSize="18sp" />
-
-            <LinearLayout
-                android:id="@+id/clearServerInfo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <EditText
-                    android:id="@+id/inputPasswordToClear"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:hint="@string/hintDeletePassword"
-                    android:inputType="textPassword"
-                    android:text="@={trainingVM.inputPasswordToClear}"/>
-
-                <Button
-                    android:id="@+id/startClearing"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/startCleaning"
-                    android:onClick="@{()->trainingVM.onClearButtonClick()}"/>
-            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>

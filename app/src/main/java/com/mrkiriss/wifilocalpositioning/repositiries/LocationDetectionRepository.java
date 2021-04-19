@@ -4,23 +4,21 @@ import android.net.wifi.ScanResult;
 import android.os.Handler;
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.mrkiriss.wifilocalpositioning.R;
-import com.mrkiriss.wifilocalpositioning.data.FloorSchemasDownloader;
-import com.mrkiriss.wifilocalpositioning.managers.WifiScanner;
-import com.mrkiriss.wifilocalpositioning.models.map.Floor;
-import com.mrkiriss.wifilocalpositioning.models.map.FloorId;
-import com.mrkiriss.wifilocalpositioning.models.map.MapPoint;
-import com.mrkiriss.wifilocalpositioning.models.server.AccessPoint;
-import com.mrkiriss.wifilocalpositioning.models.server.CalibrationLocationPoint;
-import com.mrkiriss.wifilocalpositioning.models.server.DefinedLocationPoint;
-import com.mrkiriss.wifilocalpositioning.network.IMWifiServerApi;
-import com.mrkiriss.wifilocalpositioning.ui.view.MapView;
+import com.mrkiriss.wifilocalpositioning.data.sources.FloorSchemasDownloader;
+import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
+import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
+import com.mrkiriss.wifilocalpositioning.data.models.map.FloorId;
+import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
+import com.mrkiriss.wifilocalpositioning.data.models.server.AccessPoint;
+import com.mrkiriss.wifilocalpositioning.data.models.server.CalibrationLocationPoint;
+import com.mrkiriss.wifilocalpositioning.data.models.server.DefinedLocationPoint;
+import com.mrkiriss.wifilocalpositioning.data.sources.IMWifiServerApi;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import lombok.Data;
 import retrofit2.Call;
@@ -30,13 +28,13 @@ import retrofit2.Response;
 @Data
 public class LocationDetectionRepository {
 
-    private IMWifiServerApi retrofit;
-    private WifiScanner wifiScanner;
-    private FloorSchemasDownloader floorSchemasDownloader;
+    private final IMWifiServerApi retrofit;
+    private final WifiScanner wifiScanner;
+    private final FloorSchemasDownloader floorSchemasDownloader;
 
-    private MutableLiveData<List<ScanResult>> kitOfScanResults;
-    private MutableLiveData<MapPoint> resultOfDefinition;
-    private MutableLiveData<Floor> changeFloor;
+    private final LiveData<List<List<ScanResult>>> completeKitsOfScansResult;
+    private final MutableLiveData<MapPoint> resultOfDefinition;
+    private final MutableLiveData<Floor> changeFloor;
 
     private List<Floor> floors;
 
@@ -45,13 +43,13 @@ public class LocationDetectionRepository {
         this.wifiScanner=wifiScanner;
         this.floorSchemasDownloader=floorSchemasDownloader;
 
-        kitOfScanResults=wifiScanner.getScanResults();
+        completeKitsOfScansResult=wifiScanner.getCompleteScanResults();
 
         resultOfDefinition=new MutableLiveData<>();
         changeFloor=new MutableLiveData<>();
         floors=new ArrayList<>();
 
-        startInfinityScanning();
+        wifiScanner.startDefiningScan();
 
         testMap();
     }
@@ -109,20 +107,17 @@ public class LocationDetectionRepository {
     }
 
     // scanning
-    private void startInfinityScanning(){
-        wifiScanner.startInfinityScanning();
-    }
-    public void startProcessingScanResultKit(List<ScanResult> scanResults){
+    public void startProcessingCompleteKitsOfScansResult(List<List<ScanResult>> completeKitsOfScansResult){
 
         CalibrationLocationPoint calibrationLocationPoint = new CalibrationLocationPoint();
-        List<AccessPoint> accessPoints = new ArrayList<>();
-
-        for (ScanResult scanResult : scanResults){
-            accessPoints.add(new AccessPoint(scanResult.BSSID, scanResult.level));
+        for (List<ScanResult> oneScanResults: completeKitsOfScansResult) {
+            List<AccessPoint> accessPoints = new ArrayList<>();
+            for (ScanResult scanResult : oneScanResults) {
+                accessPoints.add(new AccessPoint(scanResult.BSSID, scanResult.level));
+            }
+            // создаём запрос на добавление информации набора на экран пользователя
+            calibrationLocationPoint.addOneCalibrationSet(accessPoints);
         }
-
-        // занесли набор в список наборов у калибровочной точки
-        calibrationLocationPoint.addCalibrationSet(accessPoints);
 
         // отправляем запрос на сервер
         //postFromDefinitionWithCabinet(calibrationLocationPoint);
@@ -130,11 +125,13 @@ public class LocationDetectionRepository {
 
     // server
     private void postFromDefinitionWithCabinet(CalibrationLocationPoint calibrationLocationPoint){
-        retrofit.defineLocationWithCabinet(calibrationLocationPoint).enqueue(new Callback<DefinedLocationPoint>() {
+        retrofit.defineLocation(calibrationLocationPoint).enqueue(new Callback<DefinedLocationPoint>() {
             @Override
             public void onResponse(Call<DefinedLocationPoint> call, Response<DefinedLocationPoint> response) {
+                wifiScanner.startDefiningScan();
+
                 Log.println(Log.INFO, "GOOD_DEFINITION_ROOM",
-                        String.format("Server response=%s", response.body()));
+                        String.format("Server definition=%s", response.body()));
 
                 if (response.body()==null) return;
 
@@ -143,6 +140,7 @@ public class LocationDetectionRepository {
             @Override
             public void onFailure(Call<DefinedLocationPoint> call, Throwable t) {
                 Log.e("SERVER_ERROR", t.getMessage());
+                wifiScanner.startDefiningScan();
             }
         });
     }

@@ -1,14 +1,8 @@
 package com.mrkiriss.wifilocalpositioning.ui.view;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -18,8 +12,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.databinding.FragmentLocationDetectoinBinding;
-import com.mrkiriss.wifilocalpositioning.models.map.Floor;
-import com.mrkiriss.wifilocalpositioning.models.map.MapPoint;
+import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
+import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
 import com.mrkiriss.wifilocalpositioning.ui.viewmodel.LocationDetectionViewModel;
 import com.ortiz.touchview.TouchImageView;
 
@@ -32,13 +26,7 @@ public class LocationDetectionFragment extends Fragment {
 
     private MapPoint currentLocation;
     private Floor currentFloor;
-
-    private float eX;
-    private float eY;
-    float vX;
-    float vY ;
-    float picX;
-    float picY;
+    private boolean isStandardFloor;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -63,11 +51,12 @@ public class LocationDetectionFragment extends Fragment {
         touchImageView=binding.zoomImageView;
         touchImageView.setMinZoom(1f);
         touchImageView.setMaxZoom(7f);
+        touchImageView.setZoom(2f);
     }
 
     private void initObservers(){
         // прослушываем получение результата сканирования, вызываем обработчик данных
-        viewModel.getKitOfScanResults().observe(getViewLifecycleOwner(), scanResults -> viewModel.startProcessingScanResultKit(scanResults));
+        viewModel.getCompleteKitsOfScansResult().observe(getViewLifecycleOwner(), scanResults -> viewModel.startProcessingCompleteKitsOfScansResult(scanResults));
         // прослушываем изменение местоположения, обновляем значение в mapView, если экран на этом этаже, перерисовываем
         viewModel.getResultOfDefinition().observe(getViewLifecycleOwner(), mapPoint -> {
             currentLocation=mapPoint;
@@ -85,9 +74,11 @@ public class LocationDetectionFragment extends Fragment {
         if (mapPoint!=null && mapPoint.getFloorWithPointer()!=null && currentFloor!=null && currentFloor.getFloorSchema()!=null &&
                 mapPoint.getFloorWithPointer().getFloorId()==currentFloor.getFloorId()) {
             touchImageView.setImageBitmap(mapPoint.getFloorWithPointer().getFloorSchema());
+            isStandardFloor=false;
         }else{
-            if (currentFloor==null || currentFloor.getFloorSchema()==null) return;
+            if (currentFloor==null || currentFloor.getFloorSchema()==null || isStandardFloor) return;
             touchImageView.setImageBitmap(currentFloor.getFloorSchema());
+            isStandardFloor=true;
         }
     }
     private void drawCurrentFloor(Floor floor){
@@ -96,13 +87,13 @@ public class LocationDetectionFragment extends Fragment {
         if (currentLocation!=null && currentLocation.getFloorWithPointer()!=null &&
                 currentLocation.getFloorWithPointer().getFloorId()==floor.getFloorId()){
             touchImageView.setImageBitmap(currentLocation.getFloorWithPointer().getFloorSchema());
+            isStandardFloor=false;
             Log.d("drawCurrentFloor", "Совпадение местоположения и этажа");
-            Log.d("data", "currentFloor: "+currentFloor.getFloorId()+ " currentLoc: "+currentLocation.getFloorWithPointer().getFloorId());
 
         }else{
             touchImageView.setImageBitmap(floor.getFloorSchema());
+            isStandardFloor=true;
             Log.d("drawCurrentFloor", "Отрисовка этажа без местопложения");
-            Log.d("data", "currentFloor: "+currentFloor.getFloorId()+ " currentLoc: "+currentLocation.getFloorWithPointer().getFloorId());
         }
     }
 }

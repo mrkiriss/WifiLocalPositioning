@@ -1,17 +1,20 @@
 package com.mrkiriss.wifilocalpositioning.repositiries;
 
 import android.net.wifi.ScanResult;
+import android.os.Build;
 import android.util.Log;
 
+import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.mrkiriss.wifilocalpositioning.managers.WifiScanner;
-import com.mrkiriss.wifilocalpositioning.models.server.AccessPoint;
-import com.mrkiriss.wifilocalpositioning.models.server.CalibrationLocationPoint;
-import com.mrkiriss.wifilocalpositioning.models.server.DefinedLocationPoint;
-import com.mrkiriss.wifilocalpositioning.models.server.StringResponse;
-import com.mrkiriss.wifilocalpositioning.network.IMWifiServerApi;
+import com.mrkiriss.wifilocalpositioning.data.models.server.AccessPoint;
+import com.mrkiriss.wifilocalpositioning.data.models.server.CalibrationLocationPoint;
+import com.mrkiriss.wifilocalpositioning.data.models.server.DefinedLocationPoint;
+import com.mrkiriss.wifilocalpositioning.data.models.server.LocationPointInfo;
+import com.mrkiriss.wifilocalpositioning.data.models.server.StringResponse;
+import com.mrkiriss.wifilocalpositioning.data.sources.IMWifiServerApi;
+import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,102 +33,66 @@ public class TrainingRepository {
     private CalibrationLocationPoint calibrationLocationPoint;
     private int scanningMode;
     private int requiredNumberOfScanningKits;
-    private boolean requestPosted;
-    public static final int MODE_TRAINING=1;
-    public static final int MODE_DEFINITION=2;
-    public static final int MODE_TRAINING2=3;
-    public static final int MODE_DEFINITION2=4;
+    public static final int MODE_TRAINING_APS=1;
+    public static final int MODE_TRAINING_COORD=2;
+    public static final int MODE_DEFINITION=3;
 
-    private final LiveData<List<ScanResult>> kitOfScanResults;
+    private final LiveData<List<List<ScanResult>>> completeKitsOfScansResult;
     private MutableLiveData<String> requestToAddAPs;
-    private MutableLiveData<String> resultOfScanningAfterCalibration;
+    private MutableLiveData<String> serverResponse;
     private MutableLiveData<String> toastContent;
+    private LiveData<Integer> remainingNumberOfScanning;
 
 
     public TrainingRepository(IMWifiServerApi retrofit, WifiScanner wifiScanner){
         this.retrofit=retrofit;
         this.wifiScanner=wifiScanner;
 
-        //kitOfScanResults=wifiScanner.getScanResults();
-        kitOfScanResults=new MutableLiveData<>();
+        completeKitsOfScansResult=wifiScanner.getCompleteScanResults();
+        remainingNumberOfScanning=wifiScanner.getRemainingNumberOfScanning();
 
         requestToAddAPs=new MutableLiveData<>();
-        resultOfScanningAfterCalibration =new MutableLiveData<>();
+        serverResponse =new MutableLiveData<>();
         toastContent=new MutableLiveData<>();
     }
 
-    public void runScanInManager(int numberOfScanningKits, int lat, int lon, int radioMode){
-        Log.println(Log.INFO, "START_SCANNING", String.format("Parameters: numberOfScanning=%s, lat=%s, lon=%s", numberOfScanningKits, lat, lon));
-
+    public void runScanInManager(int numberOfScanningKits, int radioMode){
         calibrationLocationPoint=new CalibrationLocationPoint();
-        calibrationLocationPoint.setLat(lat);
-        calibrationLocationPoint.setLon(lon);
 
         scanningMode=radioMode;
         requiredNumberOfScanningKits=numberOfScanningKits;
-        requestPosted=false;
 
-        wifiScanner.startScanningWithParameters(numberOfScanningKits);
+        wifiScanner.startTrainingScan(numberOfScanningKits);
     }
-
     public void runScanInManager(int numberOfScanningKits, String roomName, int radioMode){
-        Log.println(Log.INFO, "START_SCANNING", String.format("Parameters: numberOfScanning=%s, roomName=%s, radioMode=%s", numberOfScanningKits, roomName, radioMode));
 
         calibrationLocationPoint=new CalibrationLocationPoint();
         calibrationLocationPoint.setRoomName(roomName);
 
         scanningMode=radioMode;
         requiredNumberOfScanningKits=numberOfScanningKits;
-        requestPosted=false;
 
-        wifiScanner.startScanningWithParameters(numberOfScanningKits);
+        wifiScanner.startTrainingScan(numberOfScanningKits);
+    }
+    public void postLocationPointInfoToServer(int x, int y, String roomName, int floorId){
+        LocationPointInfo locationPointInfo = new LocationPointInfo(x,y,roomName, floorId);
+        postFromTrainingWithCoordinates(locationPointInfo);
     }
 
-    public void runCleaningServer(){
-        retrofit.cleanServer().enqueue(new Callback<StringResponse>() {
-            @Override
-            public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
-                if (response.body() == null) {
-                    Log.println(Log.INFO, "CLEANING_SUCCESSFUL",
-                            String.format("Parameters: server response=%s", response.body()));
-                    return;
-                }
-                toastContent.setValue(response.body().getResponse());
-                Log.println(Log.INFO, "CLEANING_SUCCESSFUL",
-                        String.format("Parameters: server response=%s", response.body().getResponse()));
+    public void processCompleteKitsOfScanResults(List<List<ScanResult>> completeKitsOfScansResult){
+        int numberOfCurrentSuccessfulKits=0;
+        for (List<ScanResult> oneScanResults: completeKitsOfScansResult) {
+            List<AccessPoint> accessPoints = new ArrayList<>();
+            numberOfCurrentSuccessfulKits++;
+            for (ScanResult scanResult : oneScanResults) {
+                accessPoints.add(new AccessPoint(scanResult.BSSID, scanResult.level));
             }
-
-            @Override
-            public void onFailure(Call<StringResponse> call, Throwable t) {
-                Log.println(Log.INFO, "CLEANING_FAILED",
-                        String.format("Parameters: server response=%s", t.getMessage()));
-            }
-        });
-    }
-
-    public void startProcessingScanResultKit(List<ScanResult> scanResults, int numberOfCurrentSuccessfulKits){
-
-        if (requestPosted) return;
-
-        List<AccessPoint> accessPoints = new ArrayList<>();
-        for (ScanResult scanResult : scanResults){
-            accessPoints.add(new AccessPoint(scanResult.BSSID, scanResult.level));
+            // создаём запрос на добавление информации набора на экран пользователя
+            requestToAddAPs.setValue(convertKitToString(accessPoints, numberOfCurrentSuccessfulKits));
+            calibrationLocationPoint.addOneCalibrationSet(accessPoints);
         }
 
-        Log.println(Log.INFO, "START_PROC_SCAN_RESULT",
-                String.format("Parameters: numberOfCurrentSuccessfulKits=%s, value=%s", numberOfCurrentSuccessfulKits,
-                        convertKitToString(accessPoints, numberOfCurrentSuccessfulKits)));
-
-        if (calibrationLocationPoint==null) return;
-        // занесли набор в список наборов у калибровочной точки
-        calibrationLocationPoint.addCalibrationSet(accessPoints);
-        // создаём запрос на добавление информации набора на экран пользователя
-        requestToAddAPs.setValue(convertKitToString(accessPoints, numberOfCurrentSuccessfulKits));
-
-        // проверяем законченность блока сканирования
-        if (numberOfCurrentSuccessfulKits==requiredNumberOfScanningKits || wifiScanner.getNumberOfScanning()<1){
-            postCalibrationLPToServer();
-        }
+        chosePostCalibrationLPToServer();
     }
     private String convertKitToString(List<AccessPoint> accessPoints, int number){
         String result="Набор №"+number+"\n";
@@ -135,94 +102,66 @@ public class TrainingRepository {
         return result;
     }
 
-    private void postCalibrationLPToServer(){
-        requestPosted=true;
+    private void chosePostCalibrationLPToServer(){
         switch (scanningMode){
-            case MODE_TRAINING:
-                postFromTrainingWithCoord();
+            case MODE_TRAINING_APS:
+                postFromTrainingWithAPs();
                 break;
             case MODE_DEFINITION:
-                postFromDefinitionWithCoord();
-                break;
-            case MODE_TRAINING2:
-                postFromTrainingWithCabinet();
-                break;
-            case MODE_DEFINITION2:
-                postFromDefinitionWithCabinet();
+                postFromDefinitionLocation();
                 break;
         }
     }
-    private void postFromTrainingWithCoord(){
-        toastContent.setValue("Обучение началось");
-        retrofit.postLPCalibrationWithCoordinateForTraining(calibrationLocationPoint).enqueue(new Callback<StringResponse>() {
+
+    private void postFromTrainingWithAPs(){
+        toastContent.setValue("Обучение точкам доступа началось");
+        retrofit.postCalibrationLPWithAPs(calibrationLocationPoint).enqueue(new Callback<StringResponse>() {
             @Override
             public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
-                Log.println(Log.INFO, "GOOD_TRAINING_COORD",
+                Log.println(Log.INFO, "GOOD_TRAINING_APs_ROOM",
                         String.format("Server response=%s", response.body()));
                 if (response.body()==null)return;
-                resultOfScanningAfterCalibration.setValue(response.body().getResponse());
+                serverResponse.setValue(response.body().getResponse());
             }
             @Override
             public void onFailure(Call<StringResponse> call, Throwable t) {
-                resultOfScanningAfterCalibration.setValue(call.toString()+"\n"+t.getMessage());
+                serverResponse.setValue(call.toString()+"\n"+t.getMessage());
                 Log.e("SERVER_ERROR", t.getMessage());
             }
         });
     }
-    private void postFromDefinitionWithCoord(){
-        toastContent.setValue("Определение началось");
+    private void postFromTrainingWithCoordinates(LocationPointInfo locationPointInfo){
+        toastContent.setValue("Обучение координатам началось");
+        retrofit.postCalibrationLPInfo(locationPointInfo).enqueue(new Callback<StringResponse>() {
+            @Override
+            public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
+                Log.println(Log.INFO, "GOOD_TRAINING_CORD_ROOM",
+                        String.format("Server response=%s", response.body()));
+                if (response.body()==null)return;
+                serverResponse.setValue(response.body().toString());
+            }
+            @Override
+            public void onFailure(Call<StringResponse> call, Throwable t) {
+                serverResponse.setValue(call.toString()+"\n"+t.getMessage());
+                Log.e("SERVER_ERROR", t.getMessage());
+            }
+        });
+    }
+    private void postFromDefinitionLocation(){
+        toastContent.setValue("Определение комнаты началось");
         retrofit.defineLocation(calibrationLocationPoint).enqueue(new Callback<DefinedLocationPoint>() {
-            @Override
-            public void onResponse(Call<DefinedLocationPoint> call, Response<DefinedLocationPoint> response) {
-                Log.println(Log.INFO, "GOOD_DEFINITION",
-                        String.format("Server response=%s", response.body()));
-                if (response.body()==null)return;
-                resultOfScanningAfterCalibration.setValue(response.body().toString());
-            }
-
-            @Override
-            public void onFailure(Call<DefinedLocationPoint> call, Throwable t) {
-                resultOfScanningAfterCalibration.setValue(call.toString()+"\n"+t.getMessage());
-                Log.e("SERVER_ERROR", t.getMessage());
-            }
-        });
-    }
-
-    private void postFromTrainingWithCabinet(){
-        retrofit.postLPCalibrationWithCabinetForTraining(calibrationLocationPoint).enqueue(new Callback<StringResponse>() {
-            @Override
-            public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
-                Log.println(Log.INFO, "GOOD_TRAINING_ROOM",
-                        String.format("Server response=%s", response.body()));
-                if (response.body()==null)return;
-                resultOfScanningAfterCalibration.setValue(response.body().getResponse());
-            }
-            @Override
-            public void onFailure(Call<StringResponse> call, Throwable t) {
-                resultOfScanningAfterCalibration.setValue(call.toString()+"\n"+t.getMessage());
-                Log.e("SERVER_ERROR", t.getMessage());
-            }
-        });
-    }
-    private void postFromDefinitionWithCabinet(){
-        toastContent.setValue("Определение кабинета началось");
-        retrofit.defineLocationWithCabinet(calibrationLocationPoint).enqueue(new Callback<DefinedLocationPoint>() {
             @Override
             public void onResponse(Call<DefinedLocationPoint> call, Response<DefinedLocationPoint> response) {
                 Log.println(Log.INFO, "GOOD_DEFINITION_ROOM",
                         String.format("Server response=%s", response.body()));
                 if (response.body()==null)return;
-                resultOfScanningAfterCalibration.setValue(response.body().toString());
+                serverResponse.setValue(response.body().toString());
             }
             @Override
             public void onFailure(Call<DefinedLocationPoint> call, Throwable t) {
-                resultOfScanningAfterCalibration.setValue(call.toString()+"\n"+t.getMessage());
+                serverResponse.setValue(call.toString()+"\n"+t.getMessage());
                 Log.e("SERVER_ERROR", t.getMessage());
             }
         });
-    }
-
-    public void unregisterScanCallbacks(){
-        wifiScanner.unregisterScanCallback();
     }
 }

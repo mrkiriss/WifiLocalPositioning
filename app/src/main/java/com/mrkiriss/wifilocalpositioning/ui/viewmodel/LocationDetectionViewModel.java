@@ -7,12 +7,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.mrkiriss.wifilocalpositioning.di.App;
-import com.mrkiriss.wifilocalpositioning.models.map.Floor;
-import com.mrkiriss.wifilocalpositioning.models.map.MapPoint;
+import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
+import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
 import com.mrkiriss.wifilocalpositioning.repositiries.LocationDetectionRepository;
 
 import java.util.List;
-import java.util.Observable;
 
 import javax.inject.Inject;
 
@@ -24,7 +23,7 @@ public class LocationDetectionViewModel extends ViewModel {
     @Inject
     protected LocationDetectionRepository locationDetectionRepository;
 
-    private LiveData<List<ScanResult>> kitOfScanResults;
+    private final LiveData<List<List<ScanResult>>> completeKitsOfScansResult;
     private LiveData<MapPoint> resultOfDefinition;
     private LiveData<Floor> changeFloor;
 
@@ -34,15 +33,15 @@ public class LocationDetectionViewModel extends ViewModel {
 
         App.getInstance().getComponentManager().getLocationDetectionSubcomponent().inject(this);
 
-        kitOfScanResults= locationDetectionRepository.getKitOfScanResults();
+        completeKitsOfScansResult= locationDetectionRepository.getCompleteKitsOfScansResult();
         resultOfDefinition=locationDetectionRepository.getResultOfDefinition();
         changeFloor=locationDetectionRepository.getChangeFloor();
 
         floorNumber = new ObservableInt(2);
     }
 
-    public void startProcessingScanResultKit(List<ScanResult> scanResults){
-        locationDetectionRepository.startProcessingScanResultKit(scanResults);
+    public void startProcessingCompleteKitsOfScansResult(List<List<ScanResult>> scanResults){
+        locationDetectionRepository.startProcessingCompleteKitsOfScansResult(scanResults);
     }
 
     public void arrowInc(){

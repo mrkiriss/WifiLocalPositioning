@@ -25,9 +25,6 @@ public class WifiScanner {
     private BroadcastReceiver scanResultBR;
     private WifiManager.ScanResultsCallback scanResultsCallback;
 
-    private long scanDelay=4000;
-    private int numberOfScanning;
-    private boolean isInfinityScanning=false;
     final Handler handler;
     private boolean scanStarted;
 

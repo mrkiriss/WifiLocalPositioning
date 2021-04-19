@@ -19,6 +19,18 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center" />
 
+        <ImageButton
+            android:id="@+id/imageButton3"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom|left"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/circle_border"
+            android:padding="10dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/ic_cursor" />
+
         <LinearLayout
             android:layout_width="40dp"
             android:layout_height="120dp"

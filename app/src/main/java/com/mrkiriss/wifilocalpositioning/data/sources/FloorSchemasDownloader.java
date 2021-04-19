@@ -8,9 +8,8 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.Log;
 
-import com.mrkiriss.wifilocalpositioning.R;
-import com.mrkiriss.wifilocalpositioning.models.map.Floor;
-import com.mrkiriss.wifilocalpositioning.models.map.FloorId;
+import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
+import com.mrkiriss.wifilocalpositioning.data.models.map.FloorId;
 
 import java.io.IOException;
 import java.io.InputStream;

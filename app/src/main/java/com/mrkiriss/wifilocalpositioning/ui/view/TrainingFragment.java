@@ -46,7 +46,7 @@ public class TrainingFragment extends Fragment {
 
     private void initObservers(){
         // подписавыемся на очередные небоработанные результаты сканирования
-        viewModel.getKitOfScanResults().observe(getViewLifecycleOwner(), scanResults -> viewModel.startProcessingScanResultKit(scanResults));
+        viewModel.getCompleteKitsOfScansResult().observe(getViewLifecycleOwner(), scanResults -> viewModel.startProcessingCompleteKitsOfScansResult(scanResults));
         // подписываемся на добавление обработанных результатов сканирвоания на экран
         viewModel.getRequestToAddAPs().observe(getViewLifecycleOwner(), this::addKitOfAPsOnRecyclerView);
         // подписываемся на результат калибровки наборов сканирования
@@ -59,6 +59,8 @@ public class TrainingFragment extends Fragment {
         viewModel.getToastContent().observe(getViewLifecycleOwner(), s -> Toast.makeText(getContext(), s, Toast.LENGTH_SHORT).show());
         // подписываемся на очищение rv
         viewModel.getRequestToClearRV().observe(getViewLifecycleOwner(), strings -> adapter.setContent(strings));
+        // подписываемся на изменение количества оставшихся сканирований
+        viewModel.getRemainingNumberOfScanningLD().observe(getViewLifecycleOwner(), integer -> viewModel.getRemainingNumberOfScanning().set(integer));
     }
 
     private void addKitOfAPsOnRecyclerView(String apInfo){
@@ -67,7 +69,6 @@ public class TrainingFragment extends Fragment {
 
     @Override
     public void onDestroy(){
-        viewModel.unregisterWifiScannerCallBack();
         super.onDestroy();
     }
 }

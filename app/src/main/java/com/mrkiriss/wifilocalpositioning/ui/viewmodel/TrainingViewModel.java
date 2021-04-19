@@ -2,24 +2,28 @@ package com.mrkiriss.wifilocalpositioning.ui.viewmodel;
 
 import android.net.wifi.ScanResult;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 
+import androidx.databinding.BindingAdapter;
+import androidx.databinding.InverseBindingAdapter;
+import androidx.databinding.InverseBindingListener;
+import androidx.databinding.ObservableBoolean;
 import androidx.databinding.ObservableField;
 import androidx.databinding.ObservableInt;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.di.App;
 import com.mrkiriss.wifilocalpositioning.repositiries.TrainingRepository;
 
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Observable;
 
 import javax.inject.Inject;
 
@@ -31,101 +35,109 @@ public class TrainingViewModel extends ViewModel {
     @Inject
     protected TrainingRepository trainingRepository;
 
-    private ObservableInt numberOfSuccessfulScans;
+    private ObservableInt remainingNumberOfScanning;
     private ObservableField<String> inputNumberOfScanKits;
-    private ObservableField<String> inputPasswordToClear;
-    private ObservableField<String> inputLat;
-    private ObservableField<String> inputLon;
+    private ObservableField<String> inputY;
+    private ObservableField<String> inputX;
     private ObservableField<String> inputCabId;
     private ObservableInt radioMode;
+    private ObservableBoolean isScanningStarted;
+    private ObservableField<String> selectedFloorId;
 
-    private final LiveData<List<ScanResult>> kitOfScanResults;
+    private final LiveData<List<List<ScanResult>>> completeKitsOfScansResult;
     private LiveData<String> requestToAddAPs;
     private MutableLiveData<String> resultOfScanningAfterCalibration;
     private MutableLiveData<String> toastContent;
     private MutableLiveData<List<String>> requestToClearRV;
+    private LiveData<Integer> remainingNumberOfScanningLD;
 
     public TrainingViewModel(){
         App.getInstance().getComponentManager().getTrainingSubcomponent().inject(this);
 
-        kitOfScanResults= trainingRepository.getKitOfScanResults();
+        completeKitsOfScansResult= trainingRepository.getCompleteKitsOfScansResult();
         requestToAddAPs=trainingRepository.getRequestToAddAPs();
-        resultOfScanningAfterCalibration=trainingRepository.getResultOfScanningAfterCalibration();
+        resultOfScanningAfterCalibration=trainingRepository.getServerResponse();
         toastContent=trainingRepository.getToastContent();
+        remainingNumberOfScanningLD=trainingRepository.getRemainingNumberOfScanning();
 
-        numberOfSuccessfulScans=new ObservableInt(0);
+        remainingNumberOfScanning=new ObservableInt(0);
         inputNumberOfScanKits=new ObservableField<>("");
-        inputPasswordToClear=new ObservableField<>("");
-        inputLat=new ObservableField<>("");
-        inputLon=new ObservableField<>("");
+        inputY =new ObservableField<>("");
+        inputX =new ObservableField<>("");
         requestToClearRV=new MutableLiveData<>();
         radioMode=new ObservableInt(0);
         inputCabId=new ObservableField<>("");
+        isScanningStarted=new ObservableBoolean(false);
     }
 
-    public void startScanning(View view){
-        if (inputNumberOfScanKits.get().equals("") || (inputLat.get().equals("") && inputLon.get().equals("") && radioMode.get()==1)
-        || (inputCabId.get().equals("") && radioMode.get()==3)){
+    public void startScanning(){
+        if (inputNumberOfScanKits.get().equals("") ||
+                ((inputY.get().equals("") || inputX.get().equals("") || inputCabId.get().equals("") || selectedFloorId.get().equals("")) && radioMode.get()==2) ||
+                (inputCabId.get().equals("") && radioMode.get()==1)){
             toastContent.setValue("Заполните все поля!");
             return;
         }
         resetElements();
+        isScanningStarted.set(true);
         switch (radioMode.get()){
-            case 1:
-                trainingRepository.runScanInManager(Integer.parseInt(Objects.requireNonNull(inputNumberOfScanKits.get())),
-                        Integer.parseInt(Objects.requireNonNull(inputLat.get())), Integer.parseInt(Objects.requireNonNull(inputLon.get())), radioMode.get());
+            case TrainingRepository.MODE_TRAINING_APS:
+                trainingRepository.runScanInManager(Integer.parseInt(Objects.requireNonNull(inputNumberOfScanKits.get())), radioMode.get());
                 break;
-            case 2:
-                trainingRepository.runScanInManager(Integer.parseInt(Objects.requireNonNull(inputNumberOfScanKits.get())),
-                        0, 0, radioMode.get());
+            case TrainingRepository.MODE_TRAINING_COORD:
+                trainingRepository.postLocationPointInfoToServer(Integer.parseInt(inputX.get()), Integer.parseInt(inputY.get()),
+                        inputCabId.get(), Integer.parseInt(selectedFloorId.get()));
                 break;
-            case 3:
+            case TrainingRepository.MODE_DEFINITION:
                 trainingRepository.runScanInManager(Integer.parseInt(Objects.requireNonNull(inputNumberOfScanKits.get())),
                         inputCabId.get(), radioMode.get());
                 break;
-            case 4:
-                trainingRepository.runScanInManager(Integer.parseInt(Objects.requireNonNull(inputNumberOfScanKits.get())),
-                        "", radioMode.get());
-                break;
         }
     }
-    public void onClearButtonClick(){
-        if (inputPasswordToClear.get()==null || !inputPasswordToClear.get().equals("1992163a")) return;
-        trainingRepository.runCleaningServer();
-    }
-    public void startProcessingScanResultKit(List<ScanResult> scanResults){
-        numberOfSuccessfulScans.set(numberOfSuccessfulScans.get()+1);
-        trainingRepository.startProcessingScanResultKit(scanResults, numberOfSuccessfulScans.get());
-    }
-
-    public void onRadioButtonChange(RadioGroup rg, int id){
-        switch (rg.getCheckedRadioButtonId()){
-            case R.id.radioTraining:
-                radioMode.set(TrainingRepository.MODE_TRAINING);
-                break;
-            case R.id.radioDefinition:
-                radioMode.set(TrainingRepository.MODE_DEFINITION);
-                break;
-            case R.id.radioTraining2:
-                radioMode.set(TrainingRepository.MODE_TRAINING2);
-                break;
-            case R.id.radioDefinition2:
-                radioMode.set(TrainingRepository.MODE_DEFINITION2);
-                break;
-        }
+    public void startProcessingCompleteKitsOfScansResult(List<List<ScanResult>> scanResults){
+        trainingRepository.processCompleteKitsOfScanResults(scanResults);
+        isScanningStarted.set(false);
     }
 
     public void resetElements(){
-        numberOfSuccessfulScans.set(0);
+        remainingNumberOfScanning.set(0);
         //inputNumberOfScanKits.set("");
-        inputPasswordToClear.set("");
         //inputLat.set("");
         //inputLon.set("");
         requestToClearRV.setValue(new ArrayList<>());
         resultOfScanningAfterCalibration.setValue("");
     }
 
-    public void unregisterWifiScannerCallBack(){
-        trainingRepository.unregisterScanCallbacks();
+    public void onRadioButtonChange(RadioGroup rg, int id){
+        switch (rg.getCheckedRadioButtonId()){
+            case R.id.radioTrainingAPs:
+                radioMode.set(TrainingRepository.MODE_TRAINING_APS);
+                break;
+            case R.id.radioTrainingCoord:
+                radioMode.set(TrainingRepository.MODE_TRAINING_COORD);
+                break;
+            case R.id.radioDefinition:
+                radioMode.set(TrainingRepository.MODE_DEFINITION);
+                break;
+        }
+    }
+    @BindingAdapter(value = {"app:selectedValue", "selectedValueAttrChanged"}, requireAll = false)
+    public static void bindSpinnerData(Spinner spinner, String newSelectedValue, final InverseBindingListener newTextAttrChanged) {
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                newTextAttrChanged.onChange();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+        if (newSelectedValue != null) {
+            int pos = ((ArrayAdapter<String>) spinner.getAdapter()).getPosition(newSelectedValue);
+            spinner.setSelection(pos, true);
+        }
+    }
+    @InverseBindingAdapter(attribute = "app:selectedValue", event = "selectedValueAttrChanged")
+    public static String captureSelectedValue(Spinner spinner) {
+        return (String)spinner.getSelectedItem();
     }
 }
