@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 
+import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.di.App;
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
@@ -25,7 +26,7 @@ public class LocationDetectionViewModel extends ViewModel {
     @Inject
     protected LocationDetectionRepository locationDetectionRepository;
 
-    private final LiveData<List<List<ScanResult>>> completeKitsOfScansResult;
+    private final LiveData<CompleteKitsContainer> completeKitsOfScansResult;
     private LiveData<MapPoint> resultOfDefinition;
     private LiveData<Floor> changeFloor;
 
@@ -42,7 +43,7 @@ public class LocationDetectionViewModel extends ViewModel {
         floorNumber = new ObservableInt(2);
     }
 
-    public void startProcessingCompleteKitsOfScansResult(List<List<ScanResult>> scanResults){
+    public void startProcessingCompleteKitsOfScansResult(CompleteKitsContainer scanResults){
         locationDetectionRepository.startProcessingCompleteKitsOfScansResult(scanResults);
     }
 

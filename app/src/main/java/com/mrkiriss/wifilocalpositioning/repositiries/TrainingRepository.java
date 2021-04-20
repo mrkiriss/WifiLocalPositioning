@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.mrkiriss.wifilocalpositioning.data.models.server.AccessPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CalibrationLocationPoint;
+import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.data.models.server.DefinedLocationPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.LocationPointInfo;
 import com.mrkiriss.wifilocalpositioning.data.models.server.StringResponse;
@@ -35,7 +36,7 @@ public class TrainingRepository {
     public static final int MODE_TRAINING_COORD=2;
     public static final int MODE_DEFINITION=3;
 
-    private final LiveData<List<List<ScanResult>>> completeKitsOfScansResult;
+    private final LiveData<CompleteKitsContainer> completeKitsOfScansResult;
     private MutableLiveData<String> requestToAddAPs;
     private MutableLiveData<String> serverResponse;
     private MutableLiveData<String> toastContent;
@@ -77,9 +78,12 @@ public class TrainingRepository {
         postFromTrainingWithCoordinates(locationPointInfo);
     }
 
-    public void processCompleteKitsOfScanResults(List<List<ScanResult>> completeKitsOfScansResult){
+    public void processCompleteKitsOfScanResults(CompleteKitsContainer completeKitsContainer){
+
+        if (completeKitsContainer.getRequestSourceType()!=WifiScanner.TYPE_TRAINING) return;
+
         int numberOfCurrentSuccessfulKits=0;
-        for (List<ScanResult> oneScanResults: completeKitsOfScansResult) {
+        for (List<ScanResult> oneScanResults: completeKitsContainer.getCompleteKits()) {
             List<AccessPoint> accessPoints = new ArrayList<>();
             numberOfCurrentSuccessfulKits++;
             for (ScanResult scanResult : oneScanResults) {
@@ -87,6 +91,7 @@ public class TrainingRepository {
             }
             // создаём запрос на добавление информации набора на экран пользователя
             requestToAddAPs.setValue(convertKitToString(accessPoints, numberOfCurrentSuccessfulKits));
+            if (calibrationLocationPoint==null) return;
             calibrationLocationPoint.addOneCalibrationSet(accessPoints);
         }
 

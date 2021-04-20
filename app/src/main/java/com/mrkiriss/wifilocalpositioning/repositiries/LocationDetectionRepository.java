@@ -1,11 +1,13 @@
 package com.mrkiriss.wifilocalpositioning.repositiries;
 
 import android.net.wifi.ScanResult;
+import android.os.Handler;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.data.sources.FloorSchemasDownloader;
 import com.mrkiriss.wifilocalpositioning.data.sources.wifi.WifiScanner;
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
@@ -32,7 +34,7 @@ public class LocationDetectionRepository implements Serializable {
     private final WifiScanner wifiScanner;
     private final FloorSchemasDownloader floorSchemasDownloader;
 
-    private final LiveData<List<List<ScanResult>>> completeKitsOfScansResult;
+    private final LiveData<CompleteKitsContainer> completeKitsOfScansResult;
     private final MutableLiveData<MapPoint> resultOfDefinition;
     private final MutableLiveData<Floor> changeFloor;
 
@@ -53,7 +55,7 @@ public class LocationDetectionRepository implements Serializable {
 
         //testMap();
     }
-    /*private int x=0;
+    private int x=0;
     private int y=630;
     private int count=30;
     private Handler handler = new android.os.Handler();
@@ -74,8 +76,8 @@ public class LocationDetectionRepository implements Serializable {
         y+=0;
         resultOfDefinition.setValue(mp);
         Runnable task = ()-> onePostMapPoint();
-        handler.postDelayed(task, 4000);
-    }*/
+        handler.postDelayed(task, 1000);
+    }
 
 
     // floor
@@ -106,10 +108,12 @@ public class LocationDetectionRepository implements Serializable {
     }
 
     // scanning
-    public void startProcessingCompleteKitsOfScansResult(List<List<ScanResult>> completeKitsOfScansResult){
+    public void startProcessingCompleteKitsOfScansResult(CompleteKitsContainer completeKitsContainer){
+
+        if (completeKitsContainer.getRequestSourceType()!=WifiScanner.TYPE_DEFINITION) return;
 
         CalibrationLocationPoint calibrationLocationPoint = new CalibrationLocationPoint();
-        for (List<ScanResult> oneScanResults: completeKitsOfScansResult) {
+        for (List<ScanResult> oneScanResults: completeKitsContainer.getCompleteKits()) {
             List<AccessPoint> accessPoints = new ArrayList<>();
             for (ScanResult scanResult : oneScanResults) {
                 accessPoints.add(new AccessPoint(scanResult.BSSID, scanResult.level));
@@ -119,11 +123,17 @@ public class LocationDetectionRepository implements Serializable {
         }
 
         // отправляем запрос на сервер
-        //postFromDefinitionWithCabinet(calibrationLocationPoint);
+        postFromDefinitionWithCabinet(calibrationLocationPoint);
     }
 
     // server
     private void postFromDefinitionWithCabinet(CalibrationLocationPoint calibrationLocationPoint){
+
+        if (calibrationLocationPoint.getCalibrationSets()==null || calibrationLocationPoint.getCalibrationSets().size()==0){
+            wifiScanner.startDefiningScan(WifiScanner.TYPE_DEFINITION);
+            return;
+        }
+
         retrofit.defineLocation(calibrationLocationPoint).enqueue(new Callback<DefinedLocationPoint>() {
             @Override
             public void onResponse(Call<DefinedLocationPoint> call, Response<DefinedLocationPoint> response) {
@@ -132,7 +142,7 @@ public class LocationDetectionRepository implements Serializable {
                 Log.println(Log.INFO, "GOOD_DEFINITION_ROOM",
                         String.format("Server definition=%s", response.body()));
 
-                if (response.body()==null) return;
+                if (response.body()==null || response.body().getFloorId()==-1) return;
 
                 resultOfDefinition.setValue(convertToMapPoint(response.body()));
             }

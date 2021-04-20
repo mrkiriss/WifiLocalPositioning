@@ -19,6 +19,7 @@ import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 
 import com.mrkiriss.wifilocalpositioning.R;
+import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.di.App;
 import com.mrkiriss.wifilocalpositioning.repositiries.TrainingRepository;
 
@@ -45,7 +46,7 @@ public class TrainingViewModel extends ViewModel {
     private ObservableBoolean isScanningStarted;
     private ObservableField<String> selectedFloorId;
 
-    private final LiveData<List<List<ScanResult>>> completeKitsOfScansResult;
+    private final LiveData<CompleteKitsContainer> completeKitsOfScansResult;
     private LiveData<String> requestToAddAPs;
     private MutableLiveData<String> resultOfScanningAfterCalibration;
     private MutableLiveData<String> toastContent;
@@ -95,8 +96,8 @@ public class TrainingViewModel extends ViewModel {
                 break;
         }
     }
-    public void startProcessingCompleteKitsOfScansResult(List<List<ScanResult>> scanResults){
-        trainingRepository.processCompleteKitsOfScanResults(scanResults);
+    public void startProcessingCompleteKitsOfScansResult(CompleteKitsContainer completeKitsContainer){
+        trainingRepository.processCompleteKitsOfScanResults(completeKitsContainer);
     }
 
     public void changeScanningStatus(boolean status){
