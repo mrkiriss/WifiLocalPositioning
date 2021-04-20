@@ -8,21 +8,25 @@ import android.view.ViewGroup;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.SavedStateViewModelFactory;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.mrkiriss.wifilocalpositioning.R;
-import com.mrkiriss.wifilocalpositioning.databinding.FragmentLocationDetectoinBinding;
+import com.mrkiriss.wifilocalpositioning.databinding.FragmentLocationDetectionBindingImpl;
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
+import com.mrkiriss.wifilocalpositioning.di.App;
 import com.mrkiriss.wifilocalpositioning.ui.viewmodel.LocationDetectionViewModel;
 import com.ortiz.touchview.TouchImageView;
+
+import org.jetbrains.annotations.NotNull;
 
 public class LocationDetectionFragment extends Fragment {
 
     private MapView mapView;
     private TouchImageView touchImageView;
     private LocationDetectionViewModel viewModel;
-    private FragmentLocationDetectoinBinding binding;
+    private FragmentLocationDetectionBindingImpl binding;
 
     private MapPoint currentLocation;
     private Floor currentFloor;
@@ -36,8 +40,10 @@ public class LocationDetectionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        //SavedStateViewModelFactory factory = new SavedStateViewModelFactory(App.getInstance(), this);
         viewModel=new ViewModelProvider(this).get(LocationDetectionViewModel.class);
-        binding= DataBindingUtil.inflate(inflater, R.layout.fragment_location_detectoin, container, false);
+
+        binding= DataBindingUtil.inflate(inflater, R.layout.fragment_location_detection, container, false);
         binding.setViewModel(viewModel);
 
         createAndShowMapView();

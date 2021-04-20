@@ -15,6 +15,7 @@ import androidx.databinding.ObservableField;
 import androidx.databinding.ObservableInt;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 
 import com.mrkiriss.wifilocalpositioning.R;
@@ -51,7 +52,7 @@ public class TrainingViewModel extends ViewModel {
     private MutableLiveData<List<String>> requestToClearRV;
     private LiveData<Integer> remainingNumberOfScanningLD;
 
-    public TrainingViewModel(){
+    public TrainingViewModel(SavedStateHandle savedStateHandle){
         App.getInstance().getComponentManager().getTrainingSubcomponent().inject(this);
 
         completeKitsOfScansResult= trainingRepository.getCompleteKitsOfScansResult();

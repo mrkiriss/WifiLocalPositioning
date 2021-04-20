@@ -21,7 +21,7 @@ import java.util.Objects;
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @StringRes
-    private static final int[] TAB_TITLES = new int[]{R.string.tab_text_1, R.string.tab_text_2};
+    private static final int[] TAB_TITLES = new int[]{R.string.nav_training, R.string.nav_definition};
     private final Context mContext;
 
     public SectionsPagerAdapter(Context context, FragmentManager fm) {
@@ -33,7 +33,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         Fragment fragment;
         final String chosenTitle=Objects.requireNonNull(getPageTitle(position)).toString();
-        if (chosenTitle.equals(mContext.getResources().getString(R.string.tab_text_1))){
+        if (chosenTitle.equals(mContext.getResources().getString(R.string.nav_training))){
             fragment=new TrainingFragment();
         }else{
             fragment=new LocationDetectionFragment();

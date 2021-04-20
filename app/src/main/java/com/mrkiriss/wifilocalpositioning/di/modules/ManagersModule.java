@@ -16,7 +16,6 @@ import dagger.Provides;
 public class ManagersModule {
 
     @Provides
-    @Singleton
     public WifiScanner provideWifiScanner(Context context, AppDatabase db){
         return new WifiScanner(context, (WifiManager) context.getSystemService(Context.WIFI_SERVICE), db);
     }

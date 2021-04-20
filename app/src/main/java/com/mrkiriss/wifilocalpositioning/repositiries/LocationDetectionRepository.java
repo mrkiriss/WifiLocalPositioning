@@ -17,6 +17,7 @@ import com.mrkiriss.wifilocalpositioning.data.models.server.CalibrationLocationP
 import com.mrkiriss.wifilocalpositioning.data.models.server.DefinedLocationPoint;
 import com.mrkiriss.wifilocalpositioning.data.sources.IMWifiServerApi;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +27,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 @Data
-public class LocationDetectionRepository {
+public class LocationDetectionRepository implements Serializable {
 
     private final IMWifiServerApi retrofit;
     private final WifiScanner wifiScanner;
@@ -49,12 +50,12 @@ public class LocationDetectionRepository {
         changeFloor=new MutableLiveData<>();
         floors=new ArrayList<>();
 
-        wifiScanner.startDefiningScan();
+        //wifiScanner.startDefiningScan();
 
-        testMap();
+        //testMap();
     }
 
-    private int x=0;
+    /*private int x=0;
     private int y=630;
     private int count=30;
     private Handler handler = new android.os.Handler();
@@ -76,7 +77,7 @@ public class LocationDetectionRepository {
         resultOfDefinition.setValue(mp);
         Runnable task = ()-> onePostMapPoint();
         handler.postDelayed(task, 4000);
-    }
+    }*/
 
 
     // floor

@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">WifiLocalPositioning</string>
     <string name="title_activity_main">IMLocation</string>
-    <string name="tab_text_1">Тренировка</string>
-    <string name="tab_text_2">Определение</string>
+    <string name="nav_training">Тренировка</string>
+    <string name="nav_definition">Определение</string>
 
     <!--TrainingFragment-->
     <string name="scanningTitle">Панель сканирования</string>
@@ -24,4 +24,11 @@
         <item>3</item>
         <item>4</item>
     </string-array>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="nav_header_title">Определение местоположения по Wi-fi</string>
+    <string name="nav_header_subtitle">by RTUITLab</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
 </resources>

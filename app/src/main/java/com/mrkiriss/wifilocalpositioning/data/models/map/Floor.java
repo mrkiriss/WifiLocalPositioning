@@ -2,10 +2,12 @@ package com.mrkiriss.wifilocalpositioning.data.models.map;
 
 import android.graphics.Bitmap;
 
+import java.io.Serializable;
+
 import lombok.Data;
 
 @Data
-public class Floor {
+public class Floor implements Serializable {
 
     private Bitmap floorSchema;
     private FloorId floorId;
