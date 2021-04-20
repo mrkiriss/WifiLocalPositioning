@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.mrkiriss.wifilocalpositioning.R;
+import com.mrkiriss.wifilocalpositioning.data.sources.wifi.OverrideScanningSourceType;
 import com.mrkiriss.wifilocalpositioning.databinding.FragmentTrainingBinding;
 import com.mrkiriss.wifilocalpositioning.ui.view.adapters.ScanResultsRVAdapter;
 import com.mrkiriss.wifilocalpositioning.ui.viewmodel.TrainingViewModel;
@@ -53,6 +54,7 @@ public class TrainingFragment extends Fragment {
         viewModel.getResultOfScanningAfterCalibration().observe(getViewLifecycleOwner(), s -> {
             if (s==null) return;
             binding.scanningResult.setText("Получен результат от сервера:\n"+s);
+            viewModel.changeScanningStatus(false);
             //viewModel.resetElements();
         });
         //подписываемся на контент для тостов
@@ -65,10 +67,5 @@ public class TrainingFragment extends Fragment {
 
     private void addKitOfAPsOnRecyclerView(String apInfo){
         adapter.addToBack(apInfo);
-    }
-
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
     }
 }

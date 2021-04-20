@@ -69,36 +69,39 @@ public class TrainingViewModel extends ViewModel {
         radioMode=new ObservableInt(0);
         inputCabId=new ObservableField<>("");
         isScanningStarted=new ObservableBoolean(false);
+        selectedFloorId=new ObservableField<>("");
     }
 
     public void startScanning(){
-        if (inputNumberOfScanKits.get().equals("") ||
+        if ((inputNumberOfScanKits.get().equals("") && radioMode.get()!=2) ||
                 ((inputY.get().equals("") || inputX.get().equals("") || inputCabId.get().equals("") || selectedFloorId.get().equals("")) && radioMode.get()==2) ||
                 (inputCabId.get().equals("") && radioMode.get()==1)){
             toastContent.setValue("Заполните все поля!");
             return;
         }
         resetElements();
-        isScanningStarted.set(true);
+        changeScanningStatus(true);
         switch (radioMode.get()){
             case TrainingRepository.MODE_TRAINING_APS:
-                trainingRepository.runScanInManager(Integer.parseInt(Objects.requireNonNull(inputNumberOfScanKits.get())), radioMode.get());
+                trainingRepository.runScanInManager(Integer.parseInt(Objects.requireNonNull(inputNumberOfScanKits.get())),
+                        inputCabId.get(), radioMode.get());
                 break;
             case TrainingRepository.MODE_TRAINING_COORD:
                 trainingRepository.postLocationPointInfoToServer(Integer.parseInt(inputX.get()), Integer.parseInt(inputY.get()),
                         inputCabId.get(), Integer.parseInt(selectedFloorId.get()));
                 break;
             case TrainingRepository.MODE_DEFINITION:
-                trainingRepository.runScanInManager(Integer.parseInt(Objects.requireNonNull(inputNumberOfScanKits.get())),
-                        inputCabId.get(), radioMode.get());
+                trainingRepository.runScanInManager(Integer.parseInt(Objects.requireNonNull(inputNumberOfScanKits.get())), radioMode.get());
                 break;
         }
     }
     public void startProcessingCompleteKitsOfScansResult(List<List<ScanResult>> scanResults){
         trainingRepository.processCompleteKitsOfScanResults(scanResults);
-        isScanningStarted.set(false);
     }
 
+    public void changeScanningStatus(boolean status){
+        isScanningStarted.set(status);
+    }
     public void resetElements(){
         remainingNumberOfScanning.set(0);
         //inputNumberOfScanKits.set("");

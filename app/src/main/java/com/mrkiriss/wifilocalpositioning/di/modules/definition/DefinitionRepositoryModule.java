@@ -3,7 +3,7 @@ package com.mrkiriss.wifilocalpositioning.di.modules.definition;
 import android.content.Context;
 
 import com.mrkiriss.wifilocalpositioning.data.sources.FloorSchemasDownloader;
-import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
+import com.mrkiriss.wifilocalpositioning.data.sources.wifi.WifiScanner;
 import com.mrkiriss.wifilocalpositioning.data.sources.IMWifiServerApi;
 import com.mrkiriss.wifilocalpositioning.repositiries.LocationDetectionRepository;
 

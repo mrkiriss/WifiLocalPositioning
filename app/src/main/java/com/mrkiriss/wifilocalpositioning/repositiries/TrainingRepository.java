@@ -1,10 +1,8 @@
 package com.mrkiriss.wifilocalpositioning.repositiries;
 
 import android.net.wifi.ScanResult;
-import android.os.Build;
 import android.util.Log;
 
-import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -14,7 +12,7 @@ import com.mrkiriss.wifilocalpositioning.data.models.server.DefinedLocationPoint
 import com.mrkiriss.wifilocalpositioning.data.models.server.LocationPointInfo;
 import com.mrkiriss.wifilocalpositioning.data.models.server.StringResponse;
 import com.mrkiriss.wifilocalpositioning.data.sources.IMWifiServerApi;
-import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
+import com.mrkiriss.wifilocalpositioning.data.sources.wifi.WifiScanner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +60,7 @@ public class TrainingRepository {
         scanningMode=radioMode;
         requiredNumberOfScanningKits=numberOfScanningKits;
 
-        wifiScanner.startTrainingScan(numberOfScanningKits);
+        wifiScanner.startTrainingScan(numberOfScanningKits, WifiScanner.TYPE_TRAINING);
     }
     public void runScanInManager(int numberOfScanningKits, String roomName, int radioMode){
 
@@ -72,7 +70,7 @@ public class TrainingRepository {
         scanningMode=radioMode;
         requiredNumberOfScanningKits=numberOfScanningKits;
 
-        wifiScanner.startTrainingScan(numberOfScanningKits);
+        wifiScanner.startTrainingScan(numberOfScanningKits, WifiScanner.TYPE_TRAINING);
     }
     public void postLocationPointInfoToServer(int x, int y, String roomName, int floorId){
         LocationPointInfo locationPointInfo = new LocationPointInfo(x,y,roomName, floorId);

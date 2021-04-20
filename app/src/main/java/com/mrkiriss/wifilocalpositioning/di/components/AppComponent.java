@@ -14,4 +14,5 @@ import dagger.Component;
 public interface AppComponent {
     TrainingSubcomponent.Builder trainingSubcomponentBuilder();
     LocationDetectionSubcomponent.Builder locationDetectionSubcomponentBuilder();
+    MainActivitySubcomponent.Builder mainActivitySubcomponentBuilder();
 }

@@ -1,6 +1,6 @@
 package com.mrkiriss.wifilocalpositioning.di.modules.training;
 
-import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
+import com.mrkiriss.wifilocalpositioning.data.sources.wifi.WifiScanner;
 import com.mrkiriss.wifilocalpositioning.data.sources.IMWifiServerApi;
 import com.mrkiriss.wifilocalpositioning.repositiries.TrainingRepository;
 

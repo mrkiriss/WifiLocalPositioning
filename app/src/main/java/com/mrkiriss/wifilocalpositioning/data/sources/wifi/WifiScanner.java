@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.data.sources;
+package com.mrkiriss.wifilocalpositioning.data.sources.wifi;
 
 import androidx.annotation.RequiresApi;
 import androidx.lifecycle.MutableLiveData;
@@ -43,6 +43,10 @@ public class WifiScanner {
     private final MutableLiveData<Integer> remainingNumberOfScanning;
     private List<List<ScanResult>> scanResultKits;
 
+    private String currentTypeOfRequestSource;
+    public final static String TYPE_TRAINING="training";
+    public final static String TYPE_DEFINITION="definition";
+
     public WifiScanner(Context context, WifiManager wifiManager, AppDatabase db){
         this.context=context;
         this.wifiManager=wifiManager;
@@ -56,7 +60,9 @@ public class WifiScanner {
         registerListeners();
     }
 
-    public boolean startTrainingScan(int requiredNumberOfScans){
+    public boolean startTrainingScan(int requiredNumberOfScans, String typeOfRequestSource){
+        if (!typeOfRequestSource.equals(currentTypeOfRequestSource)) return false;
+
         scanResultKits=new LinkedList<>();
         scanDelay=1000;
         remainingNumberOfScanning.setValue(requiredNumberOfScans);
@@ -65,7 +71,9 @@ public class WifiScanner {
 
         return true;
     }
-    public boolean startDefiningScan(){
+    public boolean startDefiningScan(String typeOfRequestSource){
+        if (!typeOfRequestSource.equals(currentTypeOfRequestSource)) return false;
+
         scanResultKits=new LinkedList<>();
 
         Runnable task = () -> {

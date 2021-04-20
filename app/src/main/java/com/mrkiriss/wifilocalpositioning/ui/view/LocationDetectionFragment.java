@@ -12,6 +12,7 @@ import androidx.lifecycle.SavedStateViewModelFactory;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.mrkiriss.wifilocalpositioning.R;
+import com.mrkiriss.wifilocalpositioning.data.sources.wifi.OverrideScanningSourceType;
 import com.mrkiriss.wifilocalpositioning.databinding.FragmentLocationDetectionBindingImpl;
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
@@ -102,4 +103,5 @@ public class LocationDetectionFragment extends Fragment {
             Log.d("drawCurrentFloor", "Отрисовка этажа без местопложения");
         }
     }
+
 }

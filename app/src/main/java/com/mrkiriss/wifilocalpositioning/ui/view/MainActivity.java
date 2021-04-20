@@ -1,5 +1,7 @@
 package com.mrkiriss.wifilocalpositioning.ui.view;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -7,6 +9,9 @@ import android.view.Menu;
 
 import com.google.android.material.navigation.NavigationView;
 import com.mrkiriss.wifilocalpositioning.R;
+import com.mrkiriss.wifilocalpositioning.data.sources.wifi.OverrideScanningSourceType;
+import com.mrkiriss.wifilocalpositioning.data.sources.wifi.WifiScanner;
+import com.mrkiriss.wifilocalpositioning.di.App;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -21,8 +26,14 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.room.Insert;
+
+import javax.inject.Inject;
 
 public class MainActivity extends AppCompatActivity {
+
+    @Inject
+    protected WifiScanner wifiScanner;
 
     private AppBarConfiguration mAppBarConfiguration;
     private DrawerLayout drawer;
@@ -31,11 +42,15 @@ public class MainActivity extends AppCompatActivity {
 
     private Fragment[] fragments;
     private String[] fragmentTAGS;
+    private String[] typesOfRequestSources;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        App.getInstance().getComponentManager().getMainActivitySubcomponent().inject(this);
+        checkPermissions();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -80,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
         }
         fragments=new Fragment[]{new LocationDetectionFragment(), new TrainingFragment()};
         fragmentTAGS=new String[]{"fDefinition", "fTraining"};
+        typesOfRequestSources = new String[]{WifiScanner.TYPE_DEFINITION, WifiScanner.TYPE_TRAINING};
     }
     private int defineFragmentIndex(MenuItem item) {
         switch (item.getItemId()){
@@ -115,6 +131,9 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < fragments.length; i++) {
             if (i == position) {
                 fragmentTransaction.show(fragments[i]);
+
+                wifiScanner.setCurrentTypeOfRequestSource(typesOfRequestSources[i]);
+
                 Log.i("changeFragments","SHOW "+fragments[position].getTag());
             } else {
                 if (fm.findFragmentByTag(fragmentTAGS[i]) != null) {
@@ -125,5 +144,18 @@ public class MainActivity extends AppCompatActivity {
         }
         fragmentTransaction.commit();
         Log.i("changeFragments","commit");
+    }
+
+    private void checkPermissions(){
+        requestPermissions(new String[] {Manifest.permission.CHANGE_WIFI_STATE, Manifest.permission.ACCESS_WIFI_STATE,
+                Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+        if (checkSelfPermission(Manifest.permission.CHANGE_WIFI_STATE) == PackageManager.PERMISSION_GRANTED &&
+                checkSelfPermission(Manifest.permission.ACCESS_WIFI_STATE) == PackageManager.PERMISSION_GRANTED &&
+                checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            Log.i("Permissions","GRANTED");
+        }else{
+            Log.i("Permissions","NOT GRANTED");
+        }
     }
 }

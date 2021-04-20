@@ -1,14 +1,13 @@
 package com.mrkiriss.wifilocalpositioning.repositiries;
 
 import android.net.wifi.ScanResult;
-import android.os.Handler;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.mrkiriss.wifilocalpositioning.data.sources.FloorSchemasDownloader;
-import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
+import com.mrkiriss.wifilocalpositioning.data.sources.wifi.WifiScanner;
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
 import com.mrkiriss.wifilocalpositioning.data.models.map.FloorId;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
@@ -50,11 +49,10 @@ public class LocationDetectionRepository implements Serializable {
         changeFloor=new MutableLiveData<>();
         floors=new ArrayList<>();
 
-        //wifiScanner.startDefiningScan();
+        wifiScanner.startDefiningScan(WifiScanner.TYPE_DEFINITION);
 
         //testMap();
     }
-
     /*private int x=0;
     private int y=630;
     private int count=30;
@@ -129,7 +127,7 @@ public class LocationDetectionRepository implements Serializable {
         retrofit.defineLocation(calibrationLocationPoint).enqueue(new Callback<DefinedLocationPoint>() {
             @Override
             public void onResponse(Call<DefinedLocationPoint> call, Response<DefinedLocationPoint> response) {
-                wifiScanner.startDefiningScan();
+                wifiScanner.startDefiningScan(WifiScanner.TYPE_DEFINITION);
 
                 Log.println(Log.INFO, "GOOD_DEFINITION_ROOM",
                         String.format("Server definition=%s", response.body()));
@@ -141,7 +139,7 @@ public class LocationDetectionRepository implements Serializable {
             @Override
             public void onFailure(Call<DefinedLocationPoint> call, Throwable t) {
                 Log.e("SERVER_ERROR", t.getMessage());
-                wifiScanner.startDefiningScan();
+                wifiScanner.startDefiningScan(WifiScanner.TYPE_DEFINITION);
             }
         });
     }
