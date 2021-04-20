@@ -144,6 +144,9 @@ public class LocationDetectionRepository implements Serializable {
 
                 if (response.body()==null || response.body().getFloorId()==-1) return;
 
+                Log.println(Log.INFO, "SEND_CONVERT_RESULT",
+                        convertToMapPoint(response.body()).toString());
+
                 resultOfDefinition.setValue(convertToMapPoint(response.body()));
             }
             @Override
@@ -158,8 +161,7 @@ public class LocationDetectionRepository implements Serializable {
     private MapPoint convertToMapPoint(DefinedLocationPoint definedLocationPoint){
         MapPoint result = new MapPoint();
 
-        Floor foundFloor = findFloorById(definedLocationPoint.getFloorId());
-        if (foundFloor==null) foundFloor=downloadSingleFloorForPointer(Floor.convertFloorIdToEnum(definedLocationPoint.getFloorId()),
+        Floor foundFloor=downloadSingleFloorForPointer(Floor.convertFloorIdToEnum(definedLocationPoint.getFloorId()),
                 definedLocationPoint.getX(), definedLocationPoint.getY());
 
         result.setFloorWithPointer(foundFloor);

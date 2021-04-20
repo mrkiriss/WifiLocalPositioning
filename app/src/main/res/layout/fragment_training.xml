@@ -187,7 +187,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:enabled="@{!trainingVM.isScanningStarted}"
                         android:onClick="@{()->trainingVM.startScanning()}"
                         android:text="@string/startScanning" />
                 </LinearLayout>

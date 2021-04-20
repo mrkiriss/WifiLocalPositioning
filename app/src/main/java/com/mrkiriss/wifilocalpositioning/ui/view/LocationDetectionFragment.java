@@ -63,7 +63,7 @@ public class LocationDetectionFragment extends Fragment {
         viewModel.getResultOfDefinition().observe(getViewLifecycleOwner(), mapPoint -> {
             currentLocation=mapPoint;
             drawCurrentLocation(mapPoint);
-            Log.d("changeMapPoint", "floorId: "+mapPoint.getFloorWithPointer().getFloorId());
+            Log.i("changeMapPoint", "floorId: "+mapPoint.getFloorWithPointer().getFloorId());
         });
         // прослушываем изменение пола, вызываем перерисовку
         viewModel.getChangeFloor().observe(getViewLifecycleOwner(), floor -> {
@@ -76,10 +76,12 @@ public class LocationDetectionFragment extends Fragment {
         if (mapPoint!=null && mapPoint.getFloorWithPointer()!=null && currentFloor!=null && currentFloor.getFloorSchema()!=null &&
                 mapPoint.getFloorWithPointer().getFloorId()==currentFloor.getFloorId()) {
             touchImageView.setImageBitmap(mapPoint.getFloorWithPointer().getFloorSchema());
+            Log.i("changeMapPoint", "draw mapPoint's schema");
             isStandardFloor=false;
         }else{
             if (currentFloor==null || currentFloor.getFloorSchema()==null || isStandardFloor) return;
             touchImageView.setImageBitmap(currentFloor.getFloorSchema());
+            Log.i("changeMapPoint", "draw basic floor schema");
             isStandardFloor=true;
         }
     }
@@ -90,12 +92,12 @@ public class LocationDetectionFragment extends Fragment {
                 currentLocation.getFloorWithPointer().getFloorId()==floor.getFloorId()){
             touchImageView.setImageBitmap(currentLocation.getFloorWithPointer().getFloorSchema());
             isStandardFloor=false;
-            Log.d("drawCurrentFloor", "Совпадение местоположения и этажа");
+            Log.i("drawCurrentFloor", "Совпадение местоположения и этажа");
 
         }else{
             touchImageView.setImageBitmap(floor.getFloorSchema());
             isStandardFloor=true;
-            Log.d("drawCurrentFloor", "Отрисовка этажа без местопложения");
+            Log.i("drawCurrentFloor", "Отрисовка этажа без местопложения");
         }
     }
 
