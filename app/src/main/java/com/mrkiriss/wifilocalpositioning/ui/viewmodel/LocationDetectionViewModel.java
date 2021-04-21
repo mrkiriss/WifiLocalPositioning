@@ -4,6 +4,7 @@ import android.net.wifi.ScanResult;
 
 import androidx.databinding.ObservableInt;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 
@@ -30,6 +31,8 @@ public class LocationDetectionViewModel extends ViewModel {
     private LiveData<MapPoint> resultOfDefinition;
     private LiveData<Floor> changeFloor;
 
+    private MutableLiveData<MapPoint> showCurrentLocation;
+
     private ObservableInt floorNumber;
 
     public LocationDetectionViewModel(){
@@ -40,11 +43,17 @@ public class LocationDetectionViewModel extends ViewModel {
         resultOfDefinition=locationDetectionRepository.getResultOfDefinition();
         changeFloor=locationDetectionRepository.getChangeFloor();
 
+        showCurrentLocation=new MutableLiveData<>();
+
         floorNumber = new ObservableInt(2);
     }
 
     public void startProcessingCompleteKitsOfScansResult(CompleteKitsContainer scanResults){
         locationDetectionRepository.startProcessingCompleteKitsOfScansResult(scanResults);
+    }
+
+    public void onShowCurrentLocation(){
+        showCurrentLocation.setValue(resultOfDefinition.getValue());
     }
 
     public void arrowInc(){

@@ -1,5 +1,6 @@
 package com.mrkiriss.wifilocalpositioning.repositiries;
 
+import android.graphics.LinearGradient;
 import android.net.wifi.ScanResult;
 import android.os.Handler;
 import android.util.Log;
@@ -20,6 +21,8 @@ import com.mrkiriss.wifilocalpositioning.data.sources.IMWifiServerApi;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import lombok.Data;

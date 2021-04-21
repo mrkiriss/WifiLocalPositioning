@@ -1,13 +1,16 @@
 package com.mrkiriss.wifilocalpositioning.ui.view;
 
+import android.icu.text.UnicodeSetSpanner;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.mrkiriss.wifilocalpositioning.R;
@@ -63,13 +66,15 @@ public class LocationDetectionFragment extends Fragment {
         viewModel.getResultOfDefinition().observe(getViewLifecycleOwner(), mapPoint -> {
             currentLocation=mapPoint;
             drawCurrentLocation(mapPoint);
-            Log.i("changeMapPoint", "floorId: "+mapPoint.getFloorWithPointer().getFloorId());
+            Log.i("changeMapPoint", "получена новая точка с floorId: "+mapPoint.getFloorWithPointer().getFloorId());
         });
         // прослушываем изменение пола, вызываем перерисовку
         viewModel.getChangeFloor().observe(getViewLifecycleOwner(), floor -> {
             currentFloor=floor;
             drawCurrentFloor(floor);
         });
+        // прослышиваем кнопку показа текущего местоположения
+        viewModel.getShowCurrentLocation().observe(getViewLifecycleOwner(), this::showCurrentLocation);
     }
 
     private void drawCurrentLocation(MapPoint mapPoint){
@@ -92,13 +97,28 @@ public class LocationDetectionFragment extends Fragment {
                 currentLocation.getFloorWithPointer().getFloorId()==floor.getFloorId()){
             touchImageView.setImageBitmap(currentLocation.getFloorWithPointer().getFloorSchema());
             isStandardFloor=false;
-            Log.i("drawCurrentFloor", "Совпадение местоположения и этажа");
+            Log.i("drawCurrentFloor", "Совпадение местоположения и этажа, этаж "+currentLocation.getFloorWithPointer().getFloorId());
 
         }else{
             touchImageView.setImageBitmap(floor.getFloorSchema());
             isStandardFloor=true;
-            Log.i("drawCurrentFloor", "Отрисовка этажа без местопложения");
+            Log.i("drawCurrentFloor", "Отрисовка этажа без местопложения, этаж "+floor.getFloorId());
         }
     }
+    private void showCurrentLocation(MapPoint mapPoint){
+        if (mapPoint==null){
+            Toast.makeText(getContext(), "Текущее местоположение не определено",Toast.LENGTH_SHORT).show();
+        }else {
+            viewModel.getFloorNumber().set(Floor.convertEnumToFloorId(mapPoint.getFloorWithPointer().getFloorId()));
+            currentFloor=mapPoint.getFloorWithPointer();
+            touchImageView.setImageBitmap(mapPoint.getFloorWithPointer().getFloorSchema());
+            Log.i("changeMapPoint", "draw current mapPoint's schema");
 
+            float x = (float)mapPoint.getX()/mapPoint.getFloorWithPointer().getFloorSchema().getWidth();
+            float y = (float)mapPoint.getY()/mapPoint.getFloorWithPointer().getFloorSchema().getHeight();
+            Log.i("changeZoom", "x="+x+" y="+y);
+            touchImageView.setZoom(5, x, y);
+            isStandardFloor=false;
+        }
+    }
 }

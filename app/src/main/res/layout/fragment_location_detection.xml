@@ -29,6 +29,7 @@
             android:background="@drawable/circle_border"
             android:padding="10dp"
             android:scaleType="fitCenter"
+            android:onClick="@{()->viewModel.onShowCurrentLocation()}"
             app:srcCompat="@drawable/ic_cursor" />
 
         <LinearLayout

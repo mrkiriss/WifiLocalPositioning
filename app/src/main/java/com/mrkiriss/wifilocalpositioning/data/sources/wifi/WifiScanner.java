@@ -14,8 +14,6 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.mrkiriss.wifilocalpositioning.data.entity.Settings;
-import com.mrkiriss.wifilocalpositioning.data.models.server.AccessPoint;
-import com.mrkiriss.wifilocalpositioning.data.models.server.CalibrationLocationPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.AppDatabase;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.SettingDao;
@@ -25,7 +23,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import lombok.Data;
-import lombok.Setter;
 
 @Data
 public class WifiScanner {
@@ -41,7 +38,9 @@ public class WifiScanner {
     private boolean scanStarted;
     private long scanDelay;
 
+    private CompleteKitsContainer uncompleteKitsContainer;
     private final MutableLiveData<CompleteKitsContainer> completeScanResults;
+
     private final MutableLiveData<Integer> remainingNumberOfScanning;
     private List<List<ScanResult>> scanResultKits;
 
@@ -79,6 +78,8 @@ public class WifiScanner {
 
         Log.i("startScan", "start scanning from training");
 
+        uncompleteKitsContainer =new CompleteKitsContainer();
+
         scanResultKits=new LinkedList<>();
         scanDelay=1000;
         remainingNumberOfScanning.setValue(requiredNumberOfScans);
@@ -91,6 +92,8 @@ public class WifiScanner {
         if (!typeOfRequestSource.equals(currentTypeOfRequestSource)) return false;
 
         Log.i("WifiScanner", "start scanning from definition");
+
+        uncompleteKitsContainer =new CompleteKitsContainer();
 
         scanResultKits=new LinkedList<>();
 
@@ -117,9 +120,9 @@ public class WifiScanner {
         }else{
             Log.i( "WifiScanner", "unsuccessful continue, remainingNumberOfScanning  "+remainingNumberOfScanning.getValue());
 
-            CompleteKitsContainer container = new CompleteKitsContainer();
+            CompleteKitsContainer container = uncompleteKitsContainer;
             container.setCompleteKits(scanResultKits);
-            container.setRequestSourceType(currentTypeOfRequestSource);
+            if (container.getRequestSourceType()==null) container.setRequestSourceType(currentTypeOfRequestSource);
 
             completeScanResults.postValue(container);
             return;

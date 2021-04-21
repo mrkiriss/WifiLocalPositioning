@@ -35,4 +35,19 @@ public class Floor implements Serializable {
         }
         return FloorId.SECOND_FLOOR;
     }
+    public static int convertEnumToFloorId(FloorId floorId){
+        switch (floorId){
+            case ZERO_FLOOR:
+                return 0;
+            case FIRST_FLOOR:
+                return 1;
+            case SECOND_FLOOR:
+                return 2;
+            case THIRD_FLOOR:
+                return 3;
+            case FOURTH_FLOOR:
+                return 4;
+        }
+        return 2;
+    }
 }
