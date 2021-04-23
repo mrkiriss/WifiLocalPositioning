@@ -123,7 +123,10 @@ public class TrainingRepository {
             public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
                 Log.println(Log.INFO, "GOOD_TRAINING_APs_ROOM",
                         String.format("Server response=%s", response.body()));
-                if (response.body()==null)return;
+                if (response.body()==null){
+                    serverResponse.setValue("Response body is null");
+                    return;
+                }
                 serverResponse.setValue(response.body().getResponse());
             }
             @Override
@@ -140,7 +143,10 @@ public class TrainingRepository {
             public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
                 Log.println(Log.INFO, "GOOD_TRAINING_CORD_ROOM",
                         String.format("Server response=%s", response.body()));
-                if (response.body()==null)return;
+                if (response.body()==null){
+                    serverResponse.setValue("Response body is null");
+                    return;
+                }
                 serverResponse.setValue(response.body().toString());
             }
             @Override
@@ -152,12 +158,16 @@ public class TrainingRepository {
     }
     private void postFromDefinitionLocation(){
         toastContent.setValue("Определение комнаты началось");
+        Log.i("infoAboutCalibrationLP", calibrationLocationPoint.toString());
         retrofit.defineLocation(calibrationLocationPoint).enqueue(new Callback<DefinedLocationPoint>() {
             @Override
             public void onResponse(Call<DefinedLocationPoint> call, Response<DefinedLocationPoint> response) {
                 Log.println(Log.INFO, "GOOD_DEFINITION_ROOM",
                         String.format("Server response=%s", response.body()));
-                if (response.body()==null)return;
+                if (response.body()==null){
+                    serverResponse.setValue("Response body is null");
+                    return;
+                }
                 serverResponse.setValue(response.body().toString());
             }
             @Override

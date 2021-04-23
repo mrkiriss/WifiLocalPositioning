@@ -145,7 +145,7 @@ public class LocationDetectionRepository implements Serializable {
                 Log.println(Log.INFO, "GOOD_DEFINITION_ROOM",
                         String.format("Server definition=%s", response.body()));
 
-                if (response.body()==null || response.body().getFloorId()==-1) return;
+                if (response.body()==null || response.body().getFloorId()==-1)return;
 
                 Log.println(Log.INFO, "SEND_CONVERT_RESULT",
                         convertToMapPoint(response.body()).toString());

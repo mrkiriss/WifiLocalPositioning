@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/scanGroupTitle">
+
+        <EditTextPreference
+            android:defaultValue="true"
+            android:key="scanInterval"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/scanIntervalText"
+            app:defaultValue="true"
+            app:summary="1" />
+        <ListPreference
+            android:entries="@array/versionsOfNumberOfScansInKit"
+            android:entryValues="@array/entry_values"
+            android:key="variousOfNumberScans"
+            android:title="@string/numberOfScansInKitText"
+            app:summary="Минимально (1 ск.)" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

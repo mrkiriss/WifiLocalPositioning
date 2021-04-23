@@ -3,6 +3,7 @@
     <string name="title_activity_main">IMLocation</string>
     <string name="nav_training">Тренировка</string>
     <string name="nav_definition">Определение</string>
+    <string name="nav_settings">Настройки</string>
 
     <!--TrainingFragment-->
     <string name="scanningTitle">Панель сканирования</string>
@@ -30,5 +31,29 @@
     <string name="nav_header_title">Определение местоположения по Wi-fi</string>
     <string name="nav_header_subtitle">by RTUITLab</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
+
+
+    <!-- Training2 -->
+    <string name="nav_training2">Тренировка2</string>
+
+
+
+    <!-- Settings -->
+    <string name="scanGroupTitle">Параметры сканирования</string>
+    <string name="scanIntervalText">Интервал между сканированиями </string>
+    <string name="scanIntervalHint">Время в секундах</string>
+    <string name="numberOfScansInKitText">Количество единовременных сканирований </string>
+    <string-array name="versionsOfNumberOfScansInKit">
+        <item>Автоматически</item>
+        <item>Минимально (1 ск.)</item>
+        <item>Достаточно (3 ск.)</item>
+        <item>Максимально (5 ск.)</item>
+    </string-array>
+    <string-array name="entry_values">
+        <item>0</item>
+        <item>1</item>
+        <item>3</item>
+        <item>5</item>
+    </string-array>
+
 </resources>

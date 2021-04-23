@@ -33,6 +33,11 @@ public class FloorSchemasDownloader {
 
     public Floor downloadFloor(FloorId floorId, int x, int y){
         Bitmap bitmap = getBitmapFromAsset(defineFilePath(floorId));
+
+        // редактируем координаты в соотв. с размером ярлыка пользователя
+        x-=pointer.getWidth()/2;
+        y-=pointer.getHeight()/2;
+
         bitmap = mergePointerAndFloor(bitmap, x, y);
 
         if (bitmap==null)Log.e("downloadFloor", "floorWithPointer is null!");

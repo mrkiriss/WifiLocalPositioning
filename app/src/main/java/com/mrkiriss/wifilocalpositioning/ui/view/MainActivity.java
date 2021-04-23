@@ -67,8 +67,8 @@ public class MainActivity extends AppCompatActivity {
         createFragments();
         setBottomNavigationListener(navigationView);
 
-        onNavigationDrawerItemSelected(0);
-        navigationView.setCheckedItem(navigationView.getMenu().getItem(0));
+        onNavigationDrawerItemSelected(2);
+        navigationView.setCheckedItem(navigationView.getMenu().getItem(2));
     }
 
     @Override
@@ -89,12 +89,16 @@ public class MainActivity extends AppCompatActivity {
         if (startFragment!=null){
             navHostFragment.getChildFragmentManager().beginTransaction().remove(startFragment).commit();
         }
-        fragments=new Fragment[]{new LocationDetectionFragment(), new TrainingFragment()};
-        fragmentTAGS=new String[]{"fDefinition", "fTraining"};
-        typesOfRequestSources = new String[]{WifiScanner.TYPE_DEFINITION, WifiScanner.TYPE_TRAINING};
+        fragments=new Fragment[]{new LocationDetectionFragment(), new TrainingFragment(), new Training2Fragment(), new SettingsFragment()};
+        fragmentTAGS=new String[]{"fDefinition", "fTraining", "fTraining2", "fSettings"};
+        typesOfRequestSources = new String[]{WifiScanner.TYPE_DEFINITION, WifiScanner.TYPE_TRAINING, WifiScanner.TYPE_NO_SCAN, WifiScanner.TYPE_NO_SCAN};
     }
     private int defineFragmentIndex(MenuItem item) {
         switch (item.getItemId()){
+            case R.id.nav_training2:
+                return 2;
+            case R.id.nav_settings:
+                return 3;
             case R.id.nav_training:
                 return 1;
             case R.id.nav_definition:

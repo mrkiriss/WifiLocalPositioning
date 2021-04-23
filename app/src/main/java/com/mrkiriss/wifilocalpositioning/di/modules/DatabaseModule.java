@@ -5,7 +5,6 @@ import android.content.Context;
 import androidx.room.Room;
 
 import com.mrkiriss.wifilocalpositioning.data.sources.db.AppDatabase;
-import com.mrkiriss.wifilocalpositioning.data.sources.db.SettingDao;
 
 import javax.inject.Singleton;
 

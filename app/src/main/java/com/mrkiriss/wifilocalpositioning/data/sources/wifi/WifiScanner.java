@@ -2,6 +2,7 @@ package com.mrkiriss.wifilocalpositioning.data.sources.wifi;
 
 import androidx.annotation.RequiresApi;
 import androidx.lifecycle.MutableLiveData;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,10 +14,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import com.mrkiriss.wifilocalpositioning.data.entity.Settings;
+import com.mrkiriss.wifilocalpositioning.data.sources.db.Settings;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.AppDatabase;
-import com.mrkiriss.wifilocalpositioning.data.sources.db.SettingDao;
+import com.mrkiriss.wifilocalpositioning.data.sources.db.SettingsDao;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -29,7 +30,7 @@ public class WifiScanner {
 
     private Context context;
     private WifiManager wifiManager;
-    private SettingDao settingDao;
+    private SettingsDao settingsDao;
 
     private BroadcastReceiver scanResultBR;
     private WifiManager.ScanResultsCallback scanResultsCallback;
@@ -47,11 +48,13 @@ public class WifiScanner {
     private String currentTypeOfRequestSource;
     public final static String TYPE_TRAINING="training";
     public final static String TYPE_DEFINITION="definition";
+    public final static String TYPE_NO_SCAN="no_scan";
+
 
     public WifiScanner(Context context, WifiManager wifiManager, AppDatabase db){
         this.context=context;
         this.wifiManager=wifiManager;
-        this.settingDao=db.settingDao();
+        this.settingsDao =db.settingDao();
 
         this.completeScanResults=new MutableLiveData<>();
         this.remainingNumberOfScanning=new MutableLiveData<>(0);
@@ -64,7 +67,7 @@ public class WifiScanner {
     public void setCurrentTypeOfRequestSource(String type){
         this.currentTypeOfRequestSource=type;
         Log.i("WifiScanner", "Change source type to "+type);
-        // оправялем пустой ответ для запуска бесконечного цикла сканирований для карты
+        // оправялем пустой ответ для запуска бесконечного цикла сканирований для карты через запрос от DefinitionRepository
         if (type.equals(TYPE_DEFINITION)){
             CompleteKitsContainer container = new CompleteKitsContainer();
             container.setCompleteKits(new ArrayList<>());
@@ -81,7 +84,7 @@ public class WifiScanner {
         uncompleteKitsContainer =new CompleteKitsContainer();
 
         scanResultKits=new LinkedList<>();
-        scanDelay=1000;
+        scanDelay=250;
         remainingNumberOfScanning.setValue(requiredNumberOfScans);
 
         startScanningWithDelay(-1);
@@ -98,7 +101,7 @@ public class WifiScanner {
         scanResultKits=new LinkedList<>();
 
         Runnable task = () -> {
-            Settings currentSettings = settingDao.findById(0L);
+            Settings currentSettings = getSettings();
             Log.i("WifiScanner", "got setting info: "+currentSettings.toString());
             scanDelay = currentSettings.getScanInterval();
             remainingNumberOfScanning.postValue(currentSettings.getNumberOfScans());
@@ -109,6 +112,18 @@ public class WifiScanner {
 
         return true;
     }
+    private Settings getSettings(){
+        Settings currentSettings = settingsDao.findById(0L);
+        if (currentSettings==null){
+            currentSettings=new Settings();
+            currentSettings.setId(0L);
+            currentSettings.setScanInterval(250);
+            currentSettings.setNumberOfScans(1);
+            settingsDao.insert(currentSettings);
+        }
+        return currentSettings;
+    }
+
 
     private void startScanningWithDelay(int remainingNumberOfScanningLocale){
         if (remainingNumberOfScanning.getValue()>0 && !scanStarted){
@@ -160,6 +175,10 @@ public class WifiScanner {
                     Log.i("WifiScanner",
                             "SCAN_RESULTS_RECEIVED__successful");
                     scanStarted=false;
+
+                    // прекращение сканирований
+                    if (currentTypeOfRequestSource.equals(TYPE_NO_SCAN)) return;
+
                     scanResultKits.add(wifiManager.getScanResults());
                     startScanningWithDelay(-1);
                 }

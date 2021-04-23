@@ -1,9 +1,12 @@
 package com.mrkiriss.wifilocalpositioning.ui.view;
 
+import android.graphics.Matrix;
 import android.icu.text.UnicodeSetSpanner;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -13,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.github.chrisbanes.photoview.PhotoView;
 import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.databinding.FragmentLocationDetectionBindingImpl;
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
@@ -22,7 +26,6 @@ import com.ortiz.touchview.TouchImageView;
 
 public class LocationDetectionFragment extends Fragment {
 
-    private MapView mapView;
     private TouchImageView touchImageView;
     private LocationDetectionViewModel viewModel;
     private FragmentLocationDetectionBindingImpl binding;
@@ -57,6 +60,37 @@ public class LocationDetectionFragment extends Fragment {
         touchImageView.setMinZoom(1f);
         touchImageView.setMaxZoom(7f);
         touchImageView.setZoom(2f);
+
+        touchImageView.setOnDoubleTapListener(new GestureDetector.OnDoubleTapListener() {
+            @Override
+            public boolean onSingleTapConfirmed(MotionEvent e) {
+                return true;
+            }
+
+            @Override
+            public boolean onDoubleTap(MotionEvent e) {
+                return true;
+            }
+
+            @Override
+            public boolean onDoubleTapEvent(MotionEvent e) {
+                /*float[] values = new float[9];
+                touchImageView.getMatrix().getValues(values);
+                float relativeX = (e.getX() - values[2]) / values[0];
+                float relativeY = (e.getY() - values[5]) / values[4];
+                Log.i("double_click_coord", "X: "+relativeX+" Y: "+relativeY);*/
+
+                Matrix inverseMatrix = new Matrix();
+                touchImageView.getMatrix().invert(inverseMatrix);
+
+                float[] point = new float[2];
+                point[0] = e.getX();
+                point[1] = e.getY();
+                inverseMatrix.mapPoints(point);
+                Log.i("double_click_coord", "X: "+point[0]+" Y: "+point[1]);
+                return true;
+            }
+        });
     }
 
     private void initObservers(){
@@ -66,6 +100,8 @@ public class LocationDetectionFragment extends Fragment {
         viewModel.getResultOfDefinition().observe(getViewLifecycleOwner(), mapPoint -> {
             currentLocation=mapPoint;
             drawCurrentLocation(mapPoint);
+
+            Toast.makeText(getContext(), mapPoint.getTag(), Toast.LENGTH_SHORT).show();
             Log.i("changeMapPoint", "получена новая точка с floorId: "+mapPoint.getFloorWithPointer().getFloorId());
         });
         // прослушываем изменение пола, вызываем перерисовку
