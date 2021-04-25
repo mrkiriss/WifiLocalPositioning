@@ -1,23 +1,36 @@
 <resources>
     <string name="app_name">WifiLocalPositioning</string>
     <string name="title_activity_main">IMLocation</string>
-    <string name="nav_training">Тренировка</string>
+    <string name="nav_training_scan">Тренировка сканированием</string>
     <string name="nav_definition">Определение</string>
     <string name="nav_settings">Настройки</string>
 
-    <!--TrainingFragment-->
+    <!--TrainingScanFragment-->
     <string name="scanningTitle">Панель сканирования</string>
     <string name="numberOfSuccessfulScans">Количество оставшихся сканирований: </string>
     <string name="hintRequiredQuantity">Введите кол-во сканирований</string>
-
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="startScanning">Начать сканирование</string>
+    <string-array name="scanMods">
+        <item>Режим тренировки(сканирование)</item>
+        <item>Режим определения</item>
+    </string-array>
+    <string name="pointName">Название точки</string>
+
+    <string name="nav_header_title">Определение местоположения по Wi-fi</string>
+    <string name="nav_header_subtitle">by RTUITLab</string>
+
+    <!--TrainingMapFragment-->
+    <string name="showAllPointsOn">Скрыть точки</string>
+    <string name="showAllPointsOff">Отобразить точки</string>
+    <string name="updateMapButton">Обновить карту</string>
+    <string name="showPointOnMap">Отобразить точку</string>
+    <string-array name="mapMods">
+        <item>Выбор координат точки</item>
+        <item>Удаление точки</item>
+        <item>Выбор соседи точки</item>
+    </string-array>
     <string name="hintY">Y</string>
     <string name="hintX">X</string>
-    <string name="trainningAPs">Режим тренировки(APs)</string>
-    <string name="defineMode">Режим определения</string>
-    <string name="trainingModeCoord">Режим тренировки(корд)</string>
-    <string name="CabID">Название кабинета</string>
     <string-array name="floorIds">
         <item>0</item>
         <item>1</item>
@@ -25,17 +38,10 @@
         <item>3</item>
         <item>4</item>
     </string-array>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-
-    <string name="nav_header_title">Определение местоположения по Wi-fi</string>
-    <string name="nav_header_subtitle">by RTUITLab</string>
-    <string name="nav_header_desc">Navigation header</string>
-
+    <string name="postToServer">Отправить на сервер</string>
 
     <!-- Training2 -->
-    <string name="nav_training2">Тренировка2</string>
-
+    <string name="nav_training_map">Тренировка карты</string>
 
 
     <!-- Settings -->
@@ -55,5 +61,7 @@
         <item>3</item>
         <item>5</item>
     </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

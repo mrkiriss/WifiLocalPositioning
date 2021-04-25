@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.ui.view;
+package com.mrkiriss.wifilocalpositioning.mvvm.view;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -9,7 +9,7 @@ import android.view.Menu;
 
 import com.google.android.material.navigation.NavigationView;
 import com.mrkiriss.wifilocalpositioning.R;
-import com.mrkiriss.wifilocalpositioning.data.sources.wifi.WifiScanner;
+import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 import com.mrkiriss.wifilocalpositioning.di.App;
 
 import androidx.fragment.app.Fragment;
@@ -89,13 +89,13 @@ public class MainActivity extends AppCompatActivity {
         if (startFragment!=null){
             navHostFragment.getChildFragmentManager().beginTransaction().remove(startFragment).commit();
         }
-        fragments=new Fragment[]{new LocationDetectionFragment(), new TrainingFragment(), new Training2Fragment(), new SettingsFragment()};
-        fragmentTAGS=new String[]{"fDefinition", "fTraining", "fTraining2", "fSettings"};
+        fragments=new Fragment[]{new LocationDetectionFragment(), new TrainingScanFragment(), new TrainingMapFragment(), new SettingsFragment()};
+        fragmentTAGS=new String[]{"fDefinition", "fSuperuser", "fTraining2", "fSettings"};
         typesOfRequestSources = new String[]{WifiScanner.TYPE_DEFINITION, WifiScanner.TYPE_TRAINING, WifiScanner.TYPE_NO_SCAN, WifiScanner.TYPE_NO_SCAN};
     }
     private int defineFragmentIndex(MenuItem item) {
         switch (item.getItemId()){
-            case R.id.nav_training2:
+            case R.id.nav_training_map:
                 return 2;
             case R.id.nav_settings:
                 return 3;

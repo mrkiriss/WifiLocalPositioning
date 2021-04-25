@@ -1,7 +1,6 @@
-package com.mrkiriss.wifilocalpositioning.ui.view;
+package com.mrkiriss.wifilocalpositioning.mvvm.view;
 
 import android.graphics.Matrix;
-import android.icu.text.UnicodeSetSpanner;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -13,15 +12,13 @@ import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.github.chrisbanes.photoview.PhotoView;
 import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.databinding.FragmentLocationDetectionBindingImpl;
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
-import com.mrkiriss.wifilocalpositioning.ui.viewmodel.LocationDetectionViewModel;
+import com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.LocationDetectionViewModel;
 import com.ortiz.touchview.TouchImageView;
 
 public class LocationDetectionFragment extends Fragment {
@@ -42,7 +39,6 @@ public class LocationDetectionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        //SavedStateViewModelFactory factory = new SavedStateViewModelFactory(App.getInstance(), this);
         viewModel=new ViewModelProvider(this).get(LocationDetectionViewModel.class);
 
         binding= DataBindingUtil.inflate(inflater, R.layout.fragment_location_detection, container, false);
@@ -60,37 +56,6 @@ public class LocationDetectionFragment extends Fragment {
         touchImageView.setMinZoom(1f);
         touchImageView.setMaxZoom(7f);
         touchImageView.setZoom(2f);
-
-        touchImageView.setOnDoubleTapListener(new GestureDetector.OnDoubleTapListener() {
-            @Override
-            public boolean onSingleTapConfirmed(MotionEvent e) {
-                return true;
-            }
-
-            @Override
-            public boolean onDoubleTap(MotionEvent e) {
-                return true;
-            }
-
-            @Override
-            public boolean onDoubleTapEvent(MotionEvent e) {
-                /*float[] values = new float[9];
-                touchImageView.getMatrix().getValues(values);
-                float relativeX = (e.getX() - values[2]) / values[0];
-                float relativeY = (e.getY() - values[5]) / values[4];
-                Log.i("double_click_coord", "X: "+relativeX+" Y: "+relativeY);*/
-
-                Matrix inverseMatrix = new Matrix();
-                touchImageView.getMatrix().invert(inverseMatrix);
-
-                float[] point = new float[2];
-                point[0] = e.getX();
-                point[1] = e.getY();
-                inverseMatrix.mapPoints(point);
-                Log.i("double_click_coord", "X: "+point[0]+" Y: "+point[1]);
-                return true;
-            }
-        });
     }
 
     private void initObservers(){

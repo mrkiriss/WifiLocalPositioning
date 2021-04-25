@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.ui.view.adapters;
+package com.mrkiriss.wifilocalpositioning.mvvm.view.adapters;
 
 import android.content.Context;
 
@@ -9,8 +9,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.mrkiriss.wifilocalpositioning.R;
-import com.mrkiriss.wifilocalpositioning.ui.view.LocationDetectionFragment;
-import com.mrkiriss.wifilocalpositioning.ui.view.TrainingFragment;
+import com.mrkiriss.wifilocalpositioning.mvvm.view.LocationDetectionFragment;
+import com.mrkiriss.wifilocalpositioning.mvvm.view.TrainingMapFragment;
+import com.mrkiriss.wifilocalpositioning.mvvm.view.TrainingScanFragment;
 
 import java.util.Objects;
 
@@ -21,7 +22,7 @@ import java.util.Objects;
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @StringRes
-    private static final int[] TAB_TITLES = new int[]{R.string.nav_training, R.string.nav_definition};
+    private static final int[] TAB_TITLES = new int[]{R.string.nav_training, R.string.nav_training};
     private final Context mContext;
 
     public SectionsPagerAdapter(Context context, FragmentManager fm) {
@@ -34,9 +35,9 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         Fragment fragment;
         final String chosenTitle=Objects.requireNonNull(getPageTitle(position)).toString();
         if (chosenTitle.equals(mContext.getResources().getString(R.string.nav_training))){
-            fragment=new TrainingFragment();
+            fragment=new TrainingScanFragment();
         }else{
-            fragment=new LocationDetectionFragment();
+            fragment=new TrainingMapFragment();
         }
         return fragment;
     }

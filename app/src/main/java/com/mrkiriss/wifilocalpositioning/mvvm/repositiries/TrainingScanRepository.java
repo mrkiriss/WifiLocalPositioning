@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.repositiries;
+package com.mrkiriss.wifilocalpositioning.mvvm.repositiries;
 
 import android.net.wifi.ScanResult;
 import android.util.Log;
@@ -10,10 +10,9 @@ import com.mrkiriss.wifilocalpositioning.data.models.server.AccessPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CalibrationLocationPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.data.models.server.DefinedLocationPoint;
-import com.mrkiriss.wifilocalpositioning.data.models.server.LocationPointInfo;
 import com.mrkiriss.wifilocalpositioning.data.models.server.StringResponse;
 import com.mrkiriss.wifilocalpositioning.data.sources.IMWifiServerApi;
-import com.mrkiriss.wifilocalpositioning.data.sources.wifi.WifiScanner;
+import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +23,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 @Data
-public class TrainingRepository {
+public class TrainingScanRepository {
 
     private IMWifiServerApi retrofit;
     private WifiScanner wifiScanner;
@@ -33,7 +32,6 @@ public class TrainingRepository {
     private int scanningMode;
     private int requiredNumberOfScanningKits;
     public static final int MODE_TRAINING_APS=1;
-    public static final int MODE_TRAINING_COORD=2;
     public static final int MODE_DEFINITION=3;
 
     private final LiveData<CompleteKitsContainer> completeKitsOfScansResult;
@@ -43,7 +41,7 @@ public class TrainingRepository {
     private LiveData<Integer> remainingNumberOfScanning;
 
 
-    public TrainingRepository(IMWifiServerApi retrofit, WifiScanner wifiScanner){
+    public TrainingScanRepository(IMWifiServerApi retrofit, WifiScanner wifiScanner){
         this.retrofit=retrofit;
         this.wifiScanner=wifiScanner;
 
@@ -72,10 +70,6 @@ public class TrainingRepository {
         requiredNumberOfScanningKits=numberOfScanningKits;
 
         wifiScanner.startTrainingScan(numberOfScanningKits, WifiScanner.TYPE_TRAINING);
-    }
-    public void postLocationPointInfoToServer(int x, int y, String roomName, int floorId){
-        LocationPointInfo locationPointInfo = new LocationPointInfo(x,y,roomName, floorId);
-        postFromTrainingWithCoordinates(locationPointInfo);
     }
 
     public void processCompleteKitsOfScanResults(CompleteKitsContainer completeKitsContainer){
@@ -128,26 +122,6 @@ public class TrainingRepository {
                     return;
                 }
                 serverResponse.setValue(response.body().getResponse());
-            }
-            @Override
-            public void onFailure(Call<StringResponse> call, Throwable t) {
-                serverResponse.setValue(call.toString()+"\n"+t.getMessage());
-                Log.e("SERVER_ERROR", t.getMessage());
-            }
-        });
-    }
-    private void postFromTrainingWithCoordinates(LocationPointInfo locationPointInfo){
-        toastContent.setValue("Обучение координатам началось");
-        retrofit.postCalibrationLPInfo(locationPointInfo).enqueue(new Callback<StringResponse>() {
-            @Override
-            public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
-                Log.println(Log.INFO, "GOOD_TRAINING_CORD_ROOM",
-                        String.format("Server response=%s", response.body()));
-                if (response.body()==null){
-                    serverResponse.setValue("Response body is null");
-                    return;
-                }
-                serverResponse.setValue(response.body().toString());
             }
             @Override
             public void onFailure(Call<StringResponse> call, Throwable t) {

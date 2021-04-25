@@ -6,16 +6,16 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_definition"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_definition"
             android:title="@string/nav_definition" />
         <item
             android:id="@+id/nav_training"
             android:icon="@drawable/ic_training"
-            android:title="@string/nav_training" />
+            android:title="@string/nav_training_scan" />
         <item
-            android:id="@+id/nav_training2"
+            android:id="@+id/nav_training_map"
             android:icon="@drawable/ic_training2"
-            android:title="@string/nav_training2" />
+            android:title="@string/nav_training_map" />
         <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_settings"

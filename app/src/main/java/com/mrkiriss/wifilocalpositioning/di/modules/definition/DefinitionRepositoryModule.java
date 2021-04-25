@@ -2,10 +2,10 @@ package com.mrkiriss.wifilocalpositioning.di.modules.definition;
 
 import android.content.Context;
 
-import com.mrkiriss.wifilocalpositioning.data.sources.FloorSchemasDownloader;
-import com.mrkiriss.wifilocalpositioning.data.sources.wifi.WifiScanner;
+import com.mrkiriss.wifilocalpositioning.data.sources.MapImageManager;
+import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 import com.mrkiriss.wifilocalpositioning.data.sources.IMWifiServerApi;
-import com.mrkiriss.wifilocalpositioning.repositiries.LocationDetectionRepository;
+import com.mrkiriss.wifilocalpositioning.mvvm.repositiries.LocationDetectionRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -15,6 +15,6 @@ public class DefinitionRepositoryModule {
     @Provides
     @DefinitionScope
     public LocationDetectionRepository provideRepository(IMWifiServerApi retrofit, WifiScanner wifiScanner, Context context){
-        return new LocationDetectionRepository(retrofit, wifiScanner, new FloorSchemasDownloader(context));
+        return new LocationDetectionRepository(retrofit, wifiScanner, new MapImageManager(context));
     }
 }

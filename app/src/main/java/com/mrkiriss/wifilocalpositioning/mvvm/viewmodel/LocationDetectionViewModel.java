@@ -1,21 +1,15 @@
-package com.mrkiriss.wifilocalpositioning.ui.viewmodel;
-
-import android.net.wifi.ScanResult;
+package com.mrkiriss.wifilocalpositioning.mvvm.viewmodel;
 
 import androidx.databinding.ObservableInt;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.di.App;
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
-import com.mrkiriss.wifilocalpositioning.repositiries.LocationDetectionRepository;
-
-import java.io.Serializable;
-import java.util.List;
+import com.mrkiriss.wifilocalpositioning.mvvm.repositiries.LocationDetectionRepository;
 
 import javax.inject.Inject;
 

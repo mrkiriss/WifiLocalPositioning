@@ -5,12 +5,12 @@
     <data>
         <variable
             name="viewModel"
-            type="com.mrkiriss.wifilocalpositioning.ui.viewmodel.LocationDetectionViewModel" />
+            type="com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.LocationDetectionViewModel" />
     </data>
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.view.LocationDetectionFragment"
+        tools:context=".mvvm.view.LocationDetectionFragment"
         android:clipChildren="false">
 
         <com.ortiz.touchview.TouchImageView

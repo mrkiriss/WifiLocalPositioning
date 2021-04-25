@@ -7,22 +7,22 @@
 
     <fragment
         android:id="@+id/nav_training"
-        android:name="com.mrkiriss.wifilocalpositioning.ui.view.TrainingFragment"
-        android:label="@string/nav_training"
-        tools:layout="@layout/fragment_training" />
+        android:name="com.mrkiriss.wifilocalpositioning.mvvm.view.TrainingScanFragment"
+        android:label="@string/nav_training_scan"
+        tools:layout="@layout/fragment_training_scan" />
     <fragment
         android:id="@+id/nav_training2"
-        android:name="com.mrkiriss.wifilocalpositioning.ui.view.Training2Fragment"
-        android:label="@string/nav_training2"
-        tools:layout="@layout/fragment_training2" />
+        android:name="com.mrkiriss.wifilocalpositioning.mvvm.view.TrainingMapFragment"
+        android:label="@string/nav_training_map"
+        tools:layout="@layout/fragment_training_map" />
     <fragment
         android:id="@+id/nav_definition"
-        android:name="com.mrkiriss.wifilocalpositioning.ui.view.LocationDetectionFragment"
+        android:name="com.mrkiriss.wifilocalpositioning.mvvm.view.LocationDetectionFragment"
         android:label="@string/nav_definition"
         tools:layout="@layout/fragment_location_detection" />
     <fragment
         android:id="@+id/nav_settings"
-        android:name="com.mrkiriss.wifilocalpositioning.ui.view.SettingsFragment"
+        android:name="com.mrkiriss.wifilocalpositioning.mvvm.view.SettingsFragment"
         android:label="@string/nav_settings"
         tools:layout="@layout/fragment_settings" />
 </navigation>

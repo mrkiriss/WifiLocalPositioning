@@ -1,6 +1,6 @@
 package com.mrkiriss.wifilocalpositioning.di.components;
 
-import com.mrkiriss.wifilocalpositioning.ui.view.MainActivity;
+import com.mrkiriss.wifilocalpositioning.mvvm.view.MainActivity;
 
 import dagger.Subcomponent;
 

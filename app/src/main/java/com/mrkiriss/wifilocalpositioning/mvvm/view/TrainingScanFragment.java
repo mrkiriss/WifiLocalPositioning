@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.ui.view;
+package com.mrkiriss.wifilocalpositioning.mvvm.view;
 
 import android.os.Bundle;
 
@@ -13,22 +13,22 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.mrkiriss.wifilocalpositioning.R;
-import com.mrkiriss.wifilocalpositioning.databinding.FragmentTrainingBinding;
-import com.mrkiriss.wifilocalpositioning.ui.view.adapters.ScanResultsRVAdapter;
-import com.mrkiriss.wifilocalpositioning.ui.viewmodel.TrainingViewModel;
+import com.mrkiriss.wifilocalpositioning.databinding.FragmentTrainingScanBinding;
+import com.mrkiriss.wifilocalpositioning.mvvm.view.adapters.ScanResultsRVAdapter;
+import com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.TrainingScanViewModel;
 
-public class TrainingFragment extends Fragment {
+public class TrainingScanFragment extends Fragment {
 
-    private FragmentTrainingBinding binding;
-    private TrainingViewModel viewModel;
+    private FragmentTrainingScanBinding binding;
+    private TrainingScanViewModel viewModel;
     private ScanResultsRVAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_training, container, false);
-        viewModel=new ViewModelProvider(this).get(TrainingViewModel.class);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_training_scan, container, false);
+        viewModel=new ViewModelProvider(this).get(TrainingScanViewModel.class);
         binding.setTrainingVM(viewModel);
 
         adapter=new ScanResultsRVAdapter();

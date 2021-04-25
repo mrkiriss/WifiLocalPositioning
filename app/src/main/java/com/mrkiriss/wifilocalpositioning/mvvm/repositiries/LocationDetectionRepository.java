@@ -1,16 +1,14 @@
-package com.mrkiriss.wifilocalpositioning.repositiries;
+package com.mrkiriss.wifilocalpositioning.mvvm.repositiries;
 
-import android.graphics.LinearGradient;
 import android.net.wifi.ScanResult;
-import android.os.Handler;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
-import com.mrkiriss.wifilocalpositioning.data.sources.FloorSchemasDownloader;
-import com.mrkiriss.wifilocalpositioning.data.sources.wifi.WifiScanner;
+import com.mrkiriss.wifilocalpositioning.data.sources.MapImageManager;
+import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
 import com.mrkiriss.wifilocalpositioning.data.models.map.FloorId;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
@@ -21,8 +19,6 @@ import com.mrkiriss.wifilocalpositioning.data.sources.IMWifiServerApi;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 import lombok.Data;
@@ -35,7 +31,7 @@ public class LocationDetectionRepository implements Serializable {
 
     private final IMWifiServerApi retrofit;
     private final WifiScanner wifiScanner;
-    private final FloorSchemasDownloader floorSchemasDownloader;
+    private final MapImageManager mapImageManager;
 
     private final LiveData<CompleteKitsContainer> completeKitsOfScansResult;
     private final MutableLiveData<MapPoint> resultOfDefinition;
@@ -43,10 +39,10 @@ public class LocationDetectionRepository implements Serializable {
 
     private List<Floor> floors;
 
-    public LocationDetectionRepository(IMWifiServerApi retrofit, WifiScanner wifiScanner, FloorSchemasDownloader floorSchemasDownloader){
+    public LocationDetectionRepository(IMWifiServerApi retrofit, WifiScanner wifiScanner, MapImageManager mapImageManager){
         this.retrofit=retrofit;
         this.wifiScanner=wifiScanner;
-        this.floorSchemasDownloader=floorSchemasDownloader;
+        this.mapImageManager = mapImageManager;
 
         completeKitsOfScansResult=wifiScanner.getCompleteScanResults();
 
@@ -58,30 +54,6 @@ public class LocationDetectionRepository implements Serializable {
 
         //testMap();
     }
-    private int x=0;
-    private int y=630;
-    private int count=30;
-    private Handler handler = new android.os.Handler();
-    private void testMap(){
-        onePostMapPoint();
-    }
-    private void onePostMapPoint(){
-        Log.i("test/onePostMapPoint", "Запрос изменения местоположения, осталось "+count);
-        if (count<0) return;
-        count--;
-        MapPoint mp = new MapPoint();
-        if (x%160==0) {
-            mp.setFloorWithPointer(downloadSingleFloorForPointer(FloorId.SECOND_FLOOR, x, 610));
-        }else{
-            mp.setFloorWithPointer(downloadSingleFloorForPointer(FloorId.FIRST_FLOOR, x, 610));
-        }
-        x+=40;
-        y+=0;
-        resultOfDefinition.setValue(mp);
-        Runnable task = ()-> onePostMapPoint();
-        handler.postDelayed(task, 1000);
-    }
-
 
     // floor
     public void changeFloor(int floorIdInt){
@@ -101,12 +73,12 @@ public class LocationDetectionRepository implements Serializable {
         return null;
     }
     private Floor downloadSimpleSingleFloor(FloorId floorId){
-        Floor result = floorSchemasDownloader.downloadFloor(floorId);
+        Floor result = mapImageManager.getBasicFloor(floorId);
         floors.add(result);
         return result;
     }
     private Floor downloadSingleFloorForPointer(FloorId floorId, int x, int y){
-        Floor result = floorSchemasDownloader.downloadFloor(floorId, x, y);
+        Floor result = mapImageManager.getFloorWithPointer(floorId, x, y);
         return result;
     }
 

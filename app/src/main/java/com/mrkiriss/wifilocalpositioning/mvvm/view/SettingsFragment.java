@@ -1,9 +1,7 @@
-package com.mrkiriss.wifilocalpositioning.ui.view;
+package com.mrkiriss.wifilocalpositioning.mvvm.view;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
-import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 

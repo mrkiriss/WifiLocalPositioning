@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.data.sources.wifi;
+package com.mrkiriss.wifilocalpositioning.data.sources;
 
 import androidx.annotation.RequiresApi;
 import androidx.lifecycle.MutableLiveData;

@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.ui.view;
+package com.mrkiriss.wifilocalpositioning.mvvm.view;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
@@ -19,12 +19,12 @@ import com.github.chrisbanes.photoview.PhotoView;
 import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
 import com.mrkiriss.wifilocalpositioning.data.models.map.FloorId;
-import com.mrkiriss.wifilocalpositioning.data.sources.FloorSchemasDownloader;
+import com.mrkiriss.wifilocalpositioning.data.sources.MapImageManager;
 
 
 public class Training2Fragment extends Fragment {
 
-    private FloorSchemasDownloader downloader;
+    private MapImageManager downloader;
     private Bitmap floor;
     private PhotoView photoView;
 
@@ -36,8 +36,8 @@ public class Training2Fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        downloader=new FloorSchemasDownloader(requireContext());
-        floor=downloader.downloadFloor(FloorId.FOURTH_FLOOR).getFloorSchema();
+        downloader=new MapImageManager(requireContext());
+        floor=downloader.getBasicFloor(FloorId.FOURTH_FLOOR).getFloorSchema();
 
         View r = inflater.inflate(R.layout.fragment_training2, container, false);
         photoView =  r.findViewById(R.id.photo_view);
@@ -63,7 +63,7 @@ public class Training2Fragment extends Fragment {
                 x = (e.getX() - values[2]) / values[0];
                 y = (e.getY() - values[5]) / values[4];
                 // скачать изображение
-                Floor f = downloader.downloadFloor(FloorId.FOURTH_FLOOR, (int) x, (int) y);
+                Floor f = downloader.getFloorWithPointer(FloorId.FOURTH_FLOOR, (int) x, (int) y);
                 Bitmap b = f.getFloorSchema();
                 // сохранение местоположения камеры
                 Matrix matrix = new Matrix();

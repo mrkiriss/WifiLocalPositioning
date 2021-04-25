@@ -6,17 +6,20 @@ import com.mrkiriss.wifilocalpositioning.di.components.AppComponent;
 import com.mrkiriss.wifilocalpositioning.di.components.DaggerAppComponent;
 import com.mrkiriss.wifilocalpositioning.di.components.LocationDetectionSubcomponent;
 import com.mrkiriss.wifilocalpositioning.di.components.MainActivitySubcomponent;
-import com.mrkiriss.wifilocalpositioning.di.components.TrainingSubcomponent;
+import com.mrkiriss.wifilocalpositioning.di.components.TrainingMapSubcomponent;
+import com.mrkiriss.wifilocalpositioning.di.components.TrainingScanSubcomponent;
 import com.mrkiriss.wifilocalpositioning.di.modules.AppContextModule;
 import com.mrkiriss.wifilocalpositioning.di.modules.definition.DefinitionRepositoryModule;
-import com.mrkiriss.wifilocalpositioning.di.modules.training.TrainingRepositoryModule;
+import com.mrkiriss.wifilocalpositioning.di.modules.training.TrainingMapRepModule;
+import com.mrkiriss.wifilocalpositioning.di.modules.training.TrainingScanRepositoryModule;
 
 public class ComponentManager {
 
     private AppComponent appComponent;
     private MainActivitySubcomponent mainActivitySubcomponent;
-    private TrainingSubcomponent trainingSubcomponent;
+    private TrainingScanSubcomponent trainingScanSubcomponent;
     private LocationDetectionSubcomponent locationDetectionSubcomponent;
+    private TrainingMapSubcomponent trainingMapSubcomponent;
 
     public ComponentManager(Context context){
         appComponent= DaggerAppComponent.builder()
@@ -24,13 +27,13 @@ public class ComponentManager {
                 .build();
     }
 
-    public TrainingSubcomponent getTrainingSubcomponent(){
-        if (trainingSubcomponent==null){
-            trainingSubcomponent=appComponent.trainingSubcomponentBuilder()
-                    .repModule(new TrainingRepositoryModule())
+    public TrainingScanSubcomponent getTrainingScanSubcomponent(){
+        if (trainingScanSubcomponent ==null){
+            trainingScanSubcomponent =appComponent.trainingSubcomponentBuilder()
+                    .repModule(new TrainingScanRepositoryModule())
                     .build();
         }
-        return trainingSubcomponent;
+        return trainingScanSubcomponent;
     }
 
     public LocationDetectionSubcomponent getLocationDetectionSubcomponent(){
@@ -48,6 +51,15 @@ public class ComponentManager {
                     .build();
         }
         return mainActivitySubcomponent;
+    }
+
+    public TrainingMapSubcomponent getTrainingMapSubcomponent() {
+        if (trainingMapSubcomponent == null) {
+            trainingMapSubcomponent = appComponent.trainingMapSubcomponent()
+                    .repModule(new TrainingMapRepModule())
+                    .build();
+        }
+        return trainingMapSubcomponent;
     }
 
 }
