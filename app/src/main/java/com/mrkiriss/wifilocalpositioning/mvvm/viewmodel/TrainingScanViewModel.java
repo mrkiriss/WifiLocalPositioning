@@ -40,7 +40,7 @@ public class TrainingScanViewModel extends ViewModel {
     private ObservableField<String> inputCabId;
     private ObservableInt scanningMode;
     private ObservableBoolean isScanningStarted;
-    private ObservableField<String> selectedScanningMode;
+    private ObservableInt selectedMod;
 
     private final LiveData<CompleteKitsContainer> completeKitsOfScansResult;
     private LiveData<String> requestToAddAPs;
@@ -66,7 +66,7 @@ public class TrainingScanViewModel extends ViewModel {
         scanningMode =new ObservableInt();
         inputCabId=new ObservableField<>("");
         isScanningStarted=new ObservableBoolean(false);
-        selectedScanningMode=new ObservableField<>("Режим тренировки(сканирование)");
+        selectedMod=new ObservableInt(0);
     }
 
     public void startScanning(){
@@ -89,12 +89,11 @@ public class TrainingScanViewModel extends ViewModel {
         }
     }
     private void convertScanningMode(){
-        String scanningModeString = selectedScanningMode.get();
-        switch (scanningModeString){
-            case "Режим тренировки(сканирование)":
+        switch (selectedMod.get()){
+            case 0:
                 scanningMode.set(TrainingScanRepository.MODE_TRAINING_APS);
                 break;
-            case "Режим определения":
+            case 1:
                 scanningMode.set(TrainingScanRepository.MODE_DEFINITION);
                 break;
         }

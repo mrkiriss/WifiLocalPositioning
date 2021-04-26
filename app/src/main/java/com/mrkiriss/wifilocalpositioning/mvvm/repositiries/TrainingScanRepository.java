@@ -30,7 +30,6 @@ public class TrainingScanRepository {
 
     private CalibrationLocationPoint calibrationLocationPoint;
     private int scanningMode;
-    private int requiredNumberOfScanningKits;
     public static final int MODE_TRAINING_APS=1;
     public static final int MODE_DEFINITION=3;
 
@@ -57,7 +56,6 @@ public class TrainingScanRepository {
         calibrationLocationPoint=new CalibrationLocationPoint();
 
         scanningMode=radioMode;
-        requiredNumberOfScanningKits=numberOfScanningKits;
 
         wifiScanner.startTrainingScan(numberOfScanningKits, WifiScanner.TYPE_TRAINING);
     }
@@ -67,7 +65,6 @@ public class TrainingScanRepository {
         calibrationLocationPoint.setRoomName(roomName);
 
         scanningMode=radioMode;
-        requiredNumberOfScanningKits=numberOfScanningKits;
 
         wifiScanner.startTrainingScan(numberOfScanningKits, WifiScanner.TYPE_TRAINING);
     }

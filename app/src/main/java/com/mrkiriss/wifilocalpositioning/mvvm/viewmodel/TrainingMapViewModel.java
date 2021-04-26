@@ -26,19 +26,26 @@ public class TrainingMapViewModel extends ViewModel {
     protected TrainingMapRepository repository;
 
     private ObservableInt selectedMod;
-    private ObservableField<String> inputY;
-    private ObservableField<String> inputX;
-    private ObservableField<String> inputCabId;
-    private ObservableInt selectedFloorId; // изменяется при изменении spinner
     private ObservableBoolean showMapPoints;
     private ObservableInt floorNumber; // изменяеться через стрелки
     private ObservableField<MapPoint> selectedMapPoint;
     private ObservableField<String> serverResponse;
 
-    private LiveData<Floor> changeFloor;
+    private ObservableField<String> inputY;
+    private ObservableField<String> inputX;
+    private ObservableField<String> inputCabId;
+    private ObservableInt selectedFloorId; // изменяется при изменении spinner
 
-    private MutableLiveData<String> toastContent;
-    private MutableLiveData<int[]> moveCamera;
+    private ObservableInt remainingNumberOfScanKits;
+    private ObservableField<String> inputNumberOfScanKits;
+
+    private LiveData<Floor> changeFloor;
+    private LiveData<String> serverResponseRequest;
+
+    private final MutableLiveData<String> toastContent;
+    private final MutableLiveData<int[]> moveCamera;
+    private final LiveData<CompleteKitsContainer> completeKitsOfScansResult;
+    private final LiveData<Integer> remainingNumberOfScanning;
 
     public TrainingMapViewModel(){
 
@@ -47,19 +54,37 @@ public class TrainingMapViewModel extends ViewModel {
         changeFloor= repository.getChangeFloor();
         toastContent=repository.getToastContent();
         moveCamera=new MutableLiveData<>();
+        serverResponseRequest=repository.getServerResponse();
+        completeKitsOfScansResult=repository.getCompleteKitsOfScansResult();
+        remainingNumberOfScanning=repository.getRemainingNumberOfScanning();
 
         selectedMod=new ObservableInt(0);
-        inputX=new ObservableField<>("");
-        inputY=new ObservableField<>("");
-        inputCabId=new ObservableField<>("");
-        selectedFloorId=new ObservableInt(2);
         showMapPoints=new ObservableBoolean(false);
         floorNumber = new ObservableInt(2);
         selectedMapPoint=new ObservableField<>();
         serverResponse=new ObservableField<>("");
+
+        inputX=new ObservableField<>("");
+        inputY=new ObservableField<>("");
+        inputCabId=new ObservableField<>("");
+        selectedFloorId=new ObservableInt(2);
+
+        remainingNumberOfScanKits = new ObservableInt(0);
+        inputNumberOfScanKits=new ObservableField<>("");
     }
 
     public void processShowSelectedMapPoint(boolean afterButton){
+        switch (selectedMod.get()){
+            case 0:
+                processModePointInfo(afterButton);
+                break;
+            case 1:
+                processModeScanning();
+                break;
+        }
+
+    }
+    private void processModePointInfo(boolean afterButton){
         String inputX=this.inputX.get(), inputY=this.inputY.get(), inputCabId=this.inputCabId.get();
         int intX, intY;
         if (inputX.isEmpty() || inputY.isEmpty() || !inputX.matches("\\d+") || !inputY.matches("\\d+")
@@ -79,10 +104,19 @@ public class TrainingMapViewModel extends ViewModel {
             selectedFloorId.set(floorNumber.get());
         }
         MapPoint mapPoint = new MapPoint(intX, intY, inputCabId);
-        selectedMapPoint.set(mapPoint);
+        //selectedMapPoint.set(mapPoint);
         startFloorChanging(mapPoint);
     }
-
+    private void processModeScanning(){
+        String inputX=this.inputX.get(), inputY=this.inputY.get();
+        int intX, intY;
+        if (inputX.isEmpty() || inputY.isEmpty() || !inputX.matches("\\d+") || !inputY.matches("\\d+")
+                || (intX=Integer.parseInt(inputX))<=0 || (intY=Integer.parseInt(inputY))<=0){
+            toastContent.setValue("Коодринаты некорректны");
+            return;
+        }
+        selectedMapPoint.set(repository.findMapPointInCurrentData(intX, intY, floorNumber.get()));
+    }
 
     // функции изменения номера этажа, вызывают менеджер выбора этажа в зависимости от факторов
     public void arrowInc(){
@@ -113,4 +147,36 @@ public class TrainingMapViewModel extends ViewModel {
     public void startUpdatingMapPointLists(){
         repository.startDownloadingDataOnPointsOnAllFloors();
     }
+
+    // POINT INFO MODE
+    // отправка информации о точке на сервер
+    public void postPointInformationToServer(){
+        String inputX=this.inputX.get(), inputY=this.inputY.get(), inputCabId=this.inputCabId.get();
+        int intX, intY, floorId = floorNumber.get();
+        if (inputX.isEmpty() || inputY.isEmpty() || !inputX.matches("\\d+") || !inputY.matches("\\d+")
+                || (intX=Integer.parseInt(inputX))<=0 || (intY=Integer.parseInt(inputY))<=0){
+            toastContent.setValue("Коодринаты некорректны");
+            return;
+        }
+        repository.postFromTrainingWithCoordinates(intX, intY, inputCabId, floorId);
+    }
+
+    // SCANNING MODE
+    // запустить сканирование выбранной точки
+    public void startScanning(){
+        if (selectedMapPoint.get()==null || selectedMapPoint.get().getY()<=0 || selectedMapPoint.get().getX()<=0 || selectedMapPoint.get().getTag().isEmpty()){
+            toastContent.setValue("Точка для сканирования не выбрана");
+            return;
+        }
+        if (inputNumberOfScanKits.get().isEmpty() || !inputNumberOfScanKits.get().matches("\\d+") || Integer.parseInt(inputNumberOfScanKits.get())<=0){
+            toastContent.setValue("Неккоректное количетсво сканирований");
+            return;
+        }
+        repository.runScanInManager(Integer.parseInt(inputNumberOfScanKits.get()), selectedMapPoint.get().getTag());
+    }
+    // вызов обработки результатов сканирования
+    public void processCompleteKitsOfScanResults(CompleteKitsContainer completeKitsContainer){
+        repository.processCompleteKitsOfScanResults(completeKitsContainer);
+    }
+
 }

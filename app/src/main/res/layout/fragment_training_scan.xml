@@ -87,7 +87,7 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:entries="@array/scanMods"
-                    app:selectedValue="@={trainingVM.selectedScanningMode}" />
+                    android:selectedItemPosition="@={trainingVM.selectedMod}" />
 
                 <EditText
                     android:id="@+id/editRoomName"
@@ -98,7 +98,7 @@
                     android:hint="@string/pointName"
                     android:inputType="textPersonName"
                     android:text="@={trainingVM.inputCabId}"
-                    android:visibility="@{trainingVM.scanningMode!=3 ? View.VISIBLE:View.GONE}" />
+                    android:visibility="@{trainingVM.selectedMod==0 ? View.VISIBLE:View.GONE}" />
 
                 <LinearLayout
                     android:layout_width="match_parent"

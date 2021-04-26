@@ -26,8 +26,9 @@
     <string name="showPointOnMap">Отобразить точку</string>
     <string-array name="mapMods">
         <item>Выбор координат точки</item>
+        <item>Сканирование точки</item>
+        <item>Выбор соседей точки</item>
         <item>Удаление точки</item>
-        <item>Выбор соседи точки</item>
     </string-array>
     <string name="hintY">Y</string>
     <string name="hintX">X</string>
@@ -39,6 +40,8 @@
         <item>4</item>
     </string-array>
     <string name="postToServer">Отправить на сервер</string>
+    <string name="selectedMapPoint">Выбранная точка</string>
+
 
     <!-- Training2 -->
     <string name="nav_training_map">Тренировка карты</string>

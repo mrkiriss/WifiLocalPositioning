@@ -17,4 +17,11 @@ public class MapPoint {
         this.tag=tag;
     }
     public MapPoint(){}
+
+    @Override
+    public String toString(){
+        return "x="+x+"\n"+
+                " y="+y+"\n"+
+                " roomName="+tag;
+    }
 }

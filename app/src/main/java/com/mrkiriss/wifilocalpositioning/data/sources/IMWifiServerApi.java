@@ -23,6 +23,6 @@ public interface IMWifiServerApi {
     @POST("training/room/aps")
     Call<StringResponse> postCalibrationLPWithAPs(@Body CalibrationLocationPoint calibrationLocationPoint);
 
-    @GET("training/")
+    @GET("define/room/coordinates")
     Call<ListOfAllMapPoints> getListOfAllMapPoints();
 }

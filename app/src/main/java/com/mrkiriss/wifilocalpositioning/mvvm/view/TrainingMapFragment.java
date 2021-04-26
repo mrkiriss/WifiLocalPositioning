@@ -87,6 +87,10 @@ public class TrainingMapFragment extends Fragment {
         });
         viewModel.getToastContent().observe(getViewLifecycleOwner(), this::showToast);
         viewModel.getMoveCamera().observe(getViewLifecycleOwner(), this::moveCamera);
+        viewModel.getServerResponseRequest().observe(getViewLifecycleOwner(), s -> viewModel.getServerResponse().set(s));
+        viewModel.getCompleteKitsOfScansResult().observe(getViewLifecycleOwner(), data->viewModel.processCompleteKitsOfScanResults(data));
+        viewModel.getRemainingNumberOfScanning().observe(getViewLifecycleOwner(), integer -> viewModel.getRemainingNumberOfScanKits().set(integer));
+
         viewModel.startFloorChanging();
     }
     private void changeBitmap(Bitmap bitmap){

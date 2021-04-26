@@ -90,8 +90,8 @@ public class MainActivity extends AppCompatActivity {
             navHostFragment.getChildFragmentManager().beginTransaction().remove(startFragment).commit();
         }
         fragments=new Fragment[]{new LocationDetectionFragment(), new TrainingScanFragment(), new TrainingMapFragment(), new SettingsFragment()};
-        fragmentTAGS=new String[]{"fDefinition", "fSuperuser", "fTraining2", "fSettings"};
-        typesOfRequestSources = new String[]{WifiScanner.TYPE_DEFINITION, WifiScanner.TYPE_TRAINING, WifiScanner.TYPE_NO_SCAN, WifiScanner.TYPE_NO_SCAN};
+        fragmentTAGS=new String[]{"fDefinition", "fScanTraining_Deparced", "fTraining", "fSettings"};
+        typesOfRequestSources = new String[]{WifiScanner.TYPE_DEFINITION, WifiScanner.TYPE_TRAINING, WifiScanner.TYPE_TRAINING, WifiScanner.TYPE_NO_SCAN};
     }
     private int defineFragmentIndex(MenuItem item) {
         switch (item.getItemId()){

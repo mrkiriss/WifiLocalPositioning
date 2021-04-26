@@ -17,8 +17,8 @@ public class NetworkModule {
     @Provides
     @Singleton
     public IMWifiServerApi provideIMWifiServerApi(){
-        String baseUrl = "https://wifilocalpositioning.herokuapp.com/location/";
-        //String baseUrl = "http://192.168.31.136:8080/location/";
+        //String baseUrl = "https://wifilocalpositioning.herokuapp.com/location/";
+        String baseUrl = "http://192.168.31.136:8080/location/";
 
         Gson gson = new GsonBuilder()
                 .setLenient()

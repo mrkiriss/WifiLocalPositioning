@@ -22,6 +22,7 @@ public class MapImageManager {
 
     private final AssetManager assetManager;
     private final Bitmap pointer;
+    private final Bitmap pointerAccepted;
     private final float dx;
     private final float dy;
     private final Paint paint;
@@ -33,6 +34,7 @@ public class MapImageManager {
     public MapImageManager(Context context){
         this.assetManager=context.getAssets();
         pointer=getBitmapFromAsset("img/placeholder.png");
+        pointerAccepted=getBitmapFromAsset("img/placeholder_accepted.png");
         dx=(float)pointer.getWidth()/2;
         dy=(float)pointer.getHeight();
         paint = new Paint();
@@ -87,7 +89,7 @@ public class MapImageManager {
             // редактируем координаты в соотв. с размером маркера
             int x = (int)( mapPoint.getX()-dx);
             int y = (int)( mapPoint.getY()-dy);
-            canvas.drawBitmap(pointer, x, y, paint);
+            canvas.drawBitmap(pointerAccepted, x, y, paint);
         }
         return blank;
     }

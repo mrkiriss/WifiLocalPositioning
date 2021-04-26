@@ -1,28 +1,31 @@
 package com.mrkiriss.wifilocalpositioning.mvvm.repositiries;
 
 import android.graphics.Bitmap;
+import android.net.wifi.ScanResult;
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
 import com.mrkiriss.wifilocalpositioning.data.models.map.FloorId;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
+import com.mrkiriss.wifilocalpositioning.data.models.server.AccessPoint;
+import com.mrkiriss.wifilocalpositioning.data.models.server.CalibrationLocationPoint;
+import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.data.models.server.DefinedLocationPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.ListOfAllMapPoints;
 import com.mrkiriss.wifilocalpositioning.data.models.server.LocationPointInfo;
 import com.mrkiriss.wifilocalpositioning.data.models.server.StringResponse;
 import com.mrkiriss.wifilocalpositioning.data.sources.IMWifiServerApi;
 import com.mrkiriss.wifilocalpositioning.data.sources.MapImageManager;
+import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 
 import java.io.Serializable;
-import java.sql.DriverPropertyInfo;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import lombok.Data;
 import retrofit2.Call;
@@ -34,52 +37,36 @@ public class TrainingMapRepository implements Serializable {
 
     private final IMWifiServerApi retrofit;
     private final MapImageManager mapImageManager;
+    private WifiScanner wifiScanner;
 
     private final MutableLiveData<String> toastContent;
     private final MutableLiveData<Floor> changeFloor;
     private final MutableLiveData<String> serverResponse;
 
-    public TrainingMapRepository(IMWifiServerApi retrofit, MapImageManager mapImageManager){
+    private final LiveData<CompleteKitsContainer> completeKitsOfScansResult;
+    private LiveData<Integer> remainingNumberOfScanning;
+    private CalibrationLocationPoint calibrationLocationPoint;
+
+    public TrainingMapRepository(IMWifiServerApi retrofit, MapImageManager mapImageManager, WifiScanner wifiScanner){
         this.retrofit=retrofit;
         this.mapImageManager = mapImageManager;
+        this.wifiScanner=wifiScanner;
 
         toastContent=new MutableLiveData<>();
         changeFloor=new MutableLiveData<>();
         serverResponse=new MutableLiveData<>();
 
-    }
-
-    // обновление данных о всех точках на всех этажах через сервер
-    public void startDownloadingDataOnPointsOnAllFloors(){
-        retrofit.getListOfAllMapPoints().enqueue(new Callback<ListOfAllMapPoints>() {
-            @Override
-            public void onResponse(Call<ListOfAllMapPoints> call, Response<ListOfAllMapPoints> response) {
-                if (response.body()==null) {
-                    Log.i("TrainingMapRep", "server response: is null");
-                    return;
-                }
-                Log.i("TrainingMapRep", "server response: "+response.body().toString());
-                serverResponse.setValue(response.body().toString());
-                mapImageManager.setDataOnPointsOnAllFloors(response.body().convertToMap());
-            }
-
-            @Override
-            public void onFailure(Call<ListOfAllMapPoints> call, Throwable t) {
-                Log.i("TrainingMapRep", "server error: "+ Arrays.toString(t.getStackTrace()));
-                serverResponse.setValue(Arrays.toString(t.getStackTrace()));
-            }
-        });
+        completeKitsOfScansResult=wifiScanner.getCompleteScanResults();
+        remainingNumberOfScanning=wifiScanner.getRemainingNumberOfScanning();
     }
 
     // изменение картинки текущего этажа
     public void changeFloor(int floorIdInt, boolean needToDisplayPoints){
         FloorId floorId = Floor.convertFloorIdToEnum(floorIdInt);
         if (needToDisplayPoints){
-            if (mapImageManager.getDataOnPointsOnAllFloors().containsKey(floorId) || mapImageManager.getDataOnPointsOnAllFloors().get(floorId)==null){
-                toastContent.setValue("Ошибка! Данные о точках от сервера отсутсвуют!");
-                changeFloor.setValue(null);
-                return;
-            }
+            Log.i("TrainingMapRepository","data of allInfo contains floorId="+mapImageManager.getDataOnPointsOnAllFloors().containsKey(floorId));
+            if (checkContainsInCurrentData(floorId)) return;
+
             Floor needfulFloor = mapImageManager.getFloorWithPointers(mapImageManager.getDataOnPointsOnAllFloors().get(floorId), floorId);
             changeFloor.setValue(needfulFloor);
             Log.i("TrainingMapRepository","change floor on floor with points with id="+floorId+" bitmap="+needfulFloor.getFloorSchema());
@@ -93,11 +80,8 @@ public class TrainingMapRepository implements Serializable {
     public void changeFloor(int floorIdInt, boolean needToDisplayPoints, MapPoint mapPoint){
         FloorId floorId = Floor.convertFloorIdToEnum(floorIdInt);
         if (needToDisplayPoints){
-            if (mapImageManager.getDataOnPointsOnAllFloors().containsKey(floorId) || mapImageManager.getDataOnPointsOnAllFloors().get(floorId)==null){
-                toastContent.setValue("Ошибка! Данные о точках от сервера отсутсвуют!");
-                changeFloor.setValue(null);
-                return;
-            }
+            if (checkContainsInCurrentData(floorId)) return;
+
             Floor needfulFloor = mapImageManager.getFloorWithPointers(mapImageManager.getDataOnPointsOnAllFloors().get(floorId), floorId);
             // к текущему состоянию пола пририсовываем маркер по требуемым коодинатам
             Bitmap changedBitmap = mapImageManager.mergePointerAndBitmap(needfulFloor.getFloorSchema(), mapPoint.getX(), mapPoint.getY());
@@ -112,10 +96,94 @@ public class TrainingMapRepository implements Serializable {
             Log.i("TrainingMapRepository","change floor on basic with selected point with id="+floorId+" bitmap="+needfulFloor.getFloorSchema());
         }
     }
+    private boolean checkContainsInCurrentData(FloorId floorId){
+        if (!mapImageManager.getDataOnPointsOnAllFloors().containsKey(floorId) || mapImageManager.getDataOnPointsOnAllFloors().get(floorId)==null){
+            toastContent.setValue("Ошибка! Данные о точках от сервера отсутсвуют!");
+            changeFloor.setValue(null);
+            return true;
+        }
+        return false;
+    }
 
+    // поиск ближайшей точки
+    public MapPoint findMapPointInCurrentData(int x, int y, int floorInt){
+        MapPoint result = new MapPoint();
+        double minDelta=Double.MAX_VALUE;
+        final double maxError = 100d;
+        FloorId floorId = Floor.convertFloorIdToEnum(floorInt);
+        if (!checkContainsInCurrentData(floorId)){
+            for (MapPoint mapPoint: mapImageManager.getDataOnPointsOnAllFloors().get(floorId)){
+                double currentDelta = Math.pow((mapPoint.getX()-x)*(mapPoint.getX()-x)+(mapPoint.getY()-y)*(mapPoint.getY()-y),0.5);
+                if (currentDelta<minDelta && currentDelta<maxError){
+                    result=mapPoint;
+                    minDelta=currentDelta;
+                }
+            }
+        }
+        Log.i("TrainingMapRepository", "результат поска ближайшей точки ="+result.toString());
+
+        return result;
+    }
+    // запуск сканирования
+    public void runScanInManager(int numberOfScanningKits, String roomName){
+        calibrationLocationPoint=new CalibrationLocationPoint();
+        calibrationLocationPoint.setRoomName(roomName);
+        wifiScanner.startTrainingScan(numberOfScanningKits, WifiScanner.TYPE_TRAINING);
+    }
+    public void processCompleteKitsOfScanResults(CompleteKitsContainer completeKitsContainer){
+
+        if (completeKitsContainer.getRequestSourceType()!=WifiScanner.TYPE_TRAINING) return;
+
+        int numberOfCurrentSuccessfulKits=0;
+        for (List<ScanResult> oneScanResults: completeKitsContainer.getCompleteKits()) {
+            List<AccessPoint> accessPoints = new ArrayList<>();
+            numberOfCurrentSuccessfulKits++;
+            for (ScanResult scanResult : oneScanResults) {
+                accessPoints.add(new AccessPoint(scanResult.BSSID, scanResult.level));
+            }
+            if (calibrationLocationPoint==null) return;
+            calibrationLocationPoint.addOneCalibrationSet(accessPoints);
+        }
+
+        postFromTrainingWithAPs();
+    }
+
+
+    // -----SERVER-----
+    // обновление данных о всех точках на всех этажах через сервер
+    public void startDownloadingDataOnPointsOnAllFloors(){
+        serverResponse.setValue("Запрос отправлен на сервер. Ждёмс");
+        retrofit.getListOfAllMapPoints().enqueue(new Callback<ListOfAllMapPoints>() {
+            @Override
+            public void onResponse(Call<ListOfAllMapPoints> call, Response<ListOfAllMapPoints> response) {
+                if (response.body()==null) {
+                    Log.i("TrainingMapRep", "server response: is null");
+                    return;
+                }
+                Log.i("TrainingMapRep", "server response about allInfo: "+response.body().toString());
+                serverResponse.setValue(response.body().toString());
+                Map<FloorId, List<MapPoint>> converted = response.body().convertToMap();
+                mapImageManager.setDataOnPointsOnAllFloors(converted);
+                Log.i("TrainingMapRep", "after convert List of allInfo: "+converted.toString());
+
+            }
+
+            @Override
+            public void onFailure(Call<ListOfAllMapPoints> call, Throwable t) {
+                Log.i("TrainingMapRep", "server error: "+ Arrays.toString(t.getStackTrace()));
+                serverResponse.setValue(Arrays.toString(t.getStackTrace()));
+            }
+        });
+    }
     // обучение сервера информации о точке
-    private void postFromTrainingWithCoordinates(LocationPointInfo locationPointInfo){
-        toastContent.setValue("Обучение координатам началось");
+    public void postFromTrainingWithCoordinates(int intX, int intY, String inputCabId, int floorId){
+
+        if (inputCabId.isEmpty()) inputCabId=intX+"_"+intY;
+        LocationPointInfo locationPointInfo = new LocationPointInfo(intX, intY, inputCabId, floorId);
+
+        saveNewLPInfoIntoLocaleMap(locationPointInfo);
+
+        serverResponse.setValue("Запрос отправлен на сервер. Ждёмс");
         retrofit.postCalibrationLPInfo(locationPointInfo).enqueue(new Callback<StringResponse>() {
             @Override
             public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
@@ -134,9 +202,37 @@ public class TrainingMapRepository implements Serializable {
             }
         });
     }
+    private void saveNewLPInfoIntoLocaleMap(LocationPointInfo locationPointInfo){
+        FloorId floorId = Floor.convertFloorIdToEnum(locationPointInfo.getFloorId());
+        if (!mapImageManager.getDataOnPointsOnAllFloors().containsKey(floorId)){
+            mapImageManager.getDataOnPointsOnAllFloors().put(floorId, new ArrayList<>());
+        }
+        List<MapPoint> list = mapImageManager.getDataOnPointsOnAllFloors().get(floorId);
+        list.add(new MapPoint(locationPointInfo.getX(), locationPointInfo.getY(), locationPointInfo.getRoomName()));
+    }
     // scanning result convert
     private MapPoint convertToMapPoint(DefinedLocationPoint definedLocationPoint){
         return new MapPoint(definedLocationPoint.getX(),
                 definedLocationPoint.getY(), definedLocationPoint.getRoomName());
+    }
+    private void postFromTrainingWithAPs(){
+        toastContent.setValue("Обучение точкам доступа началось");
+        retrofit.postCalibrationLPWithAPs(calibrationLocationPoint).enqueue(new Callback<StringResponse>() {
+            @Override
+            public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
+                Log.println(Log.INFO, "GOOD_TRAINING_APs_ROOM",
+                        String.format("Server response=%s", response.body()));
+                if (response.body()==null){
+                    serverResponse.setValue("Response body is null");
+                    return;
+                }
+                serverResponse.setValue(response.body().getResponse());
+            }
+            @Override
+            public void onFailure(Call<StringResponse> call, Throwable t) {
+                serverResponse.setValue(call.toString()+"\n"+t.getMessage());
+                Log.e("SERVER_ERROR", t.getMessage());
+            }
+        });
     }
 }
