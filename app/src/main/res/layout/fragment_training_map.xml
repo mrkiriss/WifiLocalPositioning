@@ -45,6 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:selectedItemPosition="@={viewModel.selectedMod}"
             android:entries="@array/mapMods" />
 
         <FrameLayout
@@ -52,6 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="10"
+            android:background="@drawable/round_border"
             android:clipChildren="false"
             tools:context=".mvvm.view.LocationDetectionFragment">
 
@@ -110,7 +112,7 @@
             android:layout_height="0dp"
             android:layout_weight="8"
             android:orientation="vertical"
-            android:visibility="visible"
+            android:visibility="@{viewModel.selectedMod==0?View.VISIBLE:View.GONE}"
             android:weightSum="4">
 
             <LinearLayout
@@ -157,14 +159,16 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:entries="@array/floorIds"
-                    app:selectedValue="@={viewModel.selectedFloorId}" />
+                    android:gravity="center|right"
+                    android:selectedItemPosition="@={viewModel.selectedFloorId}"
+                    android:textAlignment="textEnd" />
             </LinearLayout>
 
             <Button
                 android:id="@+id/button5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:onClick="@{()->viewModel.collectMapPointFromInput()}"
+                android:onClick="@{()->viewModel.processShowSelectedMapPoint(true)}"
                 android:text="@string/showPointOnMap" />
 
             <Button
@@ -182,7 +186,7 @@
             android:layout_height="0dp"
             android:layout_weight="8"
             android:orientation="vertical"
-            android:visibility="gone"
+            android:visibility="@{viewModel.selectedMod==2?View.VISIBLE:View.GONE}"
             android:weightSum="10">
 
             <LinearLayout
@@ -270,7 +274,7 @@
                     android:id="@+id/serverResponseText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Ответ от сервера: " />
+                    android:text="@{viewModel.serverResponse}" />
             </LinearLayout>
         </ScrollView>
 

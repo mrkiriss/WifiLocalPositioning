@@ -75,22 +75,27 @@ public class TrainingMapRepository implements Serializable {
     public void changeFloor(int floorIdInt, boolean needToDisplayPoints){
         FloorId floorId = Floor.convertFloorIdToEnum(floorIdInt);
         if (needToDisplayPoints){
-            if (mapImageManager.getDataOnPointsOnAllFloors().containsKey(floorId)){
+            if (mapImageManager.getDataOnPointsOnAllFloors().containsKey(floorId) || mapImageManager.getDataOnPointsOnAllFloors().get(floorId)==null){
                 toastContent.setValue("Ошибка! Данные о точках от сервера отсутсвуют!");
+                changeFloor.setValue(null);
                 return;
             }
             Floor needfulFloor = mapImageManager.getFloorWithPointers(mapImageManager.getDataOnPointsOnAllFloors().get(floorId), floorId);
             changeFloor.setValue(needfulFloor);
+            Log.i("TrainingMapRepository","change floor on floor with points with id="+floorId+" bitmap="+needfulFloor.getFloorSchema());
+
         }else {
-            Floor foundFloor = mapImageManager.getBasicFloor(floorId);
-            changeFloor.setValue(foundFloor);
+            Floor needfulFloor = mapImageManager.getBasicFloor(floorId);
+            changeFloor.setValue(needfulFloor);
+            Log.i("TrainingMapRepository","change floor on basic with id="+floorId+" bitmap="+needfulFloor.getFloorSchema());
         }
     }
     public void changeFloor(int floorIdInt, boolean needToDisplayPoints, MapPoint mapPoint){
         FloorId floorId = Floor.convertFloorIdToEnum(floorIdInt);
         if (needToDisplayPoints){
-            if (mapImageManager.getDataOnPointsOnAllFloors().containsKey(floorId)){
+            if (mapImageManager.getDataOnPointsOnAllFloors().containsKey(floorId) || mapImageManager.getDataOnPointsOnAllFloors().get(floorId)==null){
                 toastContent.setValue("Ошибка! Данные о точках от сервера отсутсвуют!");
+                changeFloor.setValue(null);
                 return;
             }
             Floor needfulFloor = mapImageManager.getFloorWithPointers(mapImageManager.getDataOnPointsOnAllFloors().get(floorId), floorId);
@@ -104,6 +109,7 @@ public class TrainingMapRepository implements Serializable {
             Bitmap changedBitmap = mapImageManager.mergePointerAndBitmap(needfulFloor.getFloorSchema(), mapPoint.getX(), mapPoint.getY());
             needfulFloor.setFloorSchema(changedBitmap);
             changeFloor.setValue(needfulFloor);
+            Log.i("TrainingMapRepository","change floor on basic with selected point with id="+floorId+" bitmap="+needfulFloor.getFloorSchema());
         }
     }
 

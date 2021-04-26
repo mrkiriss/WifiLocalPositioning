@@ -1,15 +1,11 @@
-package com.mrkiriss.wifilocalpositioning.ui.view.adapters;
+package com.mrkiriss.wifilocalpositioning.mvvm.view.adapters;
 
-import android.net.wifi.ScanResult;
-import android.net.wifi.WifiManager;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mrkiriss.wifilocalpositioning.R;

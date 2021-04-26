@@ -41,12 +41,12 @@ public class MapImageManager {
     }
 
     public Floor getBasicFloor(FloorId floorId){
-        Floor result = findBasicFloor(floorId);
-        if (result==null){
-            result=new Floor(floorId, getBitmapFromAsset(defineFilePath(floorId)), pointer);
-            basicFloors.put(floorId, result);
+        Floor preresult = findBasicFloor(floorId);
+        if (preresult ==null){
+            preresult =new Floor(floorId, getBitmapFromAsset(defineFilePath(floorId)), pointer);
+            basicFloors.put(floorId, preresult);
         }
-        return result;
+        return new Floor(floorId, preresult.getFloorSchema().copy(Bitmap.Config.ARGB_8888, true), pointer);
     }
     private Floor findBasicFloor(FloorId floorId){
         if (basicFloors.containsKey(floorId)){
