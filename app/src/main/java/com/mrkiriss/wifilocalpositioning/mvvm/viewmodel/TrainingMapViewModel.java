@@ -34,10 +34,13 @@ public class TrainingMapViewModel extends ViewModel {
     private ObservableField<String> inputY;
     private ObservableField<String> inputX;
     private ObservableField<String> inputCabId;
+    private ObservableInt selectedRoomType; // 0=true кабинет, 1=false коридор
     private ObservableInt selectedFloorId; // изменяется при изменении spinner
 
     private ObservableInt remainingNumberOfScanKits;
     private ObservableField<String> inputNumberOfScanKits;
+
+    private ObservableField<MapPoint> selectedToChangMapPoint;
 
     private LiveData<Floor> changeFloor;
     private LiveData<String> serverResponseRequest;
@@ -67,10 +70,13 @@ public class TrainingMapViewModel extends ViewModel {
         inputX=new ObservableField<>("");
         inputY=new ObservableField<>("");
         inputCabId=new ObservableField<>("");
+        selectedRoomType=new ObservableInt(0);
         selectedFloorId=new ObservableInt(2);
 
         remainingNumberOfScanKits = new ObservableInt(0);
         inputNumberOfScanKits=new ObservableField<>("");
+
+        selectedToChangMapPoint=new ObservableField<>();
     }
 
     public void processShowSelectedMapPoint(boolean afterButton){
@@ -79,7 +85,12 @@ public class TrainingMapViewModel extends ViewModel {
                 processModePointInfo(afterButton);
                 break;
             case 1:
-                processModeScanning();
+            case 2:
+                startFindNearPoint();
+                break;
+            case 3:
+                startFindNearPoint();
+                inputCabId.set(selectedMapPoint.get().getTag());
                 break;
         }
 
@@ -103,11 +114,11 @@ public class TrainingMapViewModel extends ViewModel {
         }else{
             selectedFloorId.set(floorNumber.get());
         }
-        MapPoint mapPoint = new MapPoint(intX, intY, inputCabId);
+        MapPoint mapPoint = new MapPoint(intX, intY, inputCabId, selectedRoomType.get()==0);
         //selectedMapPoint.set(mapPoint);
         startFloorChanging(mapPoint);
     }
-    private void processModeScanning(){
+    private void startFindNearPoint(){
         String inputX=this.inputX.get(), inputY=this.inputY.get();
         int intX, intY;
         if (inputX.isEmpty() || inputY.isEmpty() || !inputX.matches("\\d+") || !inputY.matches("\\d+")
@@ -158,7 +169,7 @@ public class TrainingMapViewModel extends ViewModel {
             toastContent.setValue("Коодринаты некорректны");
             return;
         }
-        repository.postFromTrainingWithCoordinates(intX, intY, inputCabId, floorId);
+        repository.postFromTrainingWithCoordinates(intX, intY, inputCabId, floorId, selectedRoomType.get()==0);
     }
 
     // SCANNING MODE
@@ -179,4 +190,33 @@ public class TrainingMapViewModel extends ViewModel {
         repository.processCompleteKitsOfScanResults(completeKitsContainer);
     }
 
+    // CHANGING MODE
+    // обработка нажатия на кнопку действия (начало редактирования или добавление точки)
+    public void selectActionForChangingNeighbors(){
+
+    }
+    // обработка нажатия на кнопку подтверждения изменений соседей точки
+    public void acceptPointChangingNeighbors(){
+
+    }
+    // обработка нажатия на кнопку отмены изменений соседей точки
+    public void cancelPointChangingNeighbors(){
+
+    }
+
+    // DELETE MODE
+    public void startDeletingLPINfo(){
+        if (inputCabId.get().isEmpty()){
+            toastContent.setValue("Неккоректное название точки");
+            return;
+        }
+        repository.deleteLocationPointInfoOnServer(inputCabId.get());
+    }
+    public void startDeletingLP(){
+        if (inputCabId.get().isEmpty()){
+            toastContent.setValue("Неккоректное название точки");
+            return;
+        }
+        repository.deleteLocationPointOnServer(inputCabId.get());
+    }
 }

@@ -82,6 +82,7 @@ public class WifiScanner {
         Log.i("startScan", "start scanning from training");
 
         uncompleteKitsContainer =new CompleteKitsContainer();
+        uncompleteKitsContainer.setRequestSourceType(typeOfRequestSource);
 
         scanResultKits=new LinkedList<>();
         scanDelay=250;
@@ -97,6 +98,7 @@ public class WifiScanner {
         Log.i("WifiScanner", "start scanning from definition");
 
         uncompleteKitsContainer =new CompleteKitsContainer();
+        uncompleteKitsContainer.setRequestSourceType(typeOfRequestSource);
 
         scanResultKits=new LinkedList<>();
 
@@ -137,7 +139,9 @@ public class WifiScanner {
 
             CompleteKitsContainer container = uncompleteKitsContainer;
             container.setCompleteKits(scanResultKits);
-            if (container.getRequestSourceType()==null) container.setRequestSourceType(currentTypeOfRequestSource);
+            if (container.getRequestSourceType()==null || !container.getRequestSourceType().equals(currentTypeOfRequestSource)) {
+                return;
+            }
 
             completeScanResults.postValue(container);
             return;
@@ -177,7 +181,7 @@ public class WifiScanner {
                     scanStarted=false;
 
                     // прекращение сканирований
-                    if (currentTypeOfRequestSource.equals(TYPE_NO_SCAN)) return;
+                    if (currentTypeOfRequestSource.equals(TYPE_NO_SCAN) || scanResultKits==null) return;
 
                     scanResultKits.add(wifiManager.getScanResults());
                     startScanningWithDelay(-1);

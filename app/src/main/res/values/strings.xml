@@ -32,6 +32,10 @@
     </string-array>
     <string name="hintY">Y</string>
     <string name="hintX">X</string>
+    <string-array name="isRoomSpinner">
+        <item>Кабинет</item>
+        <item>Коридор</item>
+    </string-array>
     <string-array name="floorIds">
         <item>0</item>
         <item>1</item>
@@ -41,6 +45,13 @@
     </string-array>
     <string name="postToServer">Отправить на сервер</string>
     <string name="selectedMapPoint">Выбранная точка</string>
+    <string name="add">Добавить</string>
+    <string name="accept">Подтвердить</string>
+    <string name="cancel">Отменить</string>
+    <string name="neighbors">Соседи для точки </string>
+    <string name="deleteLPInfoButtonText">Удалить инфомрациию о точке</string>
+    <string name="deleteLPButtonText">Удалить сканирования точки</string>
+
 
 
     <!-- Training2 -->

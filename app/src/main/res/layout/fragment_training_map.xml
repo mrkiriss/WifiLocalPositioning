@@ -198,61 +198,88 @@
             android:layout_weight="8"
             android:orientation="vertical"
             android:visibility="@{viewModel.selectedMod==0?View.VISIBLE:View.GONE}"
-            android:weightSum="4">
+            android:weightSum="5">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="3"
                 android:gravity="center"
-                android:orientation="horizontal"
-                android:weightSum="7">
+                android:orientation="vertical"
+                android:weightSum="2">
 
-                <EditText
-                    android:id="@+id/editY"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:ems="10"
-                    android:hint="@string/hintY"
-                    android:inputType="numberDecimal"
-                    android:text="@={viewModel.inputY}" />
+                    android:orientation="horizontal"
+                    android:weightSum="4">
 
-                <EditText
-                    android:id="@+id/editX"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    <EditText
+                        android:id="@+id/editY"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:hint="@string/hintY"
+                        android:inputType="numberDecimal"
+                        android:text="@={viewModel.inputY}" />
+
+                    <EditText
+                        android:id="@+id/editX"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:hint="@string/hintX"
+                        android:inputType="numberDecimal"
+                        android:text="@={viewModel.inputX}" />
+
+                    <EditText
+                        android:id="@+id/editRoomName"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:ems="10"
+                        android:hint="@string/pointName"
+                        android:inputType="textPersonName"
+                        android:text="@={viewModel.inputCabId}" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:ems="10"
-                    android:hint="@string/hintX"
-                    android:inputType="numberDecimal"
-                    android:text="@={viewModel.inputX}" />
+                    android:orientation="horizontal"
+                    android:weightSum="4">
 
-                <EditText
-                    android:id="@+id/editRoomName"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:ems="10"
-                    android:hint="@string/pointName"
-                    android:inputType="textPersonName"
-                    android:text="@={viewModel.inputCabId}" />
+                    <Spinner
+                        android:id="@+id/isRoomSpinner"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:entries="@array/isRoomSpinner"
+                        android:selectedItemPosition="@={viewModel.selectedRoomType}" />
 
-                <Spinner
-                    android:id="@+id/floorId"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:entries="@array/floorIds"
-                    android:gravity="center|right"
-                    android:selectedItemPosition="@={viewModel.selectedFloorId}"
-                    android:textAlignment="textEnd" />
+                    <Spinner
+                        android:id="@+id/floorId"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:entries="@array/floorIds"
+                        android:gravity="center|right"
+                        android:selectedItemPosition="@={viewModel.selectedFloorId}"
+                        android:textAlignment="textEnd" />
+
+                </LinearLayout>
+
             </LinearLayout>
 
             <Button
                 android:id="@+id/button5"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:onClick="@{()->viewModel.processShowSelectedMapPoint(true)}"
                 android:text="@string/showPointOnMap" />
 
@@ -303,7 +330,8 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
-                    android:text="изменение/добавление" />
+                    android:onClick="@{()->viewModel.selectActionForChangingNeighbors()}"
+                    android:text="@string/add" />
             </LinearLayout>
 
             <LinearLayout
@@ -319,14 +347,14 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2"
-                    android:text="Соседи для точки " />
+                    android:text="@string/neighbors"/>
 
                 <TextView
                     android:id="@+id/textView9"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="5"
-                    android:text="TextView" />
+                    android:text="@{viewModel.selectedToChangMapPoint.toOneString()}" />
 
             </LinearLayout>
 
@@ -337,12 +365,85 @@
 
             </androidx.recyclerview.widget.RecyclerView>
 
-            <Button
-                android:id="@+id/button6"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="@{()->viewModel.cancelPointChangingNeighbors()}"
+                    android:text="@string/cancel" />
+
+                <Button
+                    android:id="@+id/button6"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/accept"
+                    android:onClick="@{()->viewModel.acceptPointChangingNeighbors()}"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/modRemovePointsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="8"
+            android:orientation="vertical"
+            android:visibility="@{viewModel.selectedMod==3?View.VISIBLE:View.GONE}">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="2"
-                android:text="@string/postToServer" />
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView6"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="@string/selectedMapPoint" />
+
+                <TextView
+                    android:id="@+id/textView5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"
+                    android:text="@{viewModel.selectedMapPoint.toString()}"/>
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/editTextTextPersonName"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="@string/pointName"
+                android:inputType="textPersonName"
+                android:text="@={viewModel.inputCabId}"/>
+
+            <Button
+                android:id="@+id/deleteLPINfoButton"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="@string/deleteLPInfoButtonText"
+                android:onClick="@{()->viewModel.startDeletingLPINfo()}"/>
+
+            <Button
+                android:id="@+id/deleteLPButton"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="@string/deleteLPButtonText"
+                android:onClick="@{()->viewModel.startDeletingLP()}"/>
 
         </LinearLayout>
 

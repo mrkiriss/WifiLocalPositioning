@@ -9,11 +9,13 @@ public class LocationPointInfo {
     private int floorId;
     private int x;
     private int y;
+    private boolean isRoom;
 
-    public LocationPointInfo(int x, int y, String roomName, int floorId){
+    public LocationPointInfo(int x, int y, String roomName, int floorId, boolean isRoom){
         this.x=x;
         this.y=y;
         this.roomName=roomName;
         this.floorId=floorId;
+        this.isRoom=isRoom;
     }
 }

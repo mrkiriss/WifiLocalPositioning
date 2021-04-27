@@ -27,7 +27,7 @@ public class ListOfAllMapPoints {
                 result.put(floorId, new ArrayList<>());
             }
 
-            MapPoint mapPoint = new MapPoint(info.getX(), info.getY(), info.getRoomName());
+            MapPoint mapPoint = new MapPoint(info.getX(), info.getY(), info.getRoomName(), info.isRoom());
             result.get(floorId).add(mapPoint);
 
         }

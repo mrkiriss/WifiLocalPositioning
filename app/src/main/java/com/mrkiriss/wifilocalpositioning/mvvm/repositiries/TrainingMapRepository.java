@@ -176,14 +176,12 @@ public class TrainingMapRepository implements Serializable {
         });
     }
     // обучение сервера информации о точке
-    public void postFromTrainingWithCoordinates(int intX, int intY, String inputCabId, int floorId){
+    public void postFromTrainingWithCoordinates(int intX, int intY, String inputCabId, int floorId, boolean isRoom){
 
         if (inputCabId.isEmpty()) inputCabId=intX+"_"+intY;
-        LocationPointInfo locationPointInfo = new LocationPointInfo(intX, intY, inputCabId, floorId);
-
-        saveNewLPInfoIntoLocaleMap(locationPointInfo);
-
+        LocationPointInfo locationPointInfo = new LocationPointInfo(intX, intY, inputCabId, floorId, isRoom);
         serverResponse.setValue("Запрос отправлен на сервер. Ждёмс");
+
         retrofit.postCalibrationLPInfo(locationPointInfo).enqueue(new Callback<StringResponse>() {
             @Override
             public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
@@ -194,10 +192,12 @@ public class TrainingMapRepository implements Serializable {
                     return;
                 }
                 serverResponse.setValue(response.body().toString());
+                //saveNewLPInfoIntoLocaleMap(locationPointInfo);
             }
             @Override
             public void onFailure(Call<StringResponse> call, Throwable t) {
                 serverResponse.setValue(call.toString()+"\n"+t.getMessage());
+                toastContent.setValue("Ошибка! Добавление провалилось");
                 Log.e("SERVER_ERROR", t.getMessage());
             }
         });
@@ -208,13 +208,9 @@ public class TrainingMapRepository implements Serializable {
             mapImageManager.getDataOnPointsOnAllFloors().put(floorId, new ArrayList<>());
         }
         List<MapPoint> list = mapImageManager.getDataOnPointsOnAllFloors().get(floorId);
-        list.add(new MapPoint(locationPointInfo.getX(), locationPointInfo.getY(), locationPointInfo.getRoomName()));
+        list.add(new MapPoint(locationPointInfo.getX(), locationPointInfo.getY(), locationPointInfo.getRoomName(), locationPointInfo.isRoom()));
     }
-    // scanning result convert
-    private MapPoint convertToMapPoint(DefinedLocationPoint definedLocationPoint){
-        return new MapPoint(definedLocationPoint.getX(),
-                definedLocationPoint.getY(), definedLocationPoint.getRoomName());
-    }
+
     private void postFromTrainingWithAPs(){
         toastContent.setValue("Обучение точкам доступа началось");
         retrofit.postCalibrationLPWithAPs(calibrationLocationPoint).enqueue(new Callback<StringResponse>() {
@@ -228,6 +224,51 @@ public class TrainingMapRepository implements Serializable {
                 }
                 serverResponse.setValue(response.body().getResponse());
             }
+            @Override
+            public void onFailure(Call<StringResponse> call, Throwable t) {
+                serverResponse.setValue(call.toString()+"\n"+t.getMessage());
+                Log.e("SERVER_ERROR", t.getMessage());
+            }
+        });
+    }
+
+    public void deleteLocationPointInfoOnServer(String roomName){
+        serverResponse.setValue("Запрос отправлен на сервер. Ждёмс");
+
+        retrofit.deleteLPInfo(roomName).enqueue(new Callback<StringResponse>() {
+            @Override
+            public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
+                Log.println(Log.INFO, "TrainingMapRepository",
+                        String.format("Server response after delete lpInfo=%s", response.body()));
+                if (response.body()==null){
+                    serverResponse.setValue("Response body is null");
+                    return;
+                }
+                serverResponse.setValue(response.body().getResponse());
+            }
+
+            @Override
+            public void onFailure(Call<StringResponse> call, Throwable t) {
+                serverResponse.setValue(call.toString()+"\n"+t.getMessage());
+                Log.e("SERVER_ERROR", t.getMessage());
+            }
+        });
+    }
+    public void deleteLocationPointOnServer(String roomName){
+        serverResponse.setValue("Запрос отправлен на сервер. Ждёмс");
+
+        retrofit.deleteLPAps(roomName).enqueue(new Callback<StringResponse>() {
+            @Override
+            public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
+                Log.println(Log.INFO, "TrainingMapRepository",
+                        String.format("Server response after delete lpAPs=%s", response.body()));
+                if (response.body()==null){
+                    serverResponse.setValue("Response body is null");
+                    return;
+                }
+                serverResponse.setValue(response.body().getResponse());
+            }
+
             @Override
             public void onFailure(Call<StringResponse> call, Throwable t) {
                 serverResponse.setValue(call.toString()+"\n"+t.getMessage());

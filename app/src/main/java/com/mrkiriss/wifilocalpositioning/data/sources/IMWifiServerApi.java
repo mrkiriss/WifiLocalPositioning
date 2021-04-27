@@ -11,6 +11,7 @@ import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 public interface IMWifiServerApi {
 
@@ -25,4 +26,10 @@ public interface IMWifiServerApi {
 
     @GET("define/room/coordinates")
     Call<ListOfAllMapPoints> getListOfAllMapPoints();
+
+    @DELETE("training/room/coordinates")
+    Call<StringResponse> deleteLPInfo(@Query("roomName") String roomName);
+
+    @DELETE("training/room/aps")
+    Call<StringResponse> deleteLPAps(@Query("roomName")  String roomName);
 }
