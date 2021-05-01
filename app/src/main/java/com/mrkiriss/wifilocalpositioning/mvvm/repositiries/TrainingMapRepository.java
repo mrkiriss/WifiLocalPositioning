@@ -296,8 +296,11 @@ public class TrainingMapRepository implements Serializable {
                     return;
                 }
                 serverResponse.setValue(response.body().toString());
-                if (response.body().getMainRoomName()!= null)
+                if (response.body().getMainRoomName()!= null) {
                     serverConnectionsResponse.setValue(response.body().convertToListOfMapPoints());
+                }else{
+                    serverResponse.setValue("Точки на сервере не существует");
+                }
             }
             @Override
             public void onFailure(Call<Connections> call, Throwable t) {
