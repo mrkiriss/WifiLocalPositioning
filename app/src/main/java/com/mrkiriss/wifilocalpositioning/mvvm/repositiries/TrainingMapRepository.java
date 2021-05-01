@@ -296,7 +296,8 @@ public class TrainingMapRepository implements Serializable {
                     return;
                 }
                 serverResponse.setValue(response.body().toString());
-                serverConnectionsResponse.setValue(response.body().convertToListOfMapPoints());
+                if (response.body().getMainRoomName()!= null)
+                    serverConnectionsResponse.setValue(response.body().convertToListOfMapPoints());
             }
             @Override
             public void onFailure(Call<Connections> call, Throwable t) {

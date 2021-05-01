@@ -19,16 +19,16 @@ public interface IMWifiServerApi {
     @POST("define/room")
     Call<DefinedLocationPoint> defineLocation(@Body CalibrationLocationPoint calibrationLocationPoint);
 
-    @POST("training/room/coordinates")
+    @POST("training/room/info")
     Call<StringResponse> postCalibrationLPInfo(@Body LocationPointInfo locationPointInfo);
 
     @POST("training/room/aps")
     Call<StringResponse> postCalibrationLPWithAPs(@Body CalibrationLocationPoint calibrationLocationPoint);
 
-    @GET("define/room/coordinates")
+    @GET("define/room/info")
     Call<ListOfAllMapPoints> getListOfAllMapPoints();
 
-    @DELETE("training/room/coordinates")
+    @DELETE("training/room/info")
     Call<StringResponse> deleteLPInfo(@Query("roomName") String roomName);
 
     @DELETE("training/room/aps")
@@ -39,4 +39,7 @@ public interface IMWifiServerApi {
 
     @GET("training/connections")
     Call<Connections> getConnectionsByName(@Query("name") String name);
+
+    @GET("define/route")
+    Call<Connections> getRoute(@Query("start") String start, @Query("end") String end);
 }

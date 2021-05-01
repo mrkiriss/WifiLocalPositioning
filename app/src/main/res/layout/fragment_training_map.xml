@@ -401,7 +401,8 @@
             android:layout_height="0dp"
             android:layout_weight="8"
             android:orientation="vertical"
-            android:visibility="@{viewModel.selectedMod==3?View.VISIBLE:View.GONE}">
+            android:visibility="@{viewModel.selectedMod==3?View.VISIBLE:View.GONE}"
+            android:weightSum="4">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -421,7 +422,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="5"
-                    android:text="@{viewModel.selectedMapPoint.toString()}"/>
+                    android:text="@{viewModel.selectedMapPoint.toString()}" />
             </LinearLayout>
 
             <EditText
@@ -432,23 +433,23 @@
                 android:ems="10"
                 android:hint="@string/pointName"
                 android:inputType="textPersonName"
-                android:text="@={viewModel.inputCabId}"/>
-
-            <Button
-                android:id="@+id/deleteLPINfoButton"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:text="@string/deleteLPInfoButtonText"
-                android:onClick="@{()->viewModel.startDeletingLPINfo()}"/>
+                android:text="@={viewModel.inputCabId}" />
 
             <Button
                 android:id="@+id/deleteLPButton"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:text="@string/deleteLPButtonText"
-                android:onClick="@{()->viewModel.startDeletingLP()}"/>
+                android:onClick="@{()->viewModel.startDeletingLP()}"
+                android:text="@string/deleteLPButtonText" />
+
+            <Button
+                android:id="@+id/deleteLPINfoButton"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:onClick="@{()->viewModel.startDeletingLPINfo()}"
+                android:text="@string/deleteLPInfoButtonText" />
 
         </LinearLayout>
 

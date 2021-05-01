@@ -280,4 +280,7 @@ public class TrainingMapViewModel extends ViewModel {
         }
         repository.deleteLocationPointOnServer(inputCabId.get());
     }
+    public void startDeletingConnections(){
+
+    }
 }
