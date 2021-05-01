@@ -179,7 +179,7 @@ public class TrainingMapRepository implements Serializable {
         });
     }
     // обучение сервера информации о точке
-    public void postFromTrainingWithCoordinates(int intX, int intY, String inputCabId, int floorId, boolean isRoom){
+    public void postFromTrainingWithCoordinates(int intX, int intY, String inputCabId, int floorId, String isRoom){
 
         if (inputCabId.isEmpty()) inputCabId=intX+"_"+intY;
         LocationPointInfo locationPointInfo = new LocationPointInfo(intX, intY, inputCabId, floorId, isRoom);
@@ -284,6 +284,8 @@ public class TrainingMapRepository implements Serializable {
 
     // получение связей по имени для добавления на экран в RecyclerView
     public void startDownloadingConnections(String mainName){
+        serverResponse.setValue("Запрос отправлен на сервер. Ждёмс");
+
         retrofit.getConnectionsByName(mainName).enqueue(new Callback<Connections>() {
             @Override
             public void onResponse(Call<Connections> call, Response<Connections> response) {
@@ -305,6 +307,8 @@ public class TrainingMapRepository implements Serializable {
     }
     // отправка на сервер изменённых пользователем связей
     public void postChangedConnections(List<MapPoint> mapPoints, String mainName){
+        serverResponse.setValue("Запрос отправлен на сервер. Ждёмс");
+
         retrofit.postConnections(Connections.convertToOnlyNameConnections(mainName, mapPoints)).enqueue(new Callback<StringResponse>() {
             @Override
             public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {

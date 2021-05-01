@@ -9,9 +9,9 @@ public class LocationPointInfo {
     private int floorId;
     private int x;
     private int y;
-    private boolean isRoom;
+    private String isRoom; // иначе коридор (для создания маршрута)
 
-    public LocationPointInfo(int x, int y, String roomName, int floorId, boolean isRoom){
+    public LocationPointInfo(int x, int y, String roomName, int floorId, String isRoom){
         this.x=x;
         this.y=y;
         this.roomName=roomName;
@@ -19,4 +19,7 @@ public class LocationPointInfo {
         this.isRoom=isRoom;
     }
     public LocationPointInfo(){}
+    public boolean isRoom(){
+        return isRoom.equals("true");
+    }
 }

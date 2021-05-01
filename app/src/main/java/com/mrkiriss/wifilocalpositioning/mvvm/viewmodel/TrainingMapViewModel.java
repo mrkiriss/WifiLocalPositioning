@@ -187,7 +187,7 @@ public class TrainingMapViewModel extends ViewModel {
             toastContent.setValue("Коодринаты некорректны");
             return;
         }
-        repository.postFromTrainingWithCoordinates(intX, intY, inputCabId, floorId, selectedRoomType.get()==0);
+        repository.postFromTrainingWithCoordinates(intX, intY, inputCabId, floorId, String.valueOf(selectedRoomType.get()==0));
     }
 
     // SCANNING MODE
