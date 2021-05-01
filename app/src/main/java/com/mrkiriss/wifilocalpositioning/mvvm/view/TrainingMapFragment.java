@@ -10,6 +10,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
 import android.view.GestureDetector;
@@ -23,15 +24,20 @@ import com.github.chrisbanes.photoview.PhotoView;
 import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
 import com.mrkiriss.wifilocalpositioning.data.models.map.FloorId;
+import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
 import com.mrkiriss.wifilocalpositioning.databinding.FragmentTrainingMapBinding;
+import com.mrkiriss.wifilocalpositioning.mvvm.view.adapters.MapPointsRVAdapter;
 import com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.LocationDetectionViewModel;
 import com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.TrainingMapViewModel;
+
+import java.util.List;
 
 public class TrainingMapFragment extends Fragment {
 
     private TrainingMapViewModel viewModel;
     private FragmentTrainingMapBinding binding;
     private PhotoView photoView;
+    private MapPointsRVAdapter mapPointsAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,6 +46,7 @@ public class TrainingMapFragment extends Fragment {
 
         binding= DataBindingUtil.inflate(inflater, R.layout.fragment_training_map, container, false);
 
+        initMapPointsAdapter();
         initPhotoView();
         initObservers();
 
@@ -48,6 +55,11 @@ public class TrainingMapFragment extends Fragment {
         return binding.getRoot();
     }
 
+    private void initMapPointsAdapter(){
+        mapPointsAdapter=new MapPointsRVAdapter();
+        binding.mapPointsRV.setAdapter(mapPointsAdapter);
+        binding.mapPointsRV.setLayoutManager(new LinearLayoutManager(getContext()));
+    }
     private void initPhotoView(){
         photoView=binding.photoViewTraining;
         photoView.setMaximumScale(7);
@@ -90,6 +102,18 @@ public class TrainingMapFragment extends Fragment {
         viewModel.getServerResponseRequest().observe(getViewLifecycleOwner(), s -> viewModel.getServerResponse().set(s));
         viewModel.getCompleteKitsOfScansResult().observe(getViewLifecycleOwner(), data->viewModel.processCompleteKitsOfScanResults(data));
         viewModel.getRemainingNumberOfScanning().observe(getViewLifecycleOwner(), integer -> viewModel.getRemainingNumberOfScanKits().set(integer));
+        // обработка событий, связанных с RV для mapPoints при изменении связей
+        viewModel.getServerConnectionsResponse().observe(getViewLifecycleOwner(), mapPoints -> {
+            viewModel.processServerConnectionsResponse(mapPoints);
+            mapPointsAdapter.setContent(mapPoints);
+        });
+        mapPointsAdapter.getRequestToDeleteMapPoint().observe(getViewLifecycleOwner(), mapPoint -> {
+            mapPointsAdapter.deleteMapPoint(mapPoint);
+            viewModel.processDeleteSecondly(mapPoint);
+        });
+        viewModel.getRequestToAddSecondlyMapPointToRV().observe(getViewLifecycleOwner(), mapPoint -> mapPointsAdapter.addMapPoint(mapPoint));
+        viewModel.getRequestToChangeSecondlyMapPointListInRV().observe(getViewLifecycleOwner(), mapPoints -> mapPointsAdapter.setContent(mapPoints));
+
 
         viewModel.startFloorChanging();
     }

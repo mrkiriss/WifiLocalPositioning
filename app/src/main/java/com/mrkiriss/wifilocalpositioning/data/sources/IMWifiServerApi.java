@@ -1,6 +1,7 @@
 package com.mrkiriss.wifilocalpositioning.data.sources;
 
 import com.mrkiriss.wifilocalpositioning.data.models.server.CalibrationLocationPoint;
+import com.mrkiriss.wifilocalpositioning.data.models.server.Connections;
 import com.mrkiriss.wifilocalpositioning.data.models.server.DefinedLocationPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.ListOfAllMapPoints;
 import com.mrkiriss.wifilocalpositioning.data.models.server.LocationPointInfo;
@@ -32,4 +33,10 @@ public interface IMWifiServerApi {
 
     @DELETE("training/room/aps")
     Call<StringResponse> deleteLPAps(@Query("roomName")  String roomName);
+
+    @POST("training/connections")
+    Call<StringResponse> postConnections(@Body Connections connections);
+
+    @GET("training/connections")
+    Call<Connections> getConnectionsByName(@Query("name") String name);
 }

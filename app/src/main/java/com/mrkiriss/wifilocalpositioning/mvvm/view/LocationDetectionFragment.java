@@ -1,11 +1,8 @@
 package com.mrkiriss.wifilocalpositioning.mvvm.view;
 
-import android.graphics.Matrix;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -66,7 +63,7 @@ public class LocationDetectionFragment extends Fragment {
             currentLocation=mapPoint;
             drawCurrentLocation(mapPoint);
 
-            Toast.makeText(getContext(), mapPoint.getTag(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), mapPoint.getRoomName(), Toast.LENGTH_SHORT).show();
             Log.i("changeMapPoint", "получена новая точка с floorId: "+mapPoint.getFloorWithPointer().getFloorId());
         });
         // прослушываем изменение пола, вызываем перерисовку

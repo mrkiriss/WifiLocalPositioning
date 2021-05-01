@@ -107,6 +107,108 @@
         </FrameLayout>
 
         <LinearLayout
+            android:id="@+id/modNeighborsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="2dp"
+            android:layout_weight="8"
+            android:orientation="vertical"
+            android:visibility="@{viewModel.selectedMod==2?View.VISIBLE:View.GONE}"
+            android:weightSum="10">
+
+            <LinearLayout
+                android:id="@+id/currentChosenPointContainer"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:orientation="horizontal"
+                android:weightSum="9">
+
+                <TextView
+                    android:id="@+id/currentChosenPointInfo"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:text="@string/selectedMapPoint" />
+
+                <TextView
+                    android:id="@+id/currentChosenPointContent"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="4"
+                    android:gravity="center"
+                    android:text="@{viewModel.selectedMapPoint.toString()}" />
+
+                <Button
+                    android:id="@+id/actionWithPointButton"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:onClick="@{()->viewModel.selectActionForChangingNeighbors()}"
+                    android:text="@{viewModel.contentOnActionsButtonChangesNeighbors}" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/acceptedForEditPointInfoContainer"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:weightSum="7">
+
+                <TextView
+                    android:id="@+id/textView10"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:text="@string/neighbors" />
+
+                <TextView
+                    android:id="@+id/textView9"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:text="@{viewModel.selectedToChangMapPoint.toOneString()}" />
+
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/mapPointsRV"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="5">
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:enabled="@{viewModel.selectedToChangMapPoint!=null &amp;&amp; viewModel.currentChangeableConnections!=null}"
+                    android:onClick="@{()->viewModel.cancelPointChangingNeighbors()}"
+                    android:text="@string/cancel" />
+
+                <Button
+                    android:id="@+id/button6"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:onClick="@{()->viewModel.acceptPointChangingNeighbors()}"
+                    android:enabled="@{viewModel.selectedToChangMapPoint!=null &amp;&amp; viewModel.currentChangeableConnections!=null}"
+                    android:text="@string/accept" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/modScanningContainer"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -290,103 +392,6 @@
                 android:layout_weight="1"
                 android:onClick="@{()->viewModel.postPointInformationToServer()}"
                 android:text="@string/postToServer" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/modNeighborsContainer"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_margin="2dp"
-            android:layout_weight="8"
-            android:orientation="vertical"
-            android:visibility="@{viewModel.selectedMod==2?View.VISIBLE:View.GONE}"
-            android:weightSum="10">
-
-            <LinearLayout
-                android:id="@+id/currentChosenPointContainer"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="2"
-                android:orientation="horizontal"
-                android:weightSum="9">
-
-                <TextView
-                    android:id="@+id/currentChosenPointInfo"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:text="@string/selectedMapPoint" />
-
-                <TextView
-                    android:id="@+id/currentChosenPointContent"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="4"
-                    android:text="@{viewModel.selectedMapPoint.toString()}" />
-
-                <Button
-                    android:id="@+id/actionWithPointButton"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="3"
-                    android:onClick="@{()->viewModel.selectActionForChangingNeighbors()}"
-                    android:text="@string/add" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/acceptedForEditPointInfoContainer"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="horizontal"
-                android:weightSum="7">
-
-                <TextView
-                    android:id="@+id/textView10"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:text="@string/neighbors"/>
-
-                <TextView
-                    android:id="@+id/textView9"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="5"
-                    android:text="@{viewModel.selectedToChangMapPoint.toOneString()}" />
-
-            </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="5">
-
-            </androidx.recyclerview.widget.RecyclerView>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:onClick="@{()->viewModel.cancelPointChangingNeighbors()}"
-                    android:text="@string/cancel" />
-
-                <Button
-                    android:id="@+id/button6"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="@string/accept"
-                    android:onClick="@{()->viewModel.acceptPointChangingNeighbors()}"/>
-            </LinearLayout>
 
         </LinearLayout>
 

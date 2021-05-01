@@ -15,6 +15,10 @@ import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
 import com.mrkiriss.wifilocalpositioning.mvvm.repositiries.TrainingMapRepository;
 
+import java.lang.reflect.MalformedParameterizedTypeException;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import lombok.Data;
@@ -41,14 +45,23 @@ public class TrainingMapViewModel extends ViewModel {
     private ObservableField<String> inputNumberOfScanKits;
 
     private ObservableField<MapPoint> selectedToChangMapPoint;
+    private ObservableField<String> contentOnActionsButtonChangesNeighbors;
+    public final String MODE_SELECT_MAIN="Редактировать связи";
+    public final String MODE_ADD_SECONDLY="Добавить связь";
+    private List<MapPoint> currentChangeableConnections;
 
     private LiveData<Floor> changeFloor;
     private LiveData<String> serverResponseRequest;
 
     private final MutableLiveData<String> toastContent;
     private final MutableLiveData<int[]> moveCamera;
+
     private final LiveData<CompleteKitsContainer> completeKitsOfScansResult;
     private final LiveData<Integer> remainingNumberOfScanning;
+
+    private final MutableLiveData<List<MapPoint>> serverConnectionsResponse;
+    private final MutableLiveData<MapPoint> requestToAddSecondlyMapPointToRV;
+    private final MutableLiveData<List<MapPoint>> requestToChangeSecondlyMapPointListInRV; // заполняется при ответе сервера или обнулении
 
     public TrainingMapViewModel(){
 
@@ -60,6 +73,9 @@ public class TrainingMapViewModel extends ViewModel {
         serverResponseRequest=repository.getServerResponse();
         completeKitsOfScansResult=repository.getCompleteKitsOfScansResult();
         remainingNumberOfScanning=repository.getRemainingNumberOfScanning();
+        requestToAddSecondlyMapPointToRV =new MutableLiveData<>();
+        requestToChangeSecondlyMapPointListInRV =new MutableLiveData<>();
+        serverConnectionsResponse=repository.getServerConnectionsResponse();
 
         selectedMod=new ObservableInt(0);
         showMapPoints=new ObservableBoolean(false);
@@ -77,6 +93,8 @@ public class TrainingMapViewModel extends ViewModel {
         inputNumberOfScanKits=new ObservableField<>("");
 
         selectedToChangMapPoint=new ObservableField<>();
+        contentOnActionsButtonChangesNeighbors=new ObservableField<>(MODE_SELECT_MAIN);
+        currentChangeableConnections =new ArrayList<>();
     }
 
     public void processShowSelectedMapPoint(boolean afterButton){
@@ -90,7 +108,7 @@ public class TrainingMapViewModel extends ViewModel {
                 break;
             case 3:
                 startFindNearPoint();
-                inputCabId.set(selectedMapPoint.get().getTag());
+                inputCabId.set(selectedMapPoint.get().getRoomName());
                 break;
         }
 
@@ -175,7 +193,7 @@ public class TrainingMapViewModel extends ViewModel {
     // SCANNING MODE
     // запустить сканирование выбранной точки
     public void startScanning(){
-        if (selectedMapPoint.get()==null || selectedMapPoint.get().getY()<=0 || selectedMapPoint.get().getX()<=0 || selectedMapPoint.get().getTag().isEmpty()){
+        if (selectedMapPoint.get()==null || selectedMapPoint.get().getY()<=0 || selectedMapPoint.get().getX()<=0 || selectedMapPoint.get().getRoomName().isEmpty()){
             toastContent.setValue("Точка для сканирования не выбрана");
             return;
         }
@@ -183,7 +201,7 @@ public class TrainingMapViewModel extends ViewModel {
             toastContent.setValue("Неккоректное количетсво сканирований");
             return;
         }
-        repository.runScanInManager(Integer.parseInt(inputNumberOfScanKits.get()), selectedMapPoint.get().getTag());
+        repository.runScanInManager(Integer.parseInt(inputNumberOfScanKits.get()), selectedMapPoint.get().getRoomName());
     }
     // вызов обработки результатов сканирования
     public void processCompleteKitsOfScanResults(CompleteKitsContainer completeKitsContainer){
@@ -193,15 +211,58 @@ public class TrainingMapViewModel extends ViewModel {
     // CHANGING MODE
     // обработка нажатия на кнопку действия (начало редактирования или добавление точки)
     public void selectActionForChangingNeighbors(){
+        switch (contentOnActionsButtonChangesNeighbors.get()){
+            case MODE_SELECT_MAIN:
+                processSelectMainMode(selectedMapPoint.get());
+                break;
+            case MODE_ADD_SECONDLY:
+                processAddSecondlyMode(selectedMapPoint.get());
+                break;
+        }
+    }
+    private void processSelectMainMode(MapPoint selectedPoint){
+        if (selectedPoint==null){
+            toastContent.setValue("Точка для изменения не выбрана");
+            return;
+        }
+        repository.startDownloadingConnections(selectedPoint.getRoomName());
+    }
+    public void processServerConnectionsResponse(List<MapPoint> mapPoints){
+        currentChangeableConnections =new ArrayList<>(mapPoints);
+        selectedToChangMapPoint.set(selectedMapPoint.get());
+        contentOnActionsButtonChangesNeighbors.set(MODE_ADD_SECONDLY);
+    }
+    private void processAddSecondlyMode(MapPoint selectedPoint){
+        if (selectedPoint==null){
+            toastContent.setValue("Точка для добавления не выбрана");
+            return;
+        }
+        if (currentChangeableConnections.contains(selectedPoint)){
+            toastContent.setValue("Точка уже добавлена");
+            return;
+        }
+        if (selectedPoint.equals(selectedToChangMapPoint.get())){
+            toastContent.setValue("Выбранная точка редактируется");
+            return;
+        }
 
+        currentChangeableConnections.add(selectedPoint);
+        requestToAddSecondlyMapPointToRV.setValue(selectedPoint);
+    }
+    public void processDeleteSecondly(MapPoint mapPoint){
+        currentChangeableConnections.remove(mapPoint);
     }
     // обработка нажатия на кнопку подтверждения изменений соседей точки
     public void acceptPointChangingNeighbors(){
-
+        repository.postChangedConnections(currentChangeableConnections, selectedToChangMapPoint.get().getRoomName());
+        cancelPointChangingNeighbors();
     }
     // обработка нажатия на кнопку отмены изменений соседей точки
     public void cancelPointChangingNeighbors(){
-
+        selectedToChangMapPoint.set(null);
+        currentChangeableConnections=new ArrayList<>();
+        requestToChangeSecondlyMapPointListInRV.setValue(new ArrayList<>());
+        contentOnActionsButtonChangesNeighbors.set(MODE_SELECT_MAIN);
     }
 
     // DELETE MODE

@@ -142,7 +142,7 @@ public class LocationDetectionRepository implements Serializable {
         result.setFloorWithPointer(foundFloor);
         result.setX(definedLocationPoint.getX());
         result.setY(definedLocationPoint.getY());
-        result.setTag(definedLocationPoint.getRoomName());
+        result.setRoomName(definedLocationPoint.getRoomName());
         return result;
     }
 }

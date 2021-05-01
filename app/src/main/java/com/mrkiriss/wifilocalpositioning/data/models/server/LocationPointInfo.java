@@ -18,4 +18,5 @@ public class LocationPointInfo {
         this.floorId=floorId;
         this.isRoom=isRoom;
     }
+    public LocationPointInfo(){}
 }

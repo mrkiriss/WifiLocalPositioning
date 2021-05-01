@@ -1,7 +1,5 @@
 package com.mrkiriss.wifilocalpositioning.data.models.map;
 
-import java.util.Map;
-
 import lombok.Data;
 
 @Data
@@ -9,13 +7,13 @@ public class MapPoint {
     private int x;
     private int y;
     private Floor floorWithPointer;
-    private String tag;
+    private String roomName;
     private boolean isRoom;
 
-    public MapPoint(int x, int y, String tag, boolean isRoom){
+    public MapPoint(int x, int y, String roomName, boolean isRoom){
         this.x=x;
         this.y=y;
-        this.tag=tag;
+        this.roomName = roomName;
         this.isRoom=isRoom;
     }
     public MapPoint(){}
@@ -25,11 +23,16 @@ public class MapPoint {
         return "x="+x+" "+
                 " y="+y+"\n"+
                 "isRoom="+isRoom+
-                " roomName="+tag;
+                " roomName="+ roomName;
     }
     public String toOneString(){
             return "x="+x+" "+
             " y="+y+" isRoom="+isRoom+
-                    " roomName="+tag;
+                    " roomName="+ roomName;
+    }
+    public boolean equals(MapPoint mapPoint){
+        return (mapPoint.getRoomName().equals(roomName) &&
+                mapPoint.getX()==x &&
+                mapPoint.getY()==y);
     }
 }

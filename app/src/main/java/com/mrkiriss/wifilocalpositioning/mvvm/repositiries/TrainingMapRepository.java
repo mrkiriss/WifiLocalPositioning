@@ -13,6 +13,7 @@ import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.AccessPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CalibrationLocationPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
+import com.mrkiriss.wifilocalpositioning.data.models.server.Connections;
 import com.mrkiriss.wifilocalpositioning.data.models.server.DefinedLocationPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.ListOfAllMapPoints;
 import com.mrkiriss.wifilocalpositioning.data.models.server.LocationPointInfo;
@@ -42,6 +43,7 @@ public class TrainingMapRepository implements Serializable {
     private final MutableLiveData<String> toastContent;
     private final MutableLiveData<Floor> changeFloor;
     private final MutableLiveData<String> serverResponse;
+    private final MutableLiveData<List<MapPoint>> serverConnectionsResponse;
 
     private final LiveData<CompleteKitsContainer> completeKitsOfScansResult;
     private LiveData<Integer> remainingNumberOfScanning;
@@ -55,6 +57,7 @@ public class TrainingMapRepository implements Serializable {
         toastContent=new MutableLiveData<>();
         changeFloor=new MutableLiveData<>();
         serverResponse=new MutableLiveData<>();
+        serverConnectionsResponse=new MutableLiveData<>();
 
         completeKitsOfScansResult=wifiScanner.getCompleteScanResults();
         remainingNumberOfScanning=wifiScanner.getRemainingNumberOfScanning();
@@ -211,6 +214,7 @@ public class TrainingMapRepository implements Serializable {
         list.add(new MapPoint(locationPointInfo.getX(), locationPointInfo.getY(), locationPointInfo.getRoomName(), locationPointInfo.isRoom()));
     }
 
+    // отправить точку с её информацией о APs
     private void postFromTrainingWithAPs(){
         toastContent.setValue("Обучение точкам доступа началось");
         retrofit.postCalibrationLPWithAPs(calibrationLocationPoint).enqueue(new Callback<StringResponse>() {
@@ -232,6 +236,7 @@ public class TrainingMapRepository implements Serializable {
         });
     }
 
+    // удаление информации о точки, самой точки с её информацией о APs
     public void deleteLocationPointInfoOnServer(String roomName){
         serverResponse.setValue("Запрос отправлен на сервер. Ждёмс");
 
@@ -276,4 +281,48 @@ public class TrainingMapRepository implements Serializable {
             }
         });
     }
+
+    // получение связей по имени для добавления на экран в RecyclerView
+    public void startDownloadingConnections(String mainName){
+        retrofit.getConnectionsByName(mainName).enqueue(new Callback<Connections>() {
+            @Override
+            public void onResponse(Call<Connections> call, Response<Connections> response) {
+                Log.println(Log.INFO, "TrainingMapRepository",
+                        String.format("Server response after downloading connections=%s", response.body()));
+                if (response.body()==null){
+                    serverResponse.setValue("Response body is null");
+                    return;
+                }
+                serverResponse.setValue(response.body().toString());
+                serverConnectionsResponse.setValue(response.body().convertToListOfMapPoints());
+            }
+            @Override
+            public void onFailure(Call<Connections> call, Throwable t) {
+                serverResponse.setValue(call.toString()+"\n"+t.getMessage());
+                Log.e("SERVER_ERROR", t.getMessage());
+            }
+        });
+    }
+    // отправка на сервер изменённых пользователем связей
+    public void postChangedConnections(List<MapPoint> mapPoints, String mainName){
+        retrofit.postConnections(Connections.convertToOnlyNameConnections(mainName, mapPoints)).enqueue(new Callback<StringResponse>() {
+            @Override
+            public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
+                Log.println(Log.INFO, "TrainingMapRepository",
+                        String.format("Server response after postChangedConnections=%s", response.body()));
+                if (response.body()==null){
+                    serverResponse.setValue("Response body is null");
+                    return;
+                }
+                serverResponse.setValue(response.body().getResponse());
+            }
+
+            @Override
+            public void onFailure(Call<StringResponse> call, Throwable t) {
+                serverResponse.setValue(call.toString()+"\n"+t.getMessage());
+                Log.e("SERVER_ERROR", t.getMessage());
+            }
+        });
+    }
+
 }
