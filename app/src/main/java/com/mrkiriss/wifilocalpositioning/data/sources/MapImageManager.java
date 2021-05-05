@@ -224,9 +224,9 @@ public class MapImageManager {
         Canvas canvas = new Canvas(blank);
         for (MapPoint mapPoint:mapPoints) {
             // редактируем координаты в соотв. с размером маркера
-            int x = (int)( mapPoint.getX()-dx);
-            int y = (int)( mapPoint.getY()-dy);
-            canvas.drawBitmap(pointerAccepted, x-dxPointerAccepted, y-dyPointerAccepted, paint);
+            int x = (int)( mapPoint.getX()-dxPointerAccepted);
+            int y = (int)( mapPoint.getY()-dyPointerAccepted);
+            canvas.drawBitmap(pointerAccepted, x, y, paint);
         }
         return blank;
     }
