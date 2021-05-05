@@ -29,7 +29,7 @@
             android:background="@drawable/round_border_find"
             android:backgroundTint="@color/routeBack"
             android:orientation="vertical"
-            android:visibility="@{viewModel.showRoute?View.VISIBLE:View.GONE}">
+            android:visibility="@{viewModel.showRoute &amp;&amp; !viewModel.showFind?View.VISIBLE:View.GONE}">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -90,10 +90,77 @@
             android:layout_marginTop="20dp"
             android:background="@drawable/circle_border"
             android:onClick="@{()->viewModel.onShowRoute()}"
-            android:visibility="@{viewModel.showRoute?View.GONE:View.VISIBLE}"
             android:padding="10dp"
             android:scaleType="fitCenter"
+            android:visibility="@{viewModel.showRoute || viewModel.showFind?View.GONE:View.VISIBLE}"
             app:srcCompat="@drawable/ic_route" />
+
+        <LinearLayout
+            android:id="@+id/findContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@drawable/round_border_find"
+            android:backgroundTint="@color/routeBack"
+            android:orientation="vertical"
+            android:visibility="@{viewModel.showFind &amp;&amp; !viewModel.showRoute?View.VISIBLE:View.GONE}">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/imageButton8"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:background="@drawable/round_border_find"
+                    android:onClick="@{()->viewModel.onHideFind()}"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/ic_search_location" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="17"
+                    android:orientation="vertical">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/autoCompleteTextView3"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="2"
+                        android:hint="@string/hindTextEditStart"
+                        android:text="@={viewModel.findInput}" />
+
+                    <Button
+                        android:id="@+id/button6"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_margin="3dp"
+                        android:layout_weight="1"
+                        android:onClick="@{()->viewModel.startFindRoom()}"
+                        android:text="@string/findRoomButtonText" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/showFindButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="top|left"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="90dp"
+            android:background="@drawable/circle_border"
+            android:onClick="@{()->viewModel.onShowFind()}"
+            android:padding="10dp"
+            android:scaleType="fitCenter"
+            android:visibility="@{viewModel.showFind  || viewModel.showRoute?View.GONE:View.VISIBLE}"
+            app:srcCompat="@drawable/ic_search_location" />
+
 
         <ImageButton
             android:id="@+id/showCurrentLocationButton"

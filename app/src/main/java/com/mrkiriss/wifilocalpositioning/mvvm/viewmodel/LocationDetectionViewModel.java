@@ -36,6 +36,7 @@ public class LocationDetectionViewModel extends ViewModel {
     private final ObservableField<String> departureInput;
     private final ObservableField<String> destinationInput;
     private final ObservableBoolean showRoute;
+    private final ObservableBoolean showFind;
 
     public LocationDetectionViewModel(){
         App.getInstance().getComponentManager().getLocationDetectionSubcomponent().inject(this);
@@ -52,6 +53,7 @@ public class LocationDetectionViewModel extends ViewModel {
         departureInput = new ObservableField<>("");
         destinationInput = new ObservableField<>("");
         showRoute=new ObservableBoolean(false);
+        showFind = new ObservableBoolean(false);
 
         requestToRefreshFloor=repository.getRequestToRefreshFloor();
     }
@@ -63,6 +65,7 @@ public class LocationDetectionViewModel extends ViewModel {
     public void onShowCurrentLocation(){
         showCurrentLocation.setValue(resultOfDefinition.getValue());
     }
+    // show\hide route views
     public void onShowRoute(){
         showRoute.set(true);
         requestToRefreshFloor.setValue("Маршрутизация показывается");
@@ -70,6 +73,15 @@ public class LocationDetectionViewModel extends ViewModel {
     public void onHideRoute(){
         showRoute.set(false);
         requestToRefreshFloor.setValue("Маршрутизация скрыта");
+    }
+    // show\hide find views
+    public void onShowFind(){
+        showFind.set(true);
+        requestToRefreshFloor.setValue("Меню поиска показывается");
+    }
+    public void onHideFind(){
+        showFind.set(false);
+        requestToRefreshFloor.setValue("Меню поиска скрыто");
     }
 
     public void arrowInc(){
@@ -94,5 +106,8 @@ public class LocationDetectionViewModel extends ViewModel {
             return;
         }
         repository.requestRoute(departureInput.get(), destinationInput.get());
+    }
+    public void startFindRoom(){
+
     }
 }

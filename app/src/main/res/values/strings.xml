@@ -58,6 +58,7 @@
     <string name="hindTextEditStart">Откуда</string>
     <string name="hindTextEditEnd">Куда</string>
     <string name="buildRouteButtonText">Построить маршрут</string>
+    <string name="findRoomButtonText">Найти локацию</string>
 
 
 
