@@ -63,6 +63,14 @@ public class LocationDetectionViewModel extends ViewModel {
     public void onShowCurrentLocation(){
         showCurrentLocation.setValue(resultOfDefinition.getValue());
     }
+    public void onShowRoute(){
+        showRoute.set(true);
+        requestToRefreshFloor.setValue("Маршрутизация показывается");
+    }
+    public void onHideRoute(){
+        showRoute.set(false);
+        requestToRefreshFloor.setValue("Маршрутизация скрыта");
+    }
 
     public void arrowInc(){
         if (floorNumber.get()<4){
@@ -81,7 +89,6 @@ public class LocationDetectionViewModel extends ViewModel {
     }
 
     public void startBuildRoute(){
-        showRoute.set(true);
         if (departureInput.get().isEmpty() || destinationInput.get().isEmpty()){
             requestToRefreshFloor.setValue("Не все поля заполены!");
             return;
