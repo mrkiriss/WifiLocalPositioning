@@ -20,6 +20,7 @@
     <string name="nav_header_subtitle">by RTUITLab</string>
 
     <!--TrainingMapFragment-->
+    <string name="nav_training_map">Тренировка карты</string>
     <string name="showAllPointsOn">Скрыть точки</string>
     <string name="showAllPointsOff">Отобразить точки</string>
     <string name="updateMapButton">Обновить карту</string>
@@ -49,11 +50,15 @@
     <string name="accept">Подтвердить</string>
     <string name="cancel">Отменить</string>
     <string name="neighbors">Соседи для точки </string>
+
     <string name="deleteLPInfoButtonText">Удалить всю инфомрациию о точке</string>
     <string name="deleteLPButtonText">Удалить сканирования точки</string>
 
-    <!-- Training2 -->
-    <string name="nav_training_map">Тренировка карты</string>
+    <!-- DefinitionMap -->
+    <string name="hindTextEditStart">Откуда</string>
+    <string name="hindTextEditEnd">Куда</string>
+    <string name="buildRouteButtonText">Построить маршрут</string>
+
 
 
     <!-- Settings -->

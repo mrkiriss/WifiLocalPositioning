@@ -76,6 +76,9 @@ public class TrainingMapFragment extends Fragment {
                 photoView.getImageMatrix().getValues(values);
                 int x = (int) ((e.getX() - values[2]) / values[0]);
                 int y = (int) ((e.getY() - values[5]) / values[4]);
+                // сгладить координаты, чтобы они находились на одной прямой
+                x=x-x%5;
+                y=y-y%5;
                 // потребовать изменения изображения
                 viewModel.getInputX().set(String.valueOf(x));
                 viewModel.getInputY().set(String.valueOf(y));

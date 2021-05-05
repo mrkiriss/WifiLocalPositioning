@@ -1,5 +1,7 @@
 package com.mrkiriss.wifilocalpositioning.mvvm.viewmodel;
 
+import androidx.databinding.ObservableBoolean;
+import androidx.databinding.ObservableField;
 import androidx.databinding.ObservableInt;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -19,31 +21,40 @@ import lombok.Data;
 public class LocationDetectionViewModel extends ViewModel {
 
     @Inject
-    protected LocationDetectionRepository locationDetectionRepository;
+    protected LocationDetectionRepository repository;
 
     private final LiveData<CompleteKitsContainer> completeKitsOfScansResult;
-    private LiveData<MapPoint> resultOfDefinition;
-    private LiveData<Floor> changeFloor;
+    private final LiveData<MapPoint> resultOfDefinition;
+    private final LiveData<Floor> changeFloor;
 
-    private MutableLiveData<MapPoint> showCurrentLocation;
+    private final MutableLiveData<MapPoint> showCurrentLocation;
+    private final MutableLiveData<String> toastContent;
 
-    private ObservableInt floorNumber;
+    private final ObservableInt floorNumber;
+    private final ObservableField<String> findInput;
+    private final ObservableField<String> departureInput;
+    private final ObservableField<String> destinationInput;
+    private final ObservableBoolean showRoute;
 
     public LocationDetectionViewModel(){
-
         App.getInstance().getComponentManager().getLocationDetectionSubcomponent().inject(this);
 
-        completeKitsOfScansResult= locationDetectionRepository.getCompleteKitsOfScansResult();
-        resultOfDefinition=locationDetectionRepository.getResultOfDefinition();
-        changeFloor=locationDetectionRepository.getChangeFloor();
+        completeKitsOfScansResult= repository.getCompleteKitsOfScansResult();
+        resultOfDefinition= repository.getResultOfDefinition();
+        changeFloor= repository.getChangeFloor();
+        toastContent=repository.getToastContent();
 
         showCurrentLocation=new MutableLiveData<>();
 
         floorNumber = new ObservableInt(2);
+        findInput = new ObservableField<>("");
+        departureInput = new ObservableField<>("");
+        destinationInput = new ObservableField<>("");
+        showRoute=new ObservableBoolean(false);
     }
 
     public void startProcessingCompleteKitsOfScansResult(CompleteKitsContainer scanResults){
-        locationDetectionRepository.startProcessingCompleteKitsOfScansResult(scanResults);
+        repository.startProcessingCompleteKitsOfScansResult(scanResults);
     }
 
     public void onShowCurrentLocation(){
@@ -63,6 +74,15 @@ public class LocationDetectionViewModel extends ViewModel {
         }
     }
     public void startFloorChanging(){
-        locationDetectionRepository.changeFloor(floorNumber.get());
+        repository.changeFloor(floorNumber.get(), showRoute.get());
+    }
+
+    public void startBuildRoute(){
+        showRoute.set(true);
+        if (departureInput.get().isEmpty() || destinationInput.get().isEmpty()){
+            toastContent.setValue("Не все поля заполены!");
+            return;
+        }
+        repository.requestRoute(departureInput.get(), destinationInput.get());
     }
 }

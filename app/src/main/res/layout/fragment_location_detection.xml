@@ -19,6 +19,63 @@
             android:layout_height="match_parent"
             android:layout_gravity="center" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@drawable/round_border_find"
+            android:backgroundTint="@color/routeBack"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/imageButton5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:background="@drawable/round_border_find"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/ic_route" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="17"
+                    android:orientation="vertical">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/autoCompleteTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:hint="@string/hindTextEditStart"
+                        android:text="@={viewModel.departureInput}" />
+
+                    <AutoCompleteTextView
+                        android:id="@+id/autoCompleteTextView2"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:hint="@string/hindTextEditEnd"
+                        android:text="@={viewModel.destinationInput}" />
+
+                    <Button
+                        android:id="@+id/button3"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_margin="3dp"
+                        android:layout_weight="1"
+                        android:onClick="@{()->viewModel.startBuildRoute()}"
+                        android:text="@string/buildRouteButtonText" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
         <ImageButton
             android:id="@+id/imageButton3"
             android:layout_width="50dp"

@@ -187,6 +187,10 @@ public class TrainingMapViewModel extends ViewModel {
             toastContent.setValue("Коодринаты некорректны");
             return;
         }
+        // сгладить координаты, чтобы они находились на одной прямой
+        intX-=intX%5;
+        intY-=intY%5;
+
         repository.postFromTrainingWithCoordinates(intX, intY, inputCabId, floorId, String.valueOf(selectedRoomType.get()==0));
     }
 
@@ -237,9 +241,11 @@ public class TrainingMapViewModel extends ViewModel {
             toastContent.setValue("Точка для добавления не выбрана");
             return;
         }
-        if (currentChangeableConnections.contains(selectedPoint)){
-            toastContent.setValue("Точка уже добавлена");
-            return;
+        for (MapPoint currentMapPoint:currentChangeableConnections){
+            if (currentMapPoint.equals(selectedPoint)){
+                toastContent.setValue("Точка уже добавлена");
+                return;
+            }
         }
         if (selectedPoint.equals(selectedToChangMapPoint.get())){
             toastContent.setValue("Выбранная точка редактируется");
@@ -279,8 +285,5 @@ public class TrainingMapViewModel extends ViewModel {
             return;
         }
         repository.deleteLocationPointOnServer(inputCabId.get());
-    }
-    public void startDeletingConnections(){
-
     }
 }

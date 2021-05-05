@@ -26,7 +26,6 @@ public class LocationDetectionFragment extends Fragment {
 
     private MapPoint currentLocation;
     private Floor currentFloor;
-    private boolean isStandardFloor;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -73,19 +72,22 @@ public class LocationDetectionFragment extends Fragment {
         });
         // прослышиваем кнопку показа текущего местоположения
         viewModel.getShowCurrentLocation().observe(getViewLifecycleOwner(), this::showCurrentLocation);
+        // прослушиваем увеломления через Toast
+        viewModel.getToastContent().observe(getViewLifecycleOwner(), content -> Toast.makeText(getContext(), content, Toast.LENGTH_SHORT).show());
     }
 
     private void drawCurrentLocation(MapPoint mapPoint){
         if (mapPoint!=null && mapPoint.getFloorWithPointer()!=null && currentFloor!=null && currentFloor.getFloorSchema()!=null &&
-                mapPoint.getFloorWithPointer().getFloorId()==currentFloor.getFloorId()) {
+                mapPoint.getFloorWithPointer().getFloorId()==currentFloor.getFloorId()
+                // если помимо других условий необходимо рисовать маршрут, текущее местоположение не рисовать
+                && !viewModel.getShowRoute().get()
+        ) {
             touchImageView.setImageBitmap(mapPoint.getFloorWithPointer().getFloorSchema());
             Log.i("changeMapPoint", "draw mapPoint's schema");
-            isStandardFloor=false;
         }else{
-            if (currentFloor==null || currentFloor.getFloorSchema()==null || isStandardFloor) return;
+            if (currentFloor==null || currentFloor.getFloorSchema()==null) return;
             touchImageView.setImageBitmap(currentFloor.getFloorSchema());
             Log.i("changeMapPoint", "draw basic floor schema");
-            isStandardFloor=true;
         }
     }
     private void drawCurrentFloor(Floor floor){
@@ -94,12 +96,10 @@ public class LocationDetectionFragment extends Fragment {
         if (currentLocation!=null && currentLocation.getFloorWithPointer()!=null &&
                 currentLocation.getFloorWithPointer().getFloorId()==floor.getFloorId()){
             touchImageView.setImageBitmap(currentLocation.getFloorWithPointer().getFloorSchema());
-            isStandardFloor=false;
             Log.i("drawCurrentFloor", "Совпадение местоположения и этажа, этаж "+currentLocation.getFloorWithPointer().getFloorId());
 
         }else{
             touchImageView.setImageBitmap(floor.getFloorSchema());
-            isStandardFloor=true;
             Log.i("drawCurrentFloor", "Отрисовка этажа без местопложения, этаж "+floor.getFloorId());
         }
     }
@@ -116,7 +116,6 @@ public class LocationDetectionFragment extends Fragment {
             float y = (float)mapPoint.getY()/mapPoint.getFloorWithPointer().getFloorSchema().getHeight();
             Log.i("changeZoom", "x="+x+" y="+y);
             touchImageView.setZoom(5, x, y);
-            isStandardFloor=false;
         }
     }
 }

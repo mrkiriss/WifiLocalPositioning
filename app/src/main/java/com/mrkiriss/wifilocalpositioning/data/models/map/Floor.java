@@ -19,6 +19,10 @@ public class Floor implements Serializable {
         this.floorSchema=floorSchema;
         this.pointer=pointer;
     }
+    public Floor(FloorId floorId, Bitmap floorSchema){
+        this.floorId=floorId;
+        this.floorSchema=floorSchema;
+    }
 
     public static FloorId convertFloorIdToEnum(int floorId){
         switch (floorId){

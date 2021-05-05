@@ -5,15 +5,18 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
 
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
 import com.mrkiriss.wifilocalpositioning.data.models.map.FloorId;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
+import com.mrkiriss.wifilocalpositioning.data.models.server.LocationPointInfo;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,25 +26,106 @@ public class MapImageManager {
     private final AssetManager assetManager;
     private final Bitmap pointer;
     private final Bitmap pointerAccepted;
+    private final Bitmap ladder;
     private final float dx;
     private final float dy;
+    private final float dxLadder;
+    private final float dyLadder;
     private final Paint paint;
+
+    private final FloorId[] FloorIds = {FloorId.ZERO_FLOOR, FloorId.FIRST_FLOOR, FloorId.SECOND_FLOOR, FloorId.THIRD_FLOOR, FloorId.FOURTH_FLOOR};
 
     private final Map<FloorId, Floor> basicFloors;
     // данные о каждом этаже для удаления\добавления еденичной точки без обращения к серверу
     private Map<FloorId, List<MapPoint>> dataOnPointsOnAllFloors;
+    // данные о каждом этаже с прорисованным маршрутом
+    private final Map<FloorId, Floor> routeFloors;
 
     public MapImageManager(Context context){
         this.assetManager=context.getAssets();
+
         pointer=getBitmapFromAsset("img/placeholder.png");
-        pointerAccepted=getBitmapFromAsset("img/placeholder_accepted.png");
         dx=(float)pointer.getWidth()/2;
         dy=(float)pointer.getHeight();
+        pointerAccepted=getBitmapFromAsset("img/placeholder_accepted.png");
+        ladder=getBitmapFromAsset("img/ladder.png");
+        dxLadder=(float)pointer.getWidth()/2;
+        dyLadder=(float)pointer.getHeight()/2;
+
         paint = new Paint();
+        paint.setColor(Color.RED);
+        paint.setStrokeWidth(5);
+
         basicFloors=new HashMap<>();
         dataOnPointsOnAllFloors=new HashMap<>();
+        routeFloors=new HashMap<>();
     }
 
+    // возвращает этаж с прорисованным маршрутом или, при его отсутсвии, обычный этаж
+    public Floor getRouteFloor(FloorId floorId){
+        if (routeFloors.containsKey(floorId)){
+            return routeFloors.get(floorId);
+        }else{
+            return getBasicFloor(floorId);
+        }
+    }
+    // запускает создание объектов этажей с маршрутами
+    public void startCreatingFloorsWithRout(List<LocationPointInfo> info){
+        Map<FloorId, List<float[]>> requiredStrokes = createRequiredStrokes(info);
+        createFloorsAccordingToRequirements(requiredStrokes);
+    }
+    // создаёт требования для рисования на этажах
+    private Map<FloorId, List<float[]>> createRequiredStrokes(List<LocationPointInfo> info){
+        Map<FloorId, List<float[]>> requiredStrokes = new HashMap<>();
+
+        for (int i=0;i<info.size()-1;i++){
+            if (info.get(i).getFloorId()==info.get(i+1).getFloorId()){ // совпадает этаж - рисовать линию
+                FloorId floorId = Floor.convertFloorIdToEnum(info.get(i).getFloorId());
+                // проверка на наличие требования в карте
+                if (!requiredStrokes.containsKey(floorId)) requiredStrokes.put(floorId, new ArrayList<>());
+
+                // добавление отрезка в требования этажа
+                float[] segment = new float[]{info.get(i).getX(), info.get(i).getY(), info.get(i+1).getX(), info.get(i+1).getY()};
+                requiredStrokes.get(floorId).add(segment);
+            }else{ // не совпадает этаж - требовать рисовать лестницы на двух этажах
+                FloorId floorId1 = Floor.convertFloorIdToEnum(info.get(i).getFloorId());
+                FloorId floorId2 = Floor.convertFloorIdToEnum(info.get(i+1).getFloorId());
+
+                // проверка на наличие требования в карте
+                if (!requiredStrokes.containsKey(floorId1)) requiredStrokes.put(floorId1, new ArrayList<>());
+                if (!requiredStrokes.containsKey(floorId2)) requiredStrokes.put(floorId2, new ArrayList<>());
+
+                // добавление лестниц в требования этажа
+                float[] ladder1 = new float[]{info.get(i).getX(), info.get(i).getY(), -1, -1};
+                float[] ladder2 = new float[]{info.get(i+1).getX(), info.get(i+1).getY(), -1, -1};
+                requiredStrokes.get(floorId1).add(ladder1);
+                requiredStrokes.get(floorId2).add(ladder2);
+            }
+        }
+
+        return requiredStrokes;
+    }
+    private void createFloorsAccordingToRequirements(Map<FloorId, List<float[]>> requiredStrokes){
+        for (FloorId floorId : requiredStrokes.keySet()){
+            routeFloors.put(floorId, createSingleFloorAccordingToRequirement(floorId, requiredStrokes.get(floorId)));
+        }
+    }
+    private Floor createSingleFloorAccordingToRequirement(FloorId floorId, List<float[]> requiredStrokes){
+        Bitmap blank = getBasicFloor(floorId).getFloorSchema().copy(Bitmap.Config.ARGB_8888, true);
+        Canvas canvas = new Canvas(blank);
+        // редактируем координаты в соотв. с размером маркера
+        for (float[] requirement : requiredStrokes){
+            if (requirement[2]==-1 && requirement[3]==-1){ // нужно нарисовать лестницу
+                canvas.drawBitmap(ladder, requirement[0]-dxLadder, requirement[1]-dyLadder, paint);
+            }else{
+                canvas.drawLines(requirement ,paint);
+            }
+        }
+        return new Floor(floorId, blank);
+    }
+
+
+    // возвращает, причём если сейчас нет в наличии - создаёт
     public Floor getBasicFloor(FloorId floorId){
         Floor preresult = findBasicFloor(floorId);
         if (preresult ==null){
@@ -50,6 +134,7 @@ public class MapImageManager {
         }
         return new Floor(floorId, preresult.getFloorSchema().copy(Bitmap.Config.ARGB_8888, true), pointer);
     }
+    // проверяет наличие и возращает объекти или null
     private Floor findBasicFloor(FloorId floorId){
         if (basicFloors.containsKey(floorId)){
             return basicFloors.get(floorId);
@@ -58,6 +143,7 @@ public class MapImageManager {
         }
     }
 
+    // возвращает этаж с единственным указателем
     public Floor getFloorWithPointer(FloorId floorId, int x, int y){
         Bitmap bitmap = getBasicFloor(floorId).getFloorSchema();
 
@@ -67,12 +153,14 @@ public class MapImageManager {
 
         return new Floor(floorId, bitmap, pointer);
     }
+    // возвращает этаж с отображенными указателями из списка
     public Floor getFloorWithPointers(List<MapPoint> mapPoints, FloorId floorId){
         Bitmap bitmap = getBasicFloor(floorId).getFloorSchema();
         Bitmap resultBitmap = mergePointerSAndBitmap(bitmap, mapPoints);
         return new Floor(floorId, resultBitmap, pointer);
     }
 
+    // возвращает картинку этажа с указателем по координатам
     public Bitmap mergePointerAndBitmap(Bitmap floor, int x, int y){
         Bitmap blank = floor.copy(Bitmap.Config.ARGB_8888, true);
         Canvas canvas = new Canvas(blank);
@@ -82,6 +170,7 @@ public class MapImageManager {
         canvas.drawBitmap(pointer, x, y, paint);
         return blank;
     }
+    // возвращает картинку этажа с указателями по координатам
     private Bitmap mergePointerSAndBitmap(Bitmap floor, List<MapPoint> mapPoints){
         Bitmap blank = floor.copy(Bitmap.Config.ARGB_8888, true);
         Canvas canvas = new Canvas(blank);
@@ -93,6 +182,7 @@ public class MapImageManager {
         }
         return blank;
     }
+    // загружает картинку из assets
     private Bitmap getBitmapFromAsset(String filePath) {
 
         InputStream istr;

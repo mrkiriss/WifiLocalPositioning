@@ -7,6 +7,8 @@ import com.mrkiriss.wifilocalpositioning.data.models.server.ListOfAllMapPoints;
 import com.mrkiriss.wifilocalpositioning.data.models.server.LocationPointInfo;
 import com.mrkiriss.wifilocalpositioning.data.models.server.StringResponse;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -41,5 +43,5 @@ public interface IMWifiServerApi {
     Call<Connections> getConnectionsByName(@Query("name") String name);
 
     @GET("define/route")
-    Call<Connections> getRoute(@Query("start") String start, @Query("end") String end);
+    Call<List<LocationPointInfo>> getRoute(@Query("start") String start, @Query("end") String end);
 }
