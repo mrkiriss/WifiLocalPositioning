@@ -24,13 +24,22 @@ import java.util.Map;
 public class MapImageManager {
 
     private final AssetManager assetManager;
+
     private final Bitmap pointer;
-    private final Bitmap pointerAccepted;
-    private final Bitmap ladder;
     private final float dx;
     private final float dy;
+    private final Bitmap ladder;
     private final float dxLadder;
     private final float dyLadder;
+    private final Bitmap departure;
+    private final float dxDeparture;
+    private final float dyDeparture;
+    private final Bitmap destination;
+    private final float dxDestination;
+    private final float dyDestination;
+    private final Bitmap pointerAccepted;
+    private final float dxPointerAccepted;
+    private final float dyPointerAccepted;
     private final Paint paint;
 
     private final FloorId[] FloorIds = {FloorId.ZERO_FLOOR, FloorId.FIRST_FLOOR, FloorId.SECOND_FLOOR, FloorId.THIRD_FLOOR, FloorId.FOURTH_FLOOR};
@@ -47,10 +56,18 @@ public class MapImageManager {
         pointer=getBitmapFromAsset("img/placeholder.png");
         dx=(float)pointer.getWidth()/2;
         dy=(float)pointer.getHeight();
-        pointerAccepted=getBitmapFromAsset("img/placeholder_accepted.png");
         ladder=getBitmapFromAsset("img/ladder.png");
-        dxLadder=(float)pointer.getWidth()/2;
-        dyLadder=(float)pointer.getHeight()/2;
+        dxLadder=(float)ladder.getWidth()/2;
+        dyLadder=(float)ladder.getHeight()/2;
+        departure=getBitmapFromAsset("img/departure.png");
+        dxDeparture=(float)departure.getWidth()/2;
+        dyDeparture=(float)departure.getHeight()/2;
+        destination=getBitmapFromAsset("img/destination.png");
+        dxDestination=(float)destination.getWidth()/2;
+        dyDestination=(float)destination.getHeight()/2;
+        pointerAccepted=getBitmapFromAsset("img/placeholder_accepted.png");
+        dxPointerAccepted=(float)pointerAccepted.getWidth()/2;
+        dyPointerAccepted=(float)pointerAccepted.getHeight();
 
         paint = new Paint();
         paint.setColor(Color.RED);
@@ -79,6 +96,15 @@ public class MapImageManager {
         Map<FloorId, List<float[]>> requiredStrokes = new HashMap<>();
 
         for (int i=0;i<info.size()-1;i++){
+            if (i==0){ // требуем нарисовать изображения начала
+                FloorId floorId = Floor.convertFloorIdToEnum(info.get(i).getFloorId());
+                // проверка на наличие требования в карте
+                if (!requiredStrokes.containsKey(floorId)) requiredStrokes.put(floorId, new ArrayList<>());
+
+                // добавление начала в требования этажа
+                float[] departure = new float[]{info.get(i).getX(), info.get(i).getY(), -2, -2};
+                requiredStrokes.get(floorId).add(departure);
+            }
             if (info.get(i).getFloorId()==info.get(i+1).getFloorId()){ // совпадает этаж - рисовать линию
                 FloorId floorId = Floor.convertFloorIdToEnum(info.get(i).getFloorId());
                 // проверка на наличие требования в карте
@@ -103,6 +129,16 @@ public class MapImageManager {
             }
         }
 
+        if (info.size()>1){ // требуем нарисовать изображения конца
+            FloorId floorId = Floor.convertFloorIdToEnum(info.get(info.size()-1).getFloorId());
+            // проверка на наличие требования в карте
+            if (!requiredStrokes.containsKey(floorId)) requiredStrokes.put(floorId, new ArrayList<>());
+
+            // добавление конца в требования этажа
+            float[] destination = new float[]{info.get(info.size()-1).getX(), info.get(info.size()-1).getY(), -3, -3};
+            requiredStrokes.get(floorId).add(destination);
+        }
+
         return requiredStrokes;
     }
     private void createFloorsAccordingToRequirements(Map<FloorId, List<float[]>> requiredStrokes){
@@ -117,6 +153,10 @@ public class MapImageManager {
         for (float[] requirement : requiredStrokes){
             if (requirement[2]==-1 && requirement[3]==-1){ // нужно нарисовать лестницу
                 canvas.drawBitmap(ladder, requirement[0]-dxLadder, requirement[1]-dyLadder, paint);
+            }else if (requirement[2]==-2 && requirement[3]==-2) { // отрисовать начало
+                canvas.drawBitmap(departure, requirement[0]-dxDeparture, requirement[1]-dxDeparture, paint);
+            }else if (requirement[2]==-3 && requirement[3]==-3) { // отрисовать конец
+                canvas.drawBitmap(destination, requirement[0]-dxDestination, requirement[1]-dyDestination, paint);
             }else{
                 canvas.drawLines(requirement ,paint);
             }
@@ -178,7 +218,7 @@ public class MapImageManager {
             // редактируем координаты в соотв. с размером маркера
             int x = (int)( mapPoint.getX()-dx);
             int y = (int)( mapPoint.getY()-dy);
-            canvas.drawBitmap(pointerAccepted, x, y, paint);
+            canvas.drawBitmap(pointerAccepted, x-dxPointerAccepted, y-dyPointerAccepted, paint);
         }
         return blank;
     }
