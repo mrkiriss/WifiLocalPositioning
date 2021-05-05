@@ -1,10 +1,12 @@
 package com.mrkiriss.wifilocalpositioning.mvvm.view;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
@@ -18,6 +20,8 @@ import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
 import com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.LocationDetectionViewModel;
 import com.ortiz.touchview.TouchImageView;
+
+import java.util.Objects;
 
 public class LocationDetectionFragment extends Fragment {
 
@@ -87,6 +91,7 @@ public class LocationDetectionFragment extends Fragment {
     }
 
     private void drawCurrentLocation(MapPoint mapPoint){
+        hideKeyboard(requireActivity());
         if (mapPoint!=null && mapPoint.getFloorWithPointer()!=null && currentFloor!=null && currentFloor.getFloorSchema()!=null &&
                 mapPoint.getFloorWithPointer().getFloorId()==currentFloor.getFloorId()
                 // если помимо других условий необходимо рисовать маршрут, текущее местоположение не рисовать
@@ -103,6 +108,7 @@ public class LocationDetectionFragment extends Fragment {
     private void drawCurrentFloor(Floor floor){
         if (floor==null || floor.getFloorSchema()==null) return;
 
+        hideKeyboard(requireActivity());
         if (currentLocation!=null && currentLocation.getFloorWithPointer()!=null &&
                 currentLocation.getFloorWithPointer().getFloorId()==floor.getFloorId()){
             touchImageView.setImageBitmap(currentLocation.getFloorWithPointer().getFloorSchema());
@@ -117,6 +123,7 @@ public class LocationDetectionFragment extends Fragment {
         if (mapPoint==null){
             Toast.makeText(getContext(), "Текущее местоположение не определено",Toast.LENGTH_SHORT).show();
         }else {
+            hideKeyboard(requireActivity());
             viewModel.getFloorNumber().set(Floor.convertEnumToFloorId(mapPoint.getFloorWithPointer().getFloorId()));
             currentFloor=mapPoint.getFloorWithPointer();
             touchImageView.setImageBitmap(mapPoint.getFloorWithPointer().getFloorSchema());
@@ -125,7 +132,16 @@ public class LocationDetectionFragment extends Fragment {
             float x = (float)mapPoint.getX()/mapPoint.getFloorWithPointer().getFloorSchema().getWidth();
             float y = (float)mapPoint.getY()/mapPoint.getFloorWithPointer().getFloorSchema().getHeight();
             Log.i("changeZoom", "x="+x+" y="+y);
-            touchImageView.setZoom(5, x, y);
+            touchImageView.setZoom(6, x, y);
         }
+    }
+
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        View view = activity.getCurrentFocus();
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

@@ -103,16 +103,17 @@ public class MapImageManager {
     private Map<FloorId, List<float[]>> createRequiredStrokes(List<LocationPointInfo> info){
         Map<FloorId, List<float[]>> requiredStrokes = new HashMap<>();
 
-        for (int i=0;i<info.size()-1;i++){
-            if (i==0){ // требуем нарисовать изображения начала
-                FloorId floorId = Floor.convertFloorIdToEnum(info.get(i).getFloorId());
-                // проверка на наличие требования в карте
-                if (!requiredStrokes.containsKey(floorId)) requiredStrokes.put(floorId, new ArrayList<>());
+        if (info.size()>0){ // требуем нарисовать изображения начала
+            FloorId floorId = Floor.convertFloorIdToEnum(info.get(0).getFloorId());
+            // проверка на наличие требования в карте
+            if (!requiredStrokes.containsKey(floorId)) requiredStrokes.put(floorId, new ArrayList<>());
 
-                // добавление начала в требования этажа
-                float[] departure = new float[]{info.get(i).getX(), info.get(i).getY(), -2, -2};
-                requiredStrokes.get(floorId).add(departure);
-            }
+            // добавление начала в требования этажа
+            float[] departure = new float[]{info.get(0).getX(), info.get(0).getY(), -2, -2};
+            requiredStrokes.get(floorId).add(departure);
+        }
+
+        for (int i=0;i<info.size()-1;i++){
             if (info.get(i).getFloorId()==info.get(i+1).getFloorId()){ // совпадает этаж - рисовать линию
                 FloorId floorId = Floor.convertFloorIdToEnum(info.get(i).getFloorId());
                 // проверка на наличие требования в карте

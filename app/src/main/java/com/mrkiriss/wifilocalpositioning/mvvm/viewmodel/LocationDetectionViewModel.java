@@ -46,7 +46,7 @@ public class LocationDetectionViewModel extends ViewModel {
         changeFloor= repository.getChangeFloor();
         toastContent=repository.getToastContent();
 
-        showCurrentLocation=new MutableLiveData<>();
+        showCurrentLocation=repository.getShowCurrentLocation();
 
         floorNumber = new ObservableInt(2);
         findInput = new ObservableField<>("");
@@ -108,6 +108,10 @@ public class LocationDetectionViewModel extends ViewModel {
         repository.requestRoute(departureInput.get(), destinationInput.get());
     }
     public void startFindRoom(){
-
+        if (findInput.get().isEmpty()){
+            requestToRefreshFloor.setValue("Поле поиска не заполнено!");
+            return;
+        }
+        repository.findRoom(findInput.get());
     }
 }

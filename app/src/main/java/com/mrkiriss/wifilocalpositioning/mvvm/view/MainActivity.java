@@ -67,8 +67,8 @@ public class MainActivity extends AppCompatActivity {
         createFragments();
         setBottomNavigationListener(navigationView);
 
-        onNavigationDrawerItemSelected(2);
-        navigationView.setCheckedItem(navigationView.getMenu().getItem(2));
+        onNavigationDrawerItemSelected(0);
+        navigationView.setCheckedItem(navigationView.getMenu().getItem(0));
     }
 
     @Override

@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.data.models.server.Connections;
+import com.mrkiriss.wifilocalpositioning.data.models.server.ListOfAllMapPoints;
 import com.mrkiriss.wifilocalpositioning.data.models.server.LocationPointInfo;
 import com.mrkiriss.wifilocalpositioning.data.sources.MapImageManager;
 import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
@@ -21,7 +22,9 @@ import com.mrkiriss.wifilocalpositioning.data.sources.IMWifiServerApi;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Data;
 import retrofit2.Call;
@@ -40,6 +43,9 @@ public class LocationDetectionRepository implements Serializable {
     private final MutableLiveData<Floor> changeFloor;
     private final MutableLiveData<String> toastContent;
     private final MutableLiveData<String> requestToRefreshFloor;
+    private final MutableLiveData<MapPoint> showCurrentLocation;
+
+    private List<LocationPointInfo> listOfSearchableLocations;
 
     public LocationDetectionRepository(IMWifiServerApi retrofit, WifiScanner wifiScanner, MapImageManager mapImageManager){
         this.retrofit=retrofit;
@@ -52,8 +58,11 @@ public class LocationDetectionRepository implements Serializable {
         resultOfDefinition=new MutableLiveData<>();
         changeFloor=new MutableLiveData<>();
         toastContent=new MutableLiveData<>();
+        showCurrentLocation=new MutableLiveData<>();
 
         wifiScanner.startDefiningScan(WifiScanner.TYPE_DEFINITION);
+
+        requestListOfLocationPointsInfo();
     }
 
     // floor
@@ -61,14 +70,27 @@ public class LocationDetectionRepository implements Serializable {
         if (showRoute){
             changeFloor.setValue(mapImageManager.getRouteFloor(Floor.convertFloorIdToEnum(floorIdInt)));
         }else{
-            Floor foundFloor=mapImageManager.getBasicFloor(Floor.convertFloorIdToEnum(floorIdInt));
-            changeFloor.setValue(foundFloor);
+            changeFloor.setValue(mapImageManager.getBasicFloor(Floor.convertFloorIdToEnum(floorIdInt)));
         }
     }
 
-    private Floor downloadSingleFloorForPointer(FloorId floorId, int x, int y){
-        Floor result = mapImageManager.getFloorWithPointer(floorId, x, y);
-        return result;
+    // find
+    public void findRoom(String name){
+        Map<FloorId, List<MapPoint>> data = mapImageManager.getDataOnPointsOnAllFloors();
+        for (FloorId floorId:data.keySet()){
+            for (MapPoint mapPoint:data.get(floorId)){
+                if (mapPoint.getRoomName().equals(name)){
+                    toastContent.setValue("Локация найдена");
+                    // получает базовый этаж и вставялет его в объект точки, чтобы получить внутри фрагмента и прорисовать этаж
+                    mapPoint.setFloorWithPointer(mapImageManager.getBasicFloor(floorId));
+                    // прорисовываем
+                    showCurrentLocation.setValue(mapPoint);
+
+                    return;
+                }
+            }
+        }
+        toastContent.setValue("Локация не найдена");
     }
 
     // scanning
@@ -123,7 +145,7 @@ public class LocationDetectionRepository implements Serializable {
     private MapPoint convertToMapPoint(DefinedLocationPoint definedLocationPoint){
         MapPoint result = new MapPoint();
 
-        Floor foundFloor=downloadSingleFloorForPointer(Floor.convertFloorIdToEnum(definedLocationPoint.getFloorId()),
+        Floor foundFloor=mapImageManager.getFloorWithPointer(Floor.convertFloorIdToEnum(definedLocationPoint.getFloorId()),
                 definedLocationPoint.getX(), definedLocationPoint.getY());
 
         result.setFloorWithPointer(foundFloor);
@@ -153,6 +175,28 @@ public class LocationDetectionRepository implements Serializable {
             public void onFailure(Call<List<LocationPointInfo>> call, Throwable t) {
                 Log.e("SERVER_ERROR", t.getMessage());
                 toastContent.setValue("Маршрут построить не удалось");
+            }
+        });
+    }
+
+    public void requestListOfLocationPointsInfo(){
+        retrofit.getListOfAllMapPoints().enqueue(new Callback<ListOfAllMapPoints>() {
+            @Override
+            public void onResponse(Call<ListOfAllMapPoints> call, Response<ListOfAllMapPoints> response) {
+                if (response.body()==null) {
+                    Log.i("LocationDetectionRep", "server response: is null");
+                    return;
+                }
+                Log.i("LocationDetectionRep", "server response about allInfo: "+response.body().toString());
+                Map<FloorId, List<MapPoint>> converted = response.body().convertToMap();
+                mapImageManager.setDataOnPointsOnAllFloors(converted);
+                Log.i("LocationDetectionRep", "after convert List of allInfo: "+converted.toString());
+
+            }
+
+            @Override
+            public void onFailure(Call<ListOfAllMapPoints> call, Throwable t) {
+                Log.i("LocationDetectionRep", "server error: "+ Arrays.toString(t.getStackTrace()));
             }
         });
     }
