@@ -26,6 +26,7 @@ public class LocationDetectionViewModel extends ViewModel {
     private final LiveData<CompleteKitsContainer> completeKitsOfScansResult;
     private final LiveData<MapPoint> resultOfDefinition;
     private final LiveData<Floor> changeFloor;
+    private final MutableLiveData<String> requestToRefreshFloor;
 
     private final MutableLiveData<MapPoint> showCurrentLocation;
     private final MutableLiveData<String> toastContent;
@@ -51,6 +52,8 @@ public class LocationDetectionViewModel extends ViewModel {
         departureInput = new ObservableField<>("");
         destinationInput = new ObservableField<>("");
         showRoute=new ObservableBoolean(false);
+
+        requestToRefreshFloor=repository.getRequestToRefreshFloor();
     }
 
     public void startProcessingCompleteKitsOfScansResult(CompleteKitsContainer scanResults){
@@ -80,7 +83,7 @@ public class LocationDetectionViewModel extends ViewModel {
     public void startBuildRoute(){
         showRoute.set(true);
         if (departureInput.get().isEmpty() || destinationInput.get().isEmpty()){
-            toastContent.setValue("Не все поля заполены!");
+            requestToRefreshFloor.setValue("Не все поля заполены!");
             return;
         }
         repository.requestRoute(departureInput.get(), destinationInput.get());

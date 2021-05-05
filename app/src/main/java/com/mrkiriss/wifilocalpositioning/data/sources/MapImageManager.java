@@ -9,6 +9,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
 
+import androidx.lifecycle.MutableLiveData;
+
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
 import com.mrkiriss.wifilocalpositioning.data.models.map.FloorId;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
@@ -50,6 +52,8 @@ public class MapImageManager {
     // данные о каждом этаже с прорисованным маршрутом
     private final Map<FloorId, Floor> routeFloors;
 
+    private final MutableLiveData<String> requestToRefreshFloor;
+
     public MapImageManager(Context context){
         this.assetManager=context.getAssets();
 
@@ -76,6 +80,8 @@ public class MapImageManager {
         basicFloors=new HashMap<>();
         dataOnPointsOnAllFloors=new HashMap<>();
         routeFloors=new HashMap<>();
+
+        requestToRefreshFloor=new MutableLiveData<>();
     }
 
     // возвращает этаж с прорисованным маршрутом или, при его отсутсвии, обычный этаж
@@ -88,8 +94,10 @@ public class MapImageManager {
     }
     // запускает создание объектов этажей с маршрутами
     public void startCreatingFloorsWithRout(List<LocationPointInfo> info){
+        routeFloors.clear();
         Map<FloorId, List<float[]>> requiredStrokes = createRequiredStrokes(info);
         createFloorsAccordingToRequirements(requiredStrokes);
+        requestToRefreshFloor.setValue("Маршрут построен");
     }
     // создаёт требования для рисования на этажах
     private Map<FloorId, List<float[]>> createRequiredStrokes(List<LocationPointInfo> info){
@@ -271,4 +279,8 @@ public class MapImageManager {
     public void setDataOnPointsOnAllFloors(Map<FloorId, List<MapPoint>> dataOnPointsOnAllFloors) {
         this.dataOnPointsOnAllFloors = dataOnPointsOnAllFloors;
     }
+    public MutableLiveData<String> getRequestToRefreshFloor() {
+        return requestToRefreshFloor;
+    }
+
 }

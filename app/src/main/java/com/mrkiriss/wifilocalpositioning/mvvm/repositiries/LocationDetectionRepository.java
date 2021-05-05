@@ -39,6 +39,7 @@ public class LocationDetectionRepository implements Serializable {
     private final MutableLiveData<MapPoint> resultOfDefinition;
     private final MutableLiveData<Floor> changeFloor;
     private final MutableLiveData<String> toastContent;
+    private final MutableLiveData<String> requestToRefreshFloor;
 
     public LocationDetectionRepository(IMWifiServerApi retrofit, WifiScanner wifiScanner, MapImageManager mapImageManager){
         this.retrofit=retrofit;
@@ -46,6 +47,7 @@ public class LocationDetectionRepository implements Serializable {
         this.mapImageManager = mapImageManager;
 
         completeKitsOfScansResult=wifiScanner.getCompleteScanResults();
+        requestToRefreshFloor=mapImageManager.getRequestToRefreshFloor();
 
         resultOfDefinition=new MutableLiveData<>();
         changeFloor=new MutableLiveData<>();

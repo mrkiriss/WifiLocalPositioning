@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.mrkiriss.wifilocalpositioning.R;
@@ -73,7 +74,16 @@ public class LocationDetectionFragment extends Fragment {
         // прослышиваем кнопку показа текущего местоположения
         viewModel.getShowCurrentLocation().observe(getViewLifecycleOwner(), this::showCurrentLocation);
         // прослушиваем увеломления через Toast
-        viewModel.getToastContent().observe(getViewLifecycleOwner(), content -> Toast.makeText(getContext(), content, Toast.LENGTH_SHORT).show());
+        viewModel.getToastContent().observe(getViewLifecycleOwner(), this::showToastContent);
+        // прослушываем запрос на обновление текущего этажа
+        viewModel.getRequestToRefreshFloor().observe(getViewLifecycleOwner(), s -> {
+            showToastContent(s);
+            viewModel.startFloorChanging();
+        });
+    }
+
+    private void showToastContent(String content){
+        Toast.makeText(getContext(), content, Toast.LENGTH_SHORT).show();
     }
 
     private void drawCurrentLocation(MapPoint mapPoint){
