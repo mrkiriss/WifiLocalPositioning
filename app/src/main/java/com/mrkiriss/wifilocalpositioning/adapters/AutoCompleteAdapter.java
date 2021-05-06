@@ -74,7 +74,7 @@ public class AutoCompleteAdapter
                 FilterResults filterResults = new FilterResults();
                 if (constraint!=null && !constraint.toString().isEmpty()){
                     Log.i("AutoCompleteAdapter", "Начата фильтрация для строки= "+constraint);
-                    List<MapPoint> searchResult = selectSuitableMapPoints(constraint);
+                    List<MapPoint> searchResult = selectSuitableMapPoints(constraint.toString());
                     filterResults.values=searchResult;
                     Log.i("AutoCompleteAdapter", "filtering result list="+ searchResult);
                     filterResults.count=searchResult.size();
@@ -95,14 +95,14 @@ public class AutoCompleteAdapter
             }
         };
     }
-    public List<MapPoint> selectSuitableMapPoints(CharSequence constraint){
+    public List<MapPoint> selectSuitableMapPoints(String constraint){
         List<MapPoint> result = new ArrayList<>();
 
         if (mapPointsData==null) return result;
 
         for (FloorId floorId:mapPointsData.keySet()){
             for (MapPoint mapPoint:mapPointsData.get(floorId)){
-                if (mapPoint.getRoomName().contains(constraint)){
+                if (mapPoint.getRoomName().matches(constraint+".*?")){
                     result.add(mapPoint);
                 }
             }

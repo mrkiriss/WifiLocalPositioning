@@ -3,10 +3,10 @@ package com.mrkiriss.wifilocalpositioning.mvvm.view;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
@@ -47,9 +47,10 @@ public class LocationDetectionFragment extends Fragment {
         binding.setViewModel(viewModel);
 
         createAndShowMapView();
-        createSearchAdapters();
+        createSearchAdapterAndSetSettings();
         initObservers();
         viewModel.startFloorChanging();
+
         return binding.getRoot();
     }
 
@@ -59,12 +60,12 @@ public class LocationDetectionFragment extends Fragment {
         touchImageView.setMaxZoom(7f);
         touchImageView.setZoom(2f);
     }
-    private void createSearchAdapters(){
+    private void createSearchAdapterAndSetSettings(){
         autoCompleteAdapter=new AutoCompleteAdapter();
         binding.autoCompleteTextView.setAdapter(autoCompleteAdapter);
         binding.autoCompleteTextView2.setAdapter(autoCompleteAdapter);
         binding.autoCompleteTextView3.setAdapter(autoCompleteAdapter);
-        binding.autoCompleteTextView3.setThreshold(1);
+        binding.autoCompleteTextView3.setThreshold(2);
     }
 
     private void initObservers(){
