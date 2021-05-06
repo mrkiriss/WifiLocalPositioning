@@ -8,15 +8,12 @@
             android:key="@string/keyScanInterval"
             android:selectAllOnFocus="true"
             android:singleLine="true"
-            android:title="@string/scanIntervalText"
-            app:defaultValue="7500" />
+            android:title="@string/scanIntervalText" />
         <ListPreference
             android:entries="@array/versionsOfNumberOfScansInKit"
             android:entryValues="@array/entry_values"
             android:key="@string/keyVariousOfNumberScans"
-            android:title="@string/numberOfScansInKitText"
-            android:defaultValue="Минимально (1 ск.)"
-            app:summary="Минимально (1 ск.)" />
+            android:title="@string/numberOfScansInKitText" />
 
     </PreferenceCategory>
 

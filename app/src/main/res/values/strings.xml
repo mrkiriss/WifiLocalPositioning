@@ -64,8 +64,7 @@
 
     <!-- Preference -->
     <string name="scanGroupTitle">Параметры сканирования</string>
-    <string name="scanIntervalText">Интервал между сканированиями </string>
-    <string name="scanIntervalHint">Время в секундах</string>
+    <string name="scanIntervalText">Интервал между сканированиями в секундах</string>
     <string name="numberOfScansInKitText">Количество единовременных сканирований </string>
     <string-array name="versionsOfNumberOfScansInKit">
         <item>Автоматически</item>
