@@ -5,18 +5,17 @@
     <PreferenceCategory app:title="@string/scanGroupTitle">
 
         <EditTextPreference
-            android:defaultValue="true"
-            android:key="scanInterval"
+            android:key="@string/keyScanInterval"
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:title="@string/scanIntervalText"
-            app:defaultValue="true"
-            app:summary="1" />
+            app:defaultValue="7500" />
         <ListPreference
             android:entries="@array/versionsOfNumberOfScansInKit"
             android:entryValues="@array/entry_values"
-            android:key="variousOfNumberScans"
+            android:key="@string/keyVariousOfNumberScans"
             android:title="@string/numberOfScansInKitText"
+            android:defaultValue="Минимально (1 ск.)"
             app:summary="Минимально (1 ск.)" />
 
     </PreferenceCategory>

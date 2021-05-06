@@ -4,7 +4,7 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 
-import com.mrkiriss.wifilocalpositioning.data.models.general.Settings;
+import com.mrkiriss.wifilocalpositioning.data.models.preference.Settings;
 
 @Dao
 public interface SettingsDao {

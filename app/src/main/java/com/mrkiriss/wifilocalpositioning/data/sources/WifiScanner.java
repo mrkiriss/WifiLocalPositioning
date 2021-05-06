@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -14,7 +15,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import com.mrkiriss.wifilocalpositioning.data.models.general.Settings;
+import com.mrkiriss.wifilocalpositioning.data.models.preference.Settings;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.AppDatabase;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.SettingsDao;
@@ -28,9 +29,10 @@ import lombok.Data;
 @Data
 public class WifiScanner {
 
-    private Context context;
-    private WifiManager wifiManager;
-    private SettingsDao settingsDao;
+    private final Context context;
+    private final WifiManager wifiManager;
+    private final SettingsDao settingsDao;
+    private final SharedPreferences sharedPreferences;
 
     private BroadcastReceiver scanResultBR;
     private WifiManager.ScanResultsCallback scanResultsCallback;
@@ -55,6 +57,7 @@ public class WifiScanner {
         this.context=context;
         this.wifiManager=wifiManager;
         this.settingsDao =db.settingDao();
+        this.sharedPreferences=context.getSharedPreferences("com.mrkiriss.wifilocalpositioning_preferences", Context.MODE_PRIVATE);
 
         this.completeScanResults=new MutableLiveData<>();
         this.remainingNumberOfScanning=new MutableLiveData<>(0);
@@ -87,6 +90,9 @@ public class WifiScanner {
         scanResultKits=new LinkedList<>();
         scanDelay=250;
         remainingNumberOfScanning.setValue(requiredNumberOfScans);
+
+        System.out.println("***********************************************************");
+        System.out.println(Float.parseFloat(sharedPreferences.getString("scanInterval", "7.5"))* 1000L);
 
         startScanningWithDelay(-1);
 

@@ -62,7 +62,7 @@
 
 
 
-    <!-- Settings -->
+    <!-- Preference -->
     <string name="scanGroupTitle">Параметры сканирования</string>
     <string name="scanIntervalText">Интервал между сканированиями </string>
     <string name="scanIntervalHint">Время в секундах</string>
@@ -79,8 +79,9 @@
         <item>3</item>
         <item>5</item>
     </string-array>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="textFloor">Этаж:</string>
+    <!--keys-->
+    <string name="keyScanInterval">scanInterval</string>
+    <string name="keyVariousOfNumberScans">variousOfNumberScans</string>
+
 
 </resources>
