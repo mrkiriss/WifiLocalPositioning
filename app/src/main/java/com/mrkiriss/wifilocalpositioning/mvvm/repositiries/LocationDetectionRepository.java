@@ -113,7 +113,7 @@ public class LocationDetectionRepository implements Serializable {
         }
 
         // отправляем запрос на сервер
-        //postFromDefinitionWithCabinet(calibrationLocationPoint);
+        postFromDefinitionWithCabinet(calibrationLocationPoint);
     }
 
     // server

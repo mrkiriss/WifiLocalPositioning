@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.mrkiriss.wifilocalpositioning.data.models.preference.DefaultSettings;
 import com.mrkiriss.wifilocalpositioning.data.models.preference.Settings;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.AppDatabase;
@@ -31,7 +32,6 @@ public class WifiScanner {
 
     private final Context context;
     private final WifiManager wifiManager;
-    private final SettingsDao settingsDao;
     private final SharedPreferences sharedPreferences;
 
     private BroadcastReceiver scanResultBR;
@@ -56,7 +56,6 @@ public class WifiScanner {
     public WifiScanner(Context context, WifiManager wifiManager, AppDatabase db){
         this.context=context;
         this.wifiManager=wifiManager;
-        this.settingsDao =db.settingDao();
         this.sharedPreferences=context.getSharedPreferences("com.mrkiriss.wifilocalpositioning_preferences", Context.MODE_PRIVATE);
 
         this.completeScanResults=new MutableLiveData<>();
@@ -88,11 +87,10 @@ public class WifiScanner {
         uncompleteKitsContainer.setRequestSourceType(typeOfRequestSource);
 
         scanResultKits=new LinkedList<>();
-        scanDelay=250;
+        scanDelay=getScanIntervalFromSettings();
         remainingNumberOfScanning.setValue(requiredNumberOfScans);
 
-        System.out.println("***********************************************************");
-        System.out.println(Float.parseFloat(sharedPreferences.getString("scanInterval", "7.5"))* 1000L);
+        Log.i("WifiScanner", "training scan start with settingDelay="+scanDelay+" and requiredNUmberOfScan="+requiredNumberOfScans);
 
         startScanningWithDelay(-1);
 
@@ -109,27 +107,32 @@ public class WifiScanner {
         scanResultKits=new LinkedList<>();
 
         Runnable task = () -> {
-            Settings currentSettings = getSettings();
-            Log.i("WifiScanner", "got setting info: "+currentSettings.toString());
-            scanDelay = currentSettings.getScanInterval();
-            remainingNumberOfScanning.postValue(currentSettings.getNumberOfScans());
+            scanDelay = getScanIntervalFromSettings();
+            int numberOfScanning = getNumberOfScanningFromSettings();
+            remainingNumberOfScanning.postValue(numberOfScanning);
 
-            startScanningWithDelay(currentSettings.getNumberOfScans());
+            Log.i("WifiScanner", "training scan start with settingDelay="+scanDelay+" and requiredNUmberOfScan="+numberOfScanning);
+
+
+            startScanningWithDelay(getNumberOfScanningFromSettings());
         };
         new Thread(task).start();
 
         return true;
     }
-    private Settings getSettings(){
-        Settings currentSettings = settingsDao.findById(0L);
-        if (currentSettings==null){
-            currentSettings=new Settings();
-            currentSettings.setId(0L);
-            currentSettings.setScanInterval(250);
-            currentSettings.setNumberOfScans(1);
-            settingsDao.insert(currentSettings);
+    private long getScanIntervalFromSettings(){
+        long result=Long.parseLong(DefaultSettings.defaultScanInterval);
+        if (sharedPreferences!=null){
+            result= Long.parseLong(sharedPreferences.getString(DefaultSettings.keys[0], DefaultSettings.defaultScanInterval))*1000;
         }
-        return currentSettings;
+        return result;
+    }
+    private int getNumberOfScanningFromSettings(){
+        int result=Integer.parseInt(DefaultSettings.defaultVariousValue);
+        if (sharedPreferences!=null){
+            result= Integer.parseInt(sharedPreferences.getString(DefaultSettings.keys[1], DefaultSettings.defaultVariousValue));
+        }
+        return result;
     }
 
 

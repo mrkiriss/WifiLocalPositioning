@@ -28,7 +28,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private final String defaultScanInterval= DefaultSettings.defaultScanInterval; // in seconds
     private final String defaultVarious = DefaultSettings.defaultVariousValue;
 
-    private final String[] keys = new String[]{"scanInterval", "variousOfNumberScans"};
+    private final String[] keys = DefaultSettings.keys;
 
     private EditTextPreference scanIntervalEditText;
     private ListPreference variousNumbersList;
