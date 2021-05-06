@@ -28,6 +28,7 @@ public class ListOfAllMapPoints {
             }
 
             MapPoint mapPoint = new MapPoint(info.getX(), info.getY(), info.getRoomName(), info.isRoom());
+            mapPoint.setFloorIdInt(info.getFloorId());
             result.get(floorId).add(mapPoint);
 
         }

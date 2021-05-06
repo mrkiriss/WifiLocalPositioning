@@ -7,6 +7,7 @@ public class MapPoint {
     private int x;
     private int y;
     private Floor floorWithPointer;
+    private int floorIdInt;
     private String roomName;
     private boolean isRoom;
 
@@ -18,8 +19,7 @@ public class MapPoint {
     }
     public MapPoint(){}
 
-    @Override
-    public String toString(){
+    public String toStringAllObject(){
         return "x="+x+" "+
                 " y="+y+"\n"+
                 "isRoom="+isRoom+
@@ -30,9 +30,16 @@ public class MapPoint {
             " y="+y+" isRoom="+isRoom+
                     " roomName="+ roomName;
     }
+    @Override
+    public String toString(){
+        return roomName;
+    }
     public boolean equals(MapPoint mapPoint){
         return (mapPoint.getRoomName().equals(roomName) &&
                 mapPoint.getX()==x &&
                 mapPoint.getY()==y);
+    }
+    public String getFloorIdIntWithFloorText(){
+        return "Этаж: "+floorIdInt;
     }
 }

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.Menu;
+import android.view.WindowManager;
 
 import com.google.android.material.navigation.NavigationView;
 import com.mrkiriss.wifilocalpositioning.R;
@@ -69,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
 
         onNavigationDrawerItemSelected(0);
         navigationView.setCheckedItem(navigationView.getMenu().getItem(0));
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
     }
 
     @Override

@@ -138,7 +138,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="4"
                     android:gravity="center"
-                    android:text="@{viewModel.selectedMapPoint.toString()}" />
+                    android:text="@{viewModel.selectedMapPoint.toStringAllObject()}" />
 
                 <Button
                     android:id="@+id/actionWithPointButton"
@@ -239,7 +239,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="5"
                     android:gravity="center"
-                    android:text="@{viewModel.selectedMapPoint.toString()}" />
+                    android:text="@{viewModel.selectedMapPoint.toStringAllObject()}" />
             </LinearLayout>
 
             <LinearLayout
@@ -422,7 +422,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="5"
-                    android:text="@{viewModel.selectedMapPoint.toString()}" />
+                    android:text="@{viewModel.selectedMapPoint.toStringAllObject()}" />
             </LinearLayout>
 
             <EditText

@@ -6,45 +6,33 @@
             type="com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint" />
     </data>
 
-    <LinearLayout
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="3dp"
-        android:background="@drawable/border"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/textRoomName"
+        android:layout_height="match_parent"
+        android:id="@+id/container"
+        >
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{mapPoint.roomName}"
-            android:textSize="24sp"
-            android:textStyle="bold" />
-
-        <LinearLayout
-            android:id="@+id/numberOfFloorContainer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:background="@drawable/border"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textNumberOfFloor"
-                android:layout_width="0dp"
+                android:id="@+id/textRoomName"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/textFloor"
+                android:text="@{mapPoint.roomName}"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{mapPoint.floorIdIntWithFloorText}"
                 android:textSize="18sp"
                 android:textStyle="italic" />
 
-            <TextView
-                android:id="@+id/contentNumberOfFloor"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="4"
-                android:text="@{String.valueOf(mapPoint.floorWithPointer.floorIdInt)}"
-                android:textSize="18sp"
-                android:textStyle="italic" />
         </LinearLayout>
-
-    </LinearLayout>
+    </androidx.cardview.widget.CardView>
 </layout>

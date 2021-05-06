@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
@@ -30,7 +31,6 @@ public class LocationDetectionFragment extends Fragment {
     private MapPoint currentLocation;
     private Floor currentFloor;
 
-    private FindRoomAutoCompleteAdapter findRoomAutoCompleteAdapter;
     private AutoCompleteAdapter autoCompleteAdapter;
 
     @Override
@@ -50,7 +50,6 @@ public class LocationDetectionFragment extends Fragment {
         createSearchAdapters();
         initObservers();
         viewModel.startFloorChanging();
-
         return binding.getRoot();
     }
 
@@ -61,11 +60,11 @@ public class LocationDetectionFragment extends Fragment {
         touchImageView.setZoom(2f);
     }
     private void createSearchAdapters(){
-        //findRoomAutoCompleteAdapter = new FindRoomAutoCompleteAdapter(viewModel.getDataAboutPointsOnAllFloors());
         autoCompleteAdapter=new AutoCompleteAdapter();
         binding.autoCompleteTextView.setAdapter(autoCompleteAdapter);
         binding.autoCompleteTextView2.setAdapter(autoCompleteAdapter);
         binding.autoCompleteTextView3.setAdapter(autoCompleteAdapter);
+        binding.autoCompleteTextView3.setThreshold(1);
     }
 
     private void initObservers(){

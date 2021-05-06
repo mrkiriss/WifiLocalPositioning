@@ -7,7 +7,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
-import com.mrkiriss.wifilocalpositioning.data.models.server.Connections;
 import com.mrkiriss.wifilocalpositioning.data.models.server.ListOfAllMapPoints;
 import com.mrkiriss.wifilocalpositioning.data.models.server.LocationPointInfo;
 import com.mrkiriss.wifilocalpositioning.data.sources.MapImageManager;
@@ -136,7 +135,7 @@ public class LocationDetectionRepository implements Serializable {
                 if (response.body()==null || response.body().getFloorId()==-1)return;
 
                 Log.println(Log.INFO, "SEND_CONVERT_RESULT",
-                        convertToMapPoint(response.body()).toString());
+                        convertToMapPoint(response.body()).toStringAllObject());
 
                 resultOfDefinition.setValue(convertToMapPoint(response.body()));
             }

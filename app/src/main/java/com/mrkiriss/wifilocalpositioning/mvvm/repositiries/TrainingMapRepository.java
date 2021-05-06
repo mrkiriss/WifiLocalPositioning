@@ -14,7 +14,6 @@ import com.mrkiriss.wifilocalpositioning.data.models.server.AccessPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CalibrationLocationPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.data.models.server.Connections;
-import com.mrkiriss.wifilocalpositioning.data.models.server.DefinedLocationPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.ListOfAllMapPoints;
 import com.mrkiriss.wifilocalpositioning.data.models.server.LocationPointInfo;
 import com.mrkiriss.wifilocalpositioning.data.models.server.StringResponse;
@@ -123,7 +122,7 @@ public class TrainingMapRepository implements Serializable {
                 }
             }
         }
-        Log.i("TrainingMapRepository", "результат поска ближайшей точки ="+result.toString());
+        Log.i("TrainingMapRepository", "результат поска ближайшей точки ="+result.toStringAllObject());
 
         return result;
     }
