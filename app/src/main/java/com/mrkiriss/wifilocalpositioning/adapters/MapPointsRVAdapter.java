@@ -1,7 +1,6 @@
-package com.mrkiriss.wifilocalpositioning.mvvm.view.adapters;
+package com.mrkiriss.wifilocalpositioning.adapters;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -15,9 +14,7 @@ import com.mrkiriss.wifilocalpositioning.databinding.ItemMapPointBinding;
 import com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.ItemMapPointViewModel;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 public class MapPointsRVAdapter extends RecyclerView.Adapter<MapPointsRVAdapter.MapPointViewHolder>{
 

@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.databinding.FragmentTrainingScanBinding;
-import com.mrkiriss.wifilocalpositioning.mvvm.view.adapters.ScanResultsRVAdapter;
+import com.mrkiriss.wifilocalpositioning.adapters.ScanResultsRVAdapter;
 import com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.TrainingScanViewModel;
 
 public class TrainingScanFragment extends Fragment {

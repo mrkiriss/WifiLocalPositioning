@@ -2,13 +2,10 @@ package com.mrkiriss.wifilocalpositioning.mvvm.view;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
-import android.os.Build;
 import android.os.Bundle;
 
-import androidx.annotation.RequiresApi;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -22,15 +19,9 @@ import android.widget.Toast;
 
 import com.github.chrisbanes.photoview.PhotoView;
 import com.mrkiriss.wifilocalpositioning.R;
-import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
-import com.mrkiriss.wifilocalpositioning.data.models.map.FloorId;
-import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
 import com.mrkiriss.wifilocalpositioning.databinding.FragmentTrainingMapBinding;
-import com.mrkiriss.wifilocalpositioning.mvvm.view.adapters.MapPointsRVAdapter;
-import com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.LocationDetectionViewModel;
+import com.mrkiriss.wifilocalpositioning.adapters.MapPointsRVAdapter;
 import com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.TrainingMapViewModel;
-
-import java.util.List;
 
 public class TrainingMapFragment extends Fragment {
 

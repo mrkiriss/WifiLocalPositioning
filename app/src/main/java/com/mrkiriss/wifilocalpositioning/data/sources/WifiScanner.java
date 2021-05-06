@@ -14,7 +14,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import com.mrkiriss.wifilocalpositioning.data.sources.db.Settings;
+import com.mrkiriss.wifilocalpositioning.data.models.general.Settings;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.AppDatabase;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.SettingsDao;

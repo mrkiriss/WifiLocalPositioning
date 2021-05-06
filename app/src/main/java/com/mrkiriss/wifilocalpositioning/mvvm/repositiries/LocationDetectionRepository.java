@@ -44,6 +44,7 @@ public class LocationDetectionRepository implements Serializable {
     private final MutableLiveData<String> toastContent;
     private final MutableLiveData<String> requestToRefreshFloor;
     private final MutableLiveData<MapPoint> showCurrentLocation;
+    private final MutableLiveData<Map<FloorId, List<MapPoint>>> requestToAddAllPointsDataInAutoFinders;
 
     private List<LocationPointInfo> listOfSearchableLocations;
 
@@ -59,6 +60,7 @@ public class LocationDetectionRepository implements Serializable {
         changeFloor=new MutableLiveData<>();
         toastContent=new MutableLiveData<>();
         showCurrentLocation=new MutableLiveData<>();
+        requestToAddAllPointsDataInAutoFinders=new MutableLiveData<>();
 
         wifiScanner.startDefiningScan(WifiScanner.TYPE_DEFINITION);
 
@@ -91,6 +93,9 @@ public class LocationDetectionRepository implements Serializable {
             }
         }
         toastContent.setValue("Локация не найдена");
+    }
+    public Map<FloorId, List<MapPoint>> getDataAboutPointsOnAllFloors(){
+        return mapImageManager.getDataOnPointsOnAllFloors();
     }
 
     // scanning
@@ -190,6 +195,8 @@ public class LocationDetectionRepository implements Serializable {
                 Log.i("LocationDetectionRep", "server response about allInfo: "+response.body().toString());
                 Map<FloorId, List<MapPoint>> converted = response.body().convertToMap();
                 mapImageManager.setDataOnPointsOnAllFloors(converted);
+                // отправляем данны во все поисковые строки с автодополнением
+                requestToAddAllPointsDataInAutoFinders.setValue(converted);
                 Log.i("LocationDetectionRep", "after convert List of allInfo: "+converted.toString());
 
             }

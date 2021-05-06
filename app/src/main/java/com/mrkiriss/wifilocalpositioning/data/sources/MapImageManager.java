@@ -44,8 +44,6 @@ public class MapImageManager {
     private final float dyPointerAccepted;
     private final Paint paint;
 
-    private final FloorId[] FloorIds = {FloorId.ZERO_FLOOR, FloorId.FIRST_FLOOR, FloorId.SECOND_FLOOR, FloorId.THIRD_FLOOR, FloorId.FOURTH_FLOOR};
-
     private final Map<FloorId, Floor> basicFloors;
     // данные о каждом этаже для удаления\добавления еденичной точки без обращения к серверу
     private Map<FloorId, List<MapPoint>> dataOnPointsOnAllFloors;

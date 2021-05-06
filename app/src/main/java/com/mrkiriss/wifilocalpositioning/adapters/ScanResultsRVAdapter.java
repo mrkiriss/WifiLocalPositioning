@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.mvvm.view.adapters;
+package com.mrkiriss.wifilocalpositioning.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;

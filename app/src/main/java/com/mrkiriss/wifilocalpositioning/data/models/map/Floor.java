@@ -54,4 +54,7 @@ public class Floor implements Serializable {
         }
         return 2;
     }
+    public int getFloorIdInt(){
+        return convertEnumToFloorId(floorId);
+    }
 }

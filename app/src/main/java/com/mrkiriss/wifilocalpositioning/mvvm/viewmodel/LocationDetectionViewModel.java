@@ -7,11 +7,15 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.mrkiriss.wifilocalpositioning.data.models.map.FloorId;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.di.App;
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
 import com.mrkiriss.wifilocalpositioning.mvvm.repositiries.LocationDetectionRepository;
+
+import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -26,8 +30,8 @@ public class LocationDetectionViewModel extends ViewModel {
     private final LiveData<CompleteKitsContainer> completeKitsOfScansResult;
     private final LiveData<MapPoint> resultOfDefinition;
     private final LiveData<Floor> changeFloor;
+    private final LiveData<Map<FloorId, List<MapPoint>>> requestToAddAllPointsDataInAutoFinders;
     private final MutableLiveData<String> requestToRefreshFloor;
-
     private final MutableLiveData<MapPoint> showCurrentLocation;
     private final MutableLiveData<String> toastContent;
 
@@ -45,6 +49,7 @@ public class LocationDetectionViewModel extends ViewModel {
         resultOfDefinition= repository.getResultOfDefinition();
         changeFloor= repository.getChangeFloor();
         toastContent=repository.getToastContent();
+        requestToAddAllPointsDataInAutoFinders=repository.getRequestToAddAllPointsDataInAutoFinders();
 
         showCurrentLocation=repository.getShowCurrentLocation();
 
@@ -113,5 +118,10 @@ public class LocationDetectionViewModel extends ViewModel {
             return;
         }
         repository.findRoom(findInput.get());
+    }
+
+    // получение информации для фильтрации при поиске
+    public Map<FloorId, List<MapPoint>> getDataAboutPointsOnAllFloors(){
+        return repository.getDataAboutPointsOnAllFloors();
     }
 }

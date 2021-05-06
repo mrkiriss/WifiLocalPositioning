@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.data.sources.db;
+package com.mrkiriss.wifilocalpositioning.data.models.general;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;

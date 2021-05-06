@@ -11,17 +11,15 @@ import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.mrkiriss.wifilocalpositioning.R;
+import com.mrkiriss.wifilocalpositioning.adapters.AutoCompleteAdapter;
 import com.mrkiriss.wifilocalpositioning.databinding.FragmentLocationDetectionBindingImpl;
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
 import com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.LocationDetectionViewModel;
 import com.ortiz.touchview.TouchImageView;
-
-import java.util.Objects;
 
 public class LocationDetectionFragment extends Fragment {
 
@@ -31,6 +29,9 @@ public class LocationDetectionFragment extends Fragment {
 
     private MapPoint currentLocation;
     private Floor currentFloor;
+
+    private FindRoomAutoCompleteAdapter findRoomAutoCompleteAdapter;
+    private AutoCompleteAdapter autoCompleteAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -46,6 +47,7 @@ public class LocationDetectionFragment extends Fragment {
         binding.setViewModel(viewModel);
 
         createAndShowMapView();
+        createSearchAdapters();
         initObservers();
         viewModel.startFloorChanging();
 
@@ -57,6 +59,13 @@ public class LocationDetectionFragment extends Fragment {
         touchImageView.setMinZoom(1f);
         touchImageView.setMaxZoom(7f);
         touchImageView.setZoom(2f);
+    }
+    private void createSearchAdapters(){
+        //findRoomAutoCompleteAdapter = new FindRoomAutoCompleteAdapter(viewModel.getDataAboutPointsOnAllFloors());
+        autoCompleteAdapter=new AutoCompleteAdapter();
+        binding.autoCompleteTextView.setAdapter(autoCompleteAdapter);
+        binding.autoCompleteTextView2.setAdapter(autoCompleteAdapter);
+        binding.autoCompleteTextView3.setAdapter(autoCompleteAdapter);
     }
 
     private void initObservers(){
@@ -84,6 +93,8 @@ public class LocationDetectionFragment extends Fragment {
             showToastContent(s);
             viewModel.startFloorChanging();
         });
+        // прослушиваем запрос на добавление данных в строки поиска
+        viewModel.getRequestToAddAllPointsDataInAutoFinders().observe(getViewLifecycleOwner(), data -> autoCompleteAdapter.setDataForFilter(data));
     }
 
     private void showToastContent(String content){
