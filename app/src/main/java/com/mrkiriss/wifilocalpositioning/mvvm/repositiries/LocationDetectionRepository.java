@@ -67,18 +67,13 @@ public class LocationDetectionRepository implements Serializable {
         showCurrentLocation=new MutableLiveData<>();
         requestToAddAllPointsDataInAutoFinders=new MutableLiveData<>();
 
-        wifiEnabledState=new MutableLiveData<>();
+        wifiEnabledState=wifiScanner.getWifiEnabledState();
 
-        checkWifiEnabled();
         wifiScanner.startDefiningScan(WifiScanner.TYPE_DEFINITION);
 
         requestListOfLocationPointsInfo();
     }
 
-    // проверяет состояние wifi
-    private void checkWifiEnabled(){
-        wifiEnabledState.setValue(connectionManager.checkWifiEnabled());
-    }
     // запрашивает вызов диалога о необходимости включения wifi
     public void showWifiOffering(Context context){
         connectionManager.showOfferSetting(context);
@@ -145,7 +140,6 @@ public class LocationDetectionRepository implements Serializable {
         retrofit.defineLocation(calibrationLocationPoint).enqueue(new Callback<DefinedLocationPoint>() {
             @Override
             public void onResponse(Call<DefinedLocationPoint> call, Response<DefinedLocationPoint> response) {
-                checkWifiEnabled();
                 wifiScanner.startDefiningScan(WifiScanner.TYPE_DEFINITION);
 
                 Log.println(Log.INFO, "GOOD_DEFINITION_ROOM",
@@ -161,7 +155,6 @@ public class LocationDetectionRepository implements Serializable {
             @Override
             public void onFailure(Call<DefinedLocationPoint> call, Throwable t) {
                 Log.e("SERVER_ERROR", t.getMessage());
-                checkWifiEnabled();
                 wifiScanner.startDefiningScan(WifiScanner.TYPE_DEFINITION);
             }
         });

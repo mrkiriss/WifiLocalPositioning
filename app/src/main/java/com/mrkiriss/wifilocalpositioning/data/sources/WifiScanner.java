@@ -39,6 +39,7 @@ public class WifiScanner {
     private final Handler handler;
     private boolean scanStarted;
     private long scanDelay;
+    private final long minScanDelay=100; // устанавливается после начала сканирований одной пачки
 
     private CompleteKitsContainer uncompleteKitsContainer;
     private final MutableLiveData<CompleteKitsContainer> completeScanResults;
@@ -51,6 +52,7 @@ public class WifiScanner {
     public final static String TYPE_DEFINITION="definition";
     public final static String TYPE_NO_SCAN="no_scan";
 
+    private final MutableLiveData<Boolean> wifiEnabledState; // для отправки состояния включение wifi
 
     public WifiScanner(Context context, WifiManager wifiManager, ConnectionManager connectionManager, SettingsManager settingsManager){
         this.context=context;
@@ -62,6 +64,7 @@ public class WifiScanner {
         this.remainingNumberOfScanning=new MutableLiveData<>(0);
         this.handler = new Handler(Looper.getMainLooper());
         this.scanStarted=false;
+        this.wifiEnabledState=new MutableLiveData<>();
 
         registerListeners();
     }
@@ -76,6 +79,11 @@ public class WifiScanner {
             container.setRequestSourceType(type);
             completeScanResults.setValue(container);
         }
+    }
+
+    // проверяет состояние wifi и наличия интернет соединения
+    private void checkWifiEnabled(){
+        wifiEnabledState.setValue(connectionManager.checkWifiEnabled());
     }
 
     public boolean startTrainingScan(int requiredNumberOfScans, String typeOfRequestSource){
@@ -116,7 +124,7 @@ public class WifiScanner {
         // выход, если сканирований не планируется
         if (numberOfScanning==0) return false;
 
-        Log.i("WifiScanner", "training scan start with settingDelay="+scanDelay+" and requiredNUmberOfScan="+numberOfScanning);
+        Log.i("WifiScanner", "definition scan start with settingDelay="+scanDelay+" and requiredNUmberOfScan="+numberOfScanning);
 
         startScanningWithDelay();
 
@@ -131,22 +139,23 @@ public class WifiScanner {
 
 
     private void startScanningWithDelay(){
-        if (remainingNumberOfScanning.getValue()>0 && !scanStarted){ // если данные в remainingNumberOfScanning успели дойти
-            Log.i( "WifiScanner", "successful continue, remainingNumberOfScanning "+ remainingNumberOfScanning.getValue());
-            remainingNumberOfScanning.setValue(remainingNumberOfScanning.getValue()-1);
-        }else{ // комплект собран, отправка на обработку и далее на сервер
-            Log.i( "WifiScanner", "unsuccessful continue, remainingNumberOfScanning  "+remainingNumberOfScanning.getValue());
+        checkWifiEnabled();
+        Runnable task = () -> {
+            if (remainingNumberOfScanning.getValue()>0 && !scanStarted){ // если данные в remainingNumberOfScanning успели дойти
+                Log.i( "WifiScanner", "successful continue, remainingNumberOfScanning "+ remainingNumberOfScanning.getValue());
+                remainingNumberOfScanning.postValue(remainingNumberOfScanning.getValue()-1);
+            }else{ // комплект собран, отправка на обработку и далее на сервер
+                Log.i( "WifiScanner", "unsuccessful continue - start creating datablock, remainingNumberOfScanning  "+remainingNumberOfScanning.getValue());
 
-            CompleteKitsContainer container = uncompleteKitsContainer;
-            container.setCompleteKits(scanResultKits);
-            if (container.getRequestSourceType()==null || !container.getRequestSourceType().equals(currentTypeOfRequestSource)) {
+                CompleteKitsContainer container = uncompleteKitsContainer;
+                container.setCompleteKits(scanResultKits);
+                if (container.getRequestSourceType()==null || !container.getRequestSourceType().equals(currentTypeOfRequestSource)) {
+                    return;
+                }
+
+                completeScanResults.postValue(container);
                 return;
             }
-
-            completeScanResults.setValue(container);
-            return;
-        }
-        Runnable task = () -> {
 
             Log.println(Log.INFO, "WifiScanner",
                     String.format("START_ONE_SCANNING _Parameters: remaining number of scans=%s", remainingNumberOfScanning.getValue()));
@@ -154,6 +163,8 @@ public class WifiScanner {
             requestScanResults();
         };
         handler.postDelayed(task, scanDelay);
+        // после первого запуска обнуляем задержку, чтобы пачка прошла разом
+        if (scanDelay!=50) scanDelay=50;
     }
 
     private void requestScanResults(){
