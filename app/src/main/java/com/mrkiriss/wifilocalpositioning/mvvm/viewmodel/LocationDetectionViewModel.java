@@ -1,5 +1,7 @@
 package com.mrkiriss.wifilocalpositioning.mvvm.viewmodel;
 
+import android.content.Context;
+
 import androidx.databinding.ObservableBoolean;
 import androidx.databinding.ObservableField;
 import androidx.databinding.ObservableInt;
@@ -31,6 +33,7 @@ public class LocationDetectionViewModel extends ViewModel {
     private final LiveData<MapPoint> resultOfDefinition;
     private final LiveData<Floor> changeFloor;
     private final LiveData<Map<FloorId, List<MapPoint>>> requestToAddAllPointsDataInAutoFinders;
+    private final LiveData<Boolean> wifiEnabledState;
     private final MutableLiveData<String> requestToRefreshFloor;
     private final MutableLiveData<MapPoint> showCurrentLocation;
     private final MutableLiveData<String> toastContent;
@@ -50,6 +53,7 @@ public class LocationDetectionViewModel extends ViewModel {
         changeFloor= repository.getChangeFloor();
         toastContent=repository.getToastContent();
         requestToAddAllPointsDataInAutoFinders=repository.getRequestToAddAllPointsDataInAutoFinders();
+        wifiEnabledState=repository.getWifiEnabledState();
 
         showCurrentLocation=repository.getShowCurrentLocation();
 
@@ -121,7 +125,7 @@ public class LocationDetectionViewModel extends ViewModel {
     }
 
     // получение информации для фильтрации при поиске
-    public Map<FloorId, List<MapPoint>> getDataAboutPointsOnAllFloors(){
-        return repository.getDataAboutPointsOnAllFloors();
+    public void showWifiOffering(Context context){
+        repository.showWifiOffering(context);
     }
 }

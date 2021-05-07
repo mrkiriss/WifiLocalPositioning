@@ -17,6 +17,7 @@ import android.util.Log;
 
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.AppDatabase;
+import com.mrkiriss.wifilocalpositioning.utils.ConnectionManager;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -29,7 +30,7 @@ public class WifiScanner {
 
     private final Context context;
     private final WifiManager wifiManager;
-    private final SharedPreferences sharedPreferences;
+    private final ConnectionManager connectionManager;
     private final SettingsManager settingsManager;
 
     private BroadcastReceiver scanResultBR;
@@ -51,10 +52,10 @@ public class WifiScanner {
     public final static String TYPE_NO_SCAN="no_scan";
 
 
-    public WifiScanner(Context context, WifiManager wifiManager, AppDatabase db, SettingsManager settingsManager){
+    public WifiScanner(Context context, WifiManager wifiManager, ConnectionManager connectionManager, SettingsManager settingsManager){
         this.context=context;
         this.wifiManager=wifiManager;
-        this.sharedPreferences=context.getSharedPreferences("com.mrkiriss.wifilocalpositioning_preferences", Context.MODE_PRIVATE);
+        this.connectionManager=connectionManager;
         this.settingsManager=settingsManager;
 
         this.completeScanResults=new MutableLiveData<>();
@@ -89,9 +90,12 @@ public class WifiScanner {
         scanDelay=getScanIntervalFromSettings();
         remainingNumberOfScanning.setValue(requiredNumberOfScans);
 
+        // выход, если сканирований не планируется
+        if (requiredNumberOfScans==0) return false;
+
         Log.i("WifiScanner", "training scan start with settingDelay="+scanDelay+" and requiredNUmberOfScan="+requiredNumberOfScans);
 
-        startScanningWithDelay(-1);
+        startScanningWithDelay();
 
         return true;
     }
@@ -105,35 +109,31 @@ public class WifiScanner {
 
         scanResultKits=new LinkedList<>();
 
-        Runnable task = () -> {
-            scanDelay = getScanIntervalFromSettings();
-            int numberOfScanning = getNumberOfScanningFromSettings();
-            remainingNumberOfScanning.postValue(numberOfScanning);
+        scanDelay = getScanIntervalFromSettings();
+        int numberOfScanning = getNumberOfScanningFromSettings();
+        remainingNumberOfScanning.setValue(numberOfScanning);
 
-            Log.i("WifiScanner", "training scan start with settingDelay="+scanDelay+" and requiredNUmberOfScan="+numberOfScanning);
+        // выход, если сканирований не планируется
+        if (numberOfScanning==0) return false;
 
+        Log.i("WifiScanner", "training scan start with settingDelay="+scanDelay+" and requiredNUmberOfScan="+numberOfScanning);
 
-            startScanningWithDelay(numberOfScanning);
-        };
-        new Thread(task).start();
+        startScanningWithDelay();
 
         return true;
     }
     private long getScanIntervalFromSettings(){
-        return settingsManager.getScanInterval();
+        return settingsManager.getScanInterval()*1000;
     }
     private int getNumberOfScanningFromSettings(){
-        return settingsManager.getDefaultNumberOfScanning();
+        return settingsManager.getNumberOfScanning();
     }
 
 
-    private void startScanningWithDelay(int remainingNumberOfScanningLocale){
-        if (remainingNumberOfScanning.getValue()>0 && !scanStarted){
+    private void startScanningWithDelay(){
+        if (remainingNumberOfScanning.getValue()>0 && !scanStarted){ // если данные в remainingNumberOfScanning успели дойти
             Log.i( "WifiScanner", "successful continue, remainingNumberOfScanning "+ remainingNumberOfScanning.getValue());
-            remainingNumberOfScanning.postValue(remainingNumberOfScanning.getValue()-1);
-        }else if(remainingNumberOfScanningLocale>0 && !scanStarted){
-            Log.i( "WifiScanner", "successful continue locale, remainingNumberOfScanning "+ remainingNumberOfScanning.getValue());
-            remainingNumberOfScanning.postValue(remainingNumberOfScanningLocale-1);
+            remainingNumberOfScanning.setValue(remainingNumberOfScanning.getValue()-1);
         }else{ // комплект собран, отправка на обработку и далее на сервер
             Log.i( "WifiScanner", "unsuccessful continue, remainingNumberOfScanning  "+remainingNumberOfScanning.getValue());
 
@@ -143,7 +143,7 @@ public class WifiScanner {
                 return;
             }
 
-            completeScanResults.postValue(container);
+            completeScanResults.setValue(container);
             return;
         }
         Runnable task = () -> {
@@ -184,7 +184,7 @@ public class WifiScanner {
                     if (currentTypeOfRequestSource.equals(TYPE_NO_SCAN) || scanResultKits==null) return;
 
                     scanResultKits.add(wifiManager.getScanResults());
-                    startScanningWithDelay(-1);
+                    startScanningWithDelay();
                 }
             };
         }
@@ -203,8 +203,12 @@ public class WifiScanner {
                     Log.println(Log.INFO, "WifiScanner",
                             "SCAN_RESULTS_CALLBACK__successful");
                     scanStarted=false;
+
+                    // прекращение сканирований
+                    if (currentTypeOfRequestSource.equals(TYPE_NO_SCAN) || scanResultKits==null) return;
+
                     scanResultKits.add(wifiManager.getScanResults());
-                    startScanningWithDelay(-1);
+                    startScanningWithDelay();
                 }
             };
         }

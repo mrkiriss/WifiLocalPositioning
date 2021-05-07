@@ -12,6 +12,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 import com.mrkiriss.wifilocalpositioning.di.App;
+import com.mrkiriss.wifilocalpositioning.utils.ConnectionManager;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;

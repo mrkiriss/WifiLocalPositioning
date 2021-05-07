@@ -95,6 +95,10 @@ public class LocationDetectionFragment extends Fragment {
         });
         // прослушиваем запрос на добавление данных в строки поиска
         viewModel.getRequestToAddAllPointsDataInAutoFinders().observe(getViewLifecycleOwner(), data -> autoCompleteAdapter.setDataForFilter(data));
+        // прослушываем состояние включения wifi
+        viewModel.getWifiEnabledState().observe(getViewLifecycleOwner(), state->{
+            if (!state) viewModel.showWifiOffering(getContext());
+        });
     }
 
     private void showToastContent(String content){

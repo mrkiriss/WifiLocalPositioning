@@ -1,5 +1,6 @@
 package com.mrkiriss.wifilocalpositioning.mvvm.repositiries;
 
+import android.content.Context;
 import android.net.wifi.ScanResult;
 import android.util.Log;
 
@@ -18,6 +19,7 @@ import com.mrkiriss.wifilocalpositioning.data.models.server.AccessPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CalibrationLocationPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.DefinedLocationPoint;
 import com.mrkiriss.wifilocalpositioning.data.sources.IMWifiServerApi;
+import com.mrkiriss.wifilocalpositioning.utils.ConnectionManager;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -36,6 +38,7 @@ public class LocationDetectionRepository implements Serializable {
     private final IMWifiServerApi retrofit;
     private final WifiScanner wifiScanner;
     private final MapImageManager mapImageManager;
+    private final ConnectionManager connectionManager;
 
     private final LiveData<CompleteKitsContainer> completeKitsOfScansResult;
     private final MutableLiveData<MapPoint> resultOfDefinition;
@@ -44,13 +47,16 @@ public class LocationDetectionRepository implements Serializable {
     private final MutableLiveData<String> requestToRefreshFloor;
     private final MutableLiveData<MapPoint> showCurrentLocation;
     private final MutableLiveData<Map<FloorId, List<MapPoint>>> requestToAddAllPointsDataInAutoFinders;
+    private final MutableLiveData<Boolean> wifiEnabledState; // для отправки состояния включение wifi
 
     private List<LocationPointInfo> listOfSearchableLocations;
 
-    public LocationDetectionRepository(IMWifiServerApi retrofit, WifiScanner wifiScanner, MapImageManager mapImageManager){
+    public LocationDetectionRepository(IMWifiServerApi retrofit, WifiScanner wifiScanner,
+                                       ConnectionManager connectionManager, MapImageManager mapImageManager){
         this.retrofit=retrofit;
         this.wifiScanner=wifiScanner;
         this.mapImageManager = mapImageManager;
+        this.connectionManager=connectionManager;
 
         completeKitsOfScansResult=wifiScanner.getCompleteScanResults();
         requestToRefreshFloor=mapImageManager.getRequestToRefreshFloor();
@@ -61,9 +67,21 @@ public class LocationDetectionRepository implements Serializable {
         showCurrentLocation=new MutableLiveData<>();
         requestToAddAllPointsDataInAutoFinders=new MutableLiveData<>();
 
+        wifiEnabledState=new MutableLiveData<>();
+
+        checkWifiEnabled();
         wifiScanner.startDefiningScan(WifiScanner.TYPE_DEFINITION);
 
         requestListOfLocationPointsInfo();
+    }
+
+    // проверяет состояние wifi
+    private void checkWifiEnabled(){
+        wifiEnabledState.setValue(connectionManager.checkWifiEnabled());
+    }
+    // запрашивает вызов диалога о необходимости включения wifi
+    public void showWifiOffering(Context context){
+        connectionManager.showOfferSetting(context);
     }
 
     // floor
@@ -127,6 +145,7 @@ public class LocationDetectionRepository implements Serializable {
         retrofit.defineLocation(calibrationLocationPoint).enqueue(new Callback<DefinedLocationPoint>() {
             @Override
             public void onResponse(Call<DefinedLocationPoint> call, Response<DefinedLocationPoint> response) {
+                checkWifiEnabled();
                 wifiScanner.startDefiningScan(WifiScanner.TYPE_DEFINITION);
 
                 Log.println(Log.INFO, "GOOD_DEFINITION_ROOM",
@@ -142,6 +161,7 @@ public class LocationDetectionRepository implements Serializable {
             @Override
             public void onFailure(Call<DefinedLocationPoint> call, Throwable t) {
                 Log.e("SERVER_ERROR", t.getMessage());
+                checkWifiEnabled();
                 wifiScanner.startDefiningScan(WifiScanner.TYPE_DEFINITION);
             }
         });
