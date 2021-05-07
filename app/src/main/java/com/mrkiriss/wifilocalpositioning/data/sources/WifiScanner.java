@@ -15,11 +15,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import com.mrkiriss.wifilocalpositioning.data.models.preference.DefaultSettings;
-import com.mrkiriss.wifilocalpositioning.data.models.preference.Settings;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.AppDatabase;
-import com.mrkiriss.wifilocalpositioning.data.sources.db.SettingsDao;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -33,6 +30,7 @@ public class WifiScanner {
     private final Context context;
     private final WifiManager wifiManager;
     private final SharedPreferences sharedPreferences;
+    private final SettingsManager settingsManager;
 
     private BroadcastReceiver scanResultBR;
     private WifiManager.ScanResultsCallback scanResultsCallback;
@@ -53,10 +51,11 @@ public class WifiScanner {
     public final static String TYPE_NO_SCAN="no_scan";
 
 
-    public WifiScanner(Context context, WifiManager wifiManager, AppDatabase db){
+    public WifiScanner(Context context, WifiManager wifiManager, AppDatabase db, SettingsManager settingsManager){
         this.context=context;
         this.wifiManager=wifiManager;
         this.sharedPreferences=context.getSharedPreferences("com.mrkiriss.wifilocalpositioning_preferences", Context.MODE_PRIVATE);
+        this.settingsManager=settingsManager;
 
         this.completeScanResults=new MutableLiveData<>();
         this.remainingNumberOfScanning=new MutableLiveData<>(0);
@@ -114,25 +113,17 @@ public class WifiScanner {
             Log.i("WifiScanner", "training scan start with settingDelay="+scanDelay+" and requiredNUmberOfScan="+numberOfScanning);
 
 
-            startScanningWithDelay(getNumberOfScanningFromSettings());
+            startScanningWithDelay(numberOfScanning);
         };
         new Thread(task).start();
 
         return true;
     }
     private long getScanIntervalFromSettings(){
-        long result=Long.parseLong(DefaultSettings.defaultScanInterval);
-        if (sharedPreferences!=null){
-            result= Long.parseLong(sharedPreferences.getString(DefaultSettings.keys[0], DefaultSettings.defaultScanInterval))*1000;
-        }
-        return result;
+        return settingsManager.getScanInterval();
     }
     private int getNumberOfScanningFromSettings(){
-        int result=Integer.parseInt(DefaultSettings.defaultVariousValue);
-        if (sharedPreferences!=null){
-            result= Integer.parseInt(sharedPreferences.getString(DefaultSettings.keys[1], DefaultSettings.defaultVariousValue));
-        }
-        return result;
+        return settingsManager.getDefaultNumberOfScanning();
     }
 
 
@@ -143,7 +134,7 @@ public class WifiScanner {
         }else if(remainingNumberOfScanningLocale>0 && !scanStarted){
             Log.i( "WifiScanner", "successful continue locale, remainingNumberOfScanning "+ remainingNumberOfScanning.getValue());
             remainingNumberOfScanning.postValue(remainingNumberOfScanningLocale-1);
-        }else{
+        }else{ // комплект собран, отправка на обработку и далее на сервер
             Log.i( "WifiScanner", "unsuccessful continue, remainingNumberOfScanning  "+remainingNumberOfScanning.getValue());
 
             CompleteKitsContainer container = uncompleteKitsContainer;

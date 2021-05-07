@@ -112,25 +112,4 @@ public class TrainingScanViewModel extends ViewModel {
         requestToClearRV.setValue(new ArrayList<>());
         resultOfScanningAfterCalibration.setValue("");
     }
-
-    @BindingAdapter(value = {"app:selectedValue", "selectedValueAttrChanged"}, requireAll = false)
-    public static void bindSpinnerData(Spinner spinner, String newSelectedValue, final InverseBindingListener newTextAttrChanged) {
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                newTextAttrChanged.onChange();
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-        if (newSelectedValue != null) {
-            int pos = ((ArrayAdapter<String>) spinner.getAdapter()).getPosition(newSelectedValue);
-            spinner.setSelection(pos, true);
-        }
-    }
-    @InverseBindingAdapter(attribute = "app:selectedValue", event = "selectedValueAttrChanged")
-    public static String captureSelectedValue(Spinner spinner) {
-        return (String)spinner.getSelectedItem();
-    }
 }

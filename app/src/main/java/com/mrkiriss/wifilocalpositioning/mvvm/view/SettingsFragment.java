@@ -1,101 +1,44 @@
 package com.mrkiriss.wifilocalpositioning.mvvm.view;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.EditText;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.preference.EditTextPreference;
-import androidx.preference.ListPreference;
-import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.PreferenceManager;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.mrkiriss.wifilocalpositioning.R;
-import com.mrkiriss.wifilocalpositioning.data.models.preference.DefaultSettings;
-import com.mrkiriss.wifilocalpositioning.data.models.preference.Settings;
-import com.mrkiriss.wifilocalpositioning.data.sources.db.SettingsDao;
+import com.mrkiriss.wifilocalpositioning.databinding.FragmentSettingsBinding;
+import com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.SettingsViewModel;
 
-import javax.inject.Inject;
+public class SettingsFragment extends Fragment {
 
-public class SettingsFragment extends PreferenceFragmentCompat {
-
-    @Inject
-    SettingsDao settingsDao;
-    private PreferenceManager preferenceManager;
-    private SharedPreferences sharedPreferences;
-
-    private final String defaultScanInterval= DefaultSettings.defaultScanInterval; // in seconds
-    private final String defaultVarious = DefaultSettings.defaultVariousValue;
-
-    private final String[] keys = DefaultSettings.keys;
-
-    private EditTextPreference scanIntervalEditText;
-    private ListPreference variousNumbersList;
+    private SettingsViewModel viewModel;
+    private FragmentSettingsBinding binding;
 
     @Override
-    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-        addPreferencesFromResource(R.xml.root_preferences);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        viewModel=new ViewModelProvider(this).get(SettingsViewModel.class);
+        binding= DataBindingUtil.inflate(inflater, R.layout.fragment_settings, container, false);
 
-        // find views
-        scanIntervalEditText=findPreference(keys[0]);
-        variousNumbersList = findPreference(keys[1]);
+        initObservers();
 
-        // create preference objects
-        preferenceManager=getPreferenceManager();
-        sharedPreferences=preferenceManager.getSharedPreferences();
+        binding.setViewModel(viewModel);
 
-        // register preference change listener
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this::processEditPreferences);
-
-        // set summaries
-        scanIntervalEditText.setSummary(preferenceManager.getSharedPreferences().getString(keys[0], defaultScanInterval));
-        variousNumbersList.setSummary(preferenceManager.getSharedPreferences().getString(keys[1], defaultVarious));
-
-        // set selected values
-        if (scanIntervalEditText.getText()==null || scanIntervalEditText.getText().isEmpty()) scanIntervalEditText.setText(defaultScanInterval);
-        if (variousNumbersList.getValue()==null || variousNumbersList.getValue().isEmpty()) variousNumbersList.setValue(defaultVarious);
+        return binding.getRoot();
     }
 
-    private void processEditPreferences(SharedPreferences sharedPreferences, String key){
-        switch (key){
-            case "scanInterval":
-                processScanIntervalKey(sharedPreferences, key);
-                break;
-            case "variousOfNumberScans":
-                processVariousOfNumbersScans(sharedPreferences, key);
-                break;
-        }
-
-
-    }
-    private void processScanIntervalKey(SharedPreferences sharedPreferences, String key){
-        try {
-            String input = sharedPreferences.getString(key, defaultScanInterval);
-            if (!input.matches("\\d+")){
-                throw new Exception();
-            }
-            scanIntervalEditText.setSummary(String.valueOf(input));
-            Log.i("SettingsFragments", "new value for scanInterval="+input);
-        }catch (Exception e){
-            scanIntervalEditText.setText(scanIntervalEditText.getSummary().toString());
-            showToastContent("Неккоректные данные");
-            e.printStackTrace();
-        }
-    }
-    private void processVariousOfNumbersScans(SharedPreferences sharedPreferences, String key){
-        try {
-            String input =  sharedPreferences.getString(key, defaultVarious);
-            if (input.isEmpty()) throw new Exception();
-            variousNumbersList.setSummary(sharedPreferences.getString(key, defaultVarious));
-            Log.i("SettingsFragments", "new value for variousOfNumberScans="+input);
-        }catch (Exception e){
-            sharedPreferences.edit().putString(key, defaultVarious).apply();
-            variousNumbersList.setValue(defaultVarious);
-            variousNumbersList.setSummary(defaultVarious);
-            showToastContent("Неккоректные данные");
-            e.printStackTrace();
-        }
+    private void initObservers(){
+        // подписываемся на требования по изменения обозреваемого поля интервала сканирования
+        viewModel.getRequiredToUpdateScanInterval().observe(getViewLifecycleOwner(), content -> viewModel.getScanInterval().set(content));
+        // подписываемся на требования по изменения обозреваемого поля количества сканирований
+        viewModel.getRequiredToUpdateNumberOfScanning().observe(getViewLifecycleOwner(), content -> viewModel.getNumberOfScanning().set(content));
+        // подписываемся на отоброжение тостов
+        viewModel.getToastContent().observe(getViewLifecycleOwner(), this::showToastContent);
     }
 
     private void showToastContent(String content){

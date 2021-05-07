@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < fragments.length; i++) {
             if (i == position) {
                 fragmentTransaction.show(fragments[i]);
-
+                // изменяем тип сканирования
                 wifiScanner.setCurrentTypeOfRequestSource(typesOfRequestSources[i]);
 
                 Log.i("changeFragments","SHOW "+fragments[position].getTag());

@@ -6,10 +6,12 @@ import com.mrkiriss.wifilocalpositioning.di.components.AppComponent;
 import com.mrkiriss.wifilocalpositioning.di.components.DaggerAppComponent;
 import com.mrkiriss.wifilocalpositioning.di.components.LocationDetectionSubcomponent;
 import com.mrkiriss.wifilocalpositioning.di.components.MainActivitySubcomponent;
+import com.mrkiriss.wifilocalpositioning.di.components.SettingsSubcomponent;
 import com.mrkiriss.wifilocalpositioning.di.components.TrainingMapSubcomponent;
 import com.mrkiriss.wifilocalpositioning.di.components.TrainingScanSubcomponent;
 import com.mrkiriss.wifilocalpositioning.di.modules.AppContextModule;
 import com.mrkiriss.wifilocalpositioning.di.modules.definition.DefinitionRepositoryModule;
+import com.mrkiriss.wifilocalpositioning.di.modules.settings.SettingsRepModule;
 import com.mrkiriss.wifilocalpositioning.di.modules.training.TrainingMapRepModule;
 import com.mrkiriss.wifilocalpositioning.di.modules.training.TrainingScanRepositoryModule;
 
@@ -20,6 +22,7 @@ public class ComponentManager {
     private TrainingScanSubcomponent trainingScanSubcomponent;
     private LocationDetectionSubcomponent locationDetectionSubcomponent;
     private TrainingMapSubcomponent trainingMapSubcomponent;
+    private SettingsSubcomponent settingsSubcomponent;
 
     public ComponentManager(Context context){
         appComponent= DaggerAppComponent.builder()
@@ -60,6 +63,15 @@ public class ComponentManager {
                     .build();
         }
         return trainingMapSubcomponent;
+    }
+
+    public SettingsSubcomponent getSettingsSubcomponent() {
+        if (settingsSubcomponent == null) {
+            settingsSubcomponent = appComponent.settingsSubcomponent()
+                    .setRepositoryModule(new SettingsRepModule())
+                    .build();
+        }
+        return settingsSubcomponent;
     }
 
 }

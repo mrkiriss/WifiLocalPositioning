@@ -2,7 +2,7 @@
     <string name="app_name">WifiLocalPositioning</string>
     <string name="title_activity_main">IMLocation</string>
     <string name="nav_training_scan">Тренировка сканированием</string>
-    <string name="nav_definition">Определение</string>
+    <string name="nav_definition">IMLocation</string>
     <string name="nav_settings">Настройки</string>
 
     <!--TrainingScanFragment-->
@@ -62,10 +62,10 @@
 
 
 
-    <!-- Preference -->
+    <!-- Settings -->
     <string name="scanGroupTitle">Параметры сканирования</string>
     <string name="scanIntervalText">Интервал между сканированиями в секундах</string>
-    <string name="numberOfScansInKitText">Количество единовременных сканирований </string>
+    <string name="numberOfScansInKitText">Количество единовременных сканирований: </string>
     <string-array name="versionsOfNumberOfScansInKit">
         <item>Автоматически</item>
         <item>Минимально (1 ск.)</item>
@@ -78,6 +78,7 @@
         <item>3</item>
         <item>5</item>
     </string-array>
+    <string name="acceptedChangeSettings">Подтвердить изменения настроек</string>
     <!--keys-->
     <string name="keyScanInterval">scanInterval</string>
     <string name="keyVariousOfNumberScans">variousOfNumberScans</string>

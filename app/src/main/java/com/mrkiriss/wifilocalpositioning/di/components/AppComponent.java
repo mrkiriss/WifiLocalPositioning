@@ -16,4 +16,5 @@ public interface AppComponent {
     LocationDetectionSubcomponent.Builder locationDetectionSubcomponentBuilder();
     MainActivitySubcomponent.Builder mainActivitySubcomponentBuilder();
     TrainingMapSubcomponent.Builder trainingMapSubcomponent();
+    SettingsSubcomponent.Builder settingsSubcomponent();
 }
