@@ -1,5 +1,7 @@
 package com.mrkiriss.wifilocalpositioning.data.models.map;
 
+import java.util.Map;
+
 import lombok.Data;
 
 @Data
@@ -30,10 +32,6 @@ public class MapPoint {
             " y="+y+" isRoom="+isRoom+
                     " roomName="+ roomName;
     }
-    @Override
-    public String toString(){
-        return roomName;
-    }
     public boolean equals(MapPoint mapPoint){
         return (mapPoint.getRoomName().equals(roomName) &&
                 mapPoint.getX()==x &&
@@ -41,5 +39,19 @@ public class MapPoint {
     }
     public String getFloorIdIntWithFloorText(){
         return "Этаж: "+floorIdInt;
+    }
+
+    private final String currentLocationText = "Текущее местоположение: ";
+    @Override
+    public String toString(){
+        String result = roomName;
+        if (result.contains(currentLocationText)) result = result.replace(currentLocationText,"");
+        return result;
+    }
+    public MapPoint copyForCurrentLocation(){
+        MapPoint result = new MapPoint(x, y, currentLocationText + roomName, isRoom);
+        result.setFloorIdInt(floorIdInt);
+        result.setFloorWithPointer(floorWithPointer);
+        return result;
     }
 }

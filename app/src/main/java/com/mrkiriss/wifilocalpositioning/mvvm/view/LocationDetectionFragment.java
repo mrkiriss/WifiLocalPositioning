@@ -73,6 +73,9 @@ public class LocationDetectionFragment extends Fragment {
         viewModel.getCompleteKitsOfScansResult().observe(getViewLifecycleOwner(), scanResults -> viewModel.startProcessingCompleteKitsOfScansResult(scanResults));
         // прослушываем изменение местоположения, обновляем значение в mapView, если экран на этом этаже, перерисовываем
         viewModel.getResultOfDefinition().observe(getViewLifecycleOwner(), mapPoint -> {
+            // обновляем в адаптере для новой строки в поиске
+            autoCompleteAdapter.setCurrentLocation(mapPoint.copyForCurrentLocation());
+
             currentLocation=mapPoint;
             drawCurrentLocation(mapPoint);
 
@@ -106,7 +109,7 @@ public class LocationDetectionFragment extends Fragment {
     }
 
     private void drawCurrentLocation(MapPoint mapPoint){
-        hideKeyboard(requireActivity());
+        //hideKeyboard(requireActivity());
         if (mapPoint!=null && mapPoint.getFloorWithPointer()!=null && currentFloor!=null && currentFloor.getFloorSchema()!=null &&
                 mapPoint.getFloorWithPointer().getFloorId()==currentFloor.getFloorId()
                 // если помимо других условий необходимо рисовать маршрут, текущее местоположение не рисовать

@@ -21,6 +21,7 @@
                 android:id="@+id/textRoomName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="#973838"
                 android:text="@{mapPoint.roomName}"
                 android:textSize="24sp"
                 android:textStyle="bold" />

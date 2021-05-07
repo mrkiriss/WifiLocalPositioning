@@ -27,8 +27,8 @@ public class AutoCompleteAdapter
         extends BaseAdapter implements Filterable {
 
     private List<MapPoint> findResult;
-    private Map<Integer, MapPointFindViewHolder> addedViewsIndex;
     private Map<FloorId, List<MapPoint>> mapPointsData;
+    private MapPoint currentLocation;
 
     public AutoCompleteAdapter(){
         this.findResult=new ArrayList<>();
@@ -36,6 +36,11 @@ public class AutoCompleteAdapter
     public void setDataForFilter(Map<FloorId, List<MapPoint>> mapPointsData){
         this.mapPointsData=mapPointsData;
     }
+    public void setCurrentLocation(MapPoint mapPoint){
+        this.currentLocation=mapPoint;
+    }
+
+
     @Override
     public int getCount() {
         return findResult.size();
@@ -53,6 +58,7 @@ public class AutoCompleteAdapter
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         MapPointFindViewHolder holder;
+        MapPoint content = findResult.get(position);
         if (convertView==null) {
             holder = new MapPointFindViewHolder(DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_map_point_find, parent, false));
             convertView = holder.itemView;
@@ -61,8 +67,8 @@ public class AutoCompleteAdapter
             holder = (MapPointFindViewHolder) convertView.getTag();
 //            Log.i("AutoCompleteAdapter", "find last View with hash="+convertView.hashCode()+" list addedViewsIndex="+addedViewsIndex);
         }
-        holder.bindMapPoint(findResult.get(position));
-        Log.i("AutoCompleteAdapter", "map point data = "+findResult.get(position).toStringAllObject());
+        holder.bindMapPoint(content);
+        Log.i("AutoCompleteAdapter", "map point data = "+content.toStringAllObject());
         return holder.itemView;
     }
 
@@ -74,12 +80,15 @@ public class AutoCompleteAdapter
                 FilterResults filterResults = new FilterResults();
                 if (constraint!=null && !constraint.toString().isEmpty()){
                     Log.i("AutoCompleteAdapter", "Начата фильтрация для строки= "+constraint);
+
                     List<MapPoint> searchResult = selectSuitableMapPoints(constraint.toString());
+                    // добовляем инфомрацию о текущем местоположении
+                    if (currentLocation!=null && !currentLocation.getRoomName().isEmpty())
+                        searchResult.add(0, currentLocation);
+
                     filterResults.values=searchResult;
                     Log.i("AutoCompleteAdapter", "filtering result list="+ searchResult);
                     filterResults.count=searchResult.size();
-
-                    addedViewsIndex=new HashMap<>();
                 }
                 return filterResults;
             }
