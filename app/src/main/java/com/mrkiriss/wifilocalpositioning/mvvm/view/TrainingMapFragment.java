@@ -91,6 +91,7 @@ public class TrainingMapFragment extends Fragment {
             }
             changeBitmap(floor.getFloorSchema());
         });
+        viewModel.getRequestToUpdateFloor().observe(getViewLifecycleOwner(), content->viewModel.startFloorChanging());
         viewModel.getToastContent().observe(getViewLifecycleOwner(), this::showToast);
         viewModel.getMoveCamera().observe(getViewLifecycleOwner(), this::moveCamera);
         viewModel.getServerResponseRequest().observe(getViewLifecycleOwner(), s -> viewModel.getServerResponse().set(s));

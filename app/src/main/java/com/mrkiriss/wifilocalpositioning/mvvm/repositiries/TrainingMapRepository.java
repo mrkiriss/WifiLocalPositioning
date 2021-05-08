@@ -43,6 +43,7 @@ public class TrainingMapRepository implements Serializable {
     private final MutableLiveData<Floor> changeFloor;
     private final MutableLiveData<String> serverResponse;
     private final MutableLiveData<List<MapPoint>> serverConnectionsResponse;
+    private final MutableLiveData<String> requestToUpdateFloor;
 
     private final LiveData<CompleteKitsContainer> completeKitsOfScansResult;
     private LiveData<Integer> remainingNumberOfScanning;
@@ -57,6 +58,7 @@ public class TrainingMapRepository implements Serializable {
         changeFloor=new MutableLiveData<>();
         serverResponse=new MutableLiveData<>();
         serverConnectionsResponse=new MutableLiveData<>();
+        requestToUpdateFloor=new MutableLiveData<>();
 
         completeKitsOfScansResult=wifiScanner.getCompleteScanResults();
         remainingNumberOfScanning=wifiScanner.getRemainingNumberOfScanning();
@@ -167,6 +169,8 @@ public class TrainingMapRepository implements Serializable {
                 Map<FloorId, List<MapPoint>> converted = response.body().convertToMap();
                 mapImageManager.setDataOnPointsOnAllFloors(converted);
                 Log.i("TrainingMapRep", "after convert List of allInfo: "+converted.toString());
+                // провоцируем оновление картинки
+                requestToUpdateFloor.setValue("Данные о точках получены");
 
             }
 

@@ -2,6 +2,7 @@ package com.mrkiriss.wifilocalpositioning.mvvm.viewmodel;
 
 import android.util.Log;
 
+import androidx.databinding.Observable;
 import androidx.databinding.ObservableBoolean;
 import androidx.databinding.ObservableField;
 import androidx.databinding.ObservableInt;
@@ -22,6 +23,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import lombok.Data;
+import lombok.Setter;
 
 @Data
 public class TrainingMapViewModel extends ViewModel {
@@ -50,8 +52,9 @@ public class TrainingMapViewModel extends ViewModel {
     public final String MODE_ADD_SECONDLY="Добавить связь";
     private List<MapPoint> currentChangeableConnections;
 
-    private LiveData<Floor> changeFloor;
-    private LiveData<String> serverResponseRequest;
+    private final LiveData<Floor> changeFloor;
+    private final LiveData<String> serverResponseRequest;
+    private final MutableLiveData<String> requestToUpdateFloor;
 
     private final MutableLiveData<String> toastContent;
     private final MutableLiveData<int[]> moveCamera;
@@ -68,6 +71,7 @@ public class TrainingMapViewModel extends ViewModel {
         App.getInstance().getComponentManager().getTrainingMapSubcomponent().inject(this);
 
         changeFloor= repository.getChangeFloor();
+        requestToUpdateFloor=repository.getRequestToUpdateFloor();
         toastContent=repository.getToastContent();
         moveCamera=new MutableLiveData<>();
         serverResponseRequest=repository.getServerResponse();
@@ -95,6 +99,14 @@ public class TrainingMapViewModel extends ViewModel {
         selectedToChangMapPoint=new ObservableField<>();
         contentOnActionsButtonChangesNeighbors=new ObservableField<>(MODE_SELECT_MAIN);
         currentChangeableConnections =new ArrayList<>();
+
+        // обновление этажа после смени режима показа точек
+        showMapPoints.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(Observable sender, int propertyId) {
+                updateFloor("Измеение режима отображения точек");
+            }
+        });
     }
 
     public void processShowSelectedMapPoint(boolean afterButton){
@@ -175,6 +187,11 @@ public class TrainingMapViewModel extends ViewModel {
     // запрос на обновление списков всех точек на этажах
     public void startUpdatingMapPointLists(){
         repository.startDownloadingDataOnPointsOnAllFloors();
+    }
+
+    // функция создания запроса на обновление этажа
+    public void updateFloor(String content){
+        requestToUpdateFloor.setValue(content);
     }
 
     // POINT INFO MODE
