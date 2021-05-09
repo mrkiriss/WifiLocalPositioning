@@ -33,14 +33,14 @@ public class SettingsManager {
     // проверка, для существования только одного запроса в определённый момент
     private boolean checkSettingsNow;
 
-
-
     public SettingsManager(SettingsDao settingsDao, UUIDManager uuidManager, AccessLevelApi accessLevelApi){
         this.settingsDao=settingsDao;
         this.uuidManager=uuidManager;
         this.accessLevelApi=accessLevelApi;
 
         checkSettingsNow=false;
+
+        checkFirstGettingSettings();
     }
 
     public void checkFirstGettingSettings(){
@@ -63,6 +63,8 @@ public class SettingsManager {
             UUID=currentSettings.getUUID();
 
             checkSettingsNow=false;
+
+            checkAccessLevel();
         };
         new Thread(task).start();
     }
