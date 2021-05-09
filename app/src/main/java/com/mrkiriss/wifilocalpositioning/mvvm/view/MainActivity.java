@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.mrkiriss.wifilocalpositioning.R;
-import com.mrkiriss.wifilocalpositioning.data.sources.SettingsManager;
+import com.mrkiriss.wifilocalpositioning.data.sources.settings.SettingsManager;
 import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 import com.mrkiriss.wifilocalpositioning.di.App;
 
@@ -28,7 +28,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
@@ -191,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean isPresentAccessPermission(String type){
         if (type.equals(WifiScanner.TYPE_TRAINING)){
-            return settingsManager.isAdmin();
+            return settingsManager.getAccessLevel()>0;
         }
         return true;
     }

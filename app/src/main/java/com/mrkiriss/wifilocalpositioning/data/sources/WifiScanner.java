@@ -7,7 +7,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -16,7 +15,7 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
-import com.mrkiriss.wifilocalpositioning.data.sources.db.AppDatabase;
+import com.mrkiriss.wifilocalpositioning.data.sources.settings.SettingsManager;
 import com.mrkiriss.wifilocalpositioning.utils.ConnectionManager;
 
 import java.util.ArrayList;

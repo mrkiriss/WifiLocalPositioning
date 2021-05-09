@@ -2,7 +2,7 @@ package com.mrkiriss.wifilocalpositioning.di.modules.definition;
 
 import android.content.Context;
 
-import com.mrkiriss.wifilocalpositioning.data.sources.LocationDataApi;
+import com.mrkiriss.wifilocalpositioning.data.sources.api.LocationDataApi;
 import com.mrkiriss.wifilocalpositioning.data.sources.MapImageManager;
 import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 import com.mrkiriss.wifilocalpositioning.mvvm.repositiries.LocationDetectionRepository;

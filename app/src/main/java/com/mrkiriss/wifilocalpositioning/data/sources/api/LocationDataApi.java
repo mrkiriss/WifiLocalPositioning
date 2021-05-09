@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.data.sources;
+package com.mrkiriss.wifilocalpositioning.data.sources.api;
 
 import com.mrkiriss.wifilocalpositioning.data.models.server.CalibrationLocationPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.Connections;

@@ -1,6 +1,6 @@
 package com.mrkiriss.wifilocalpositioning.di.modules.settings;
 
-import com.mrkiriss.wifilocalpositioning.data.sources.SettingsManager;
+import com.mrkiriss.wifilocalpositioning.data.sources.settings.SettingsManager;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.SettingsDao;
 import com.mrkiriss.wifilocalpositioning.mvvm.repositiries.SettingsRepository;
 

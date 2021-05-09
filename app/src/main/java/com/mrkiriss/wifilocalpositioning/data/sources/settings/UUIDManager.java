@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.data.sources;
+package com.mrkiriss.wifilocalpositioning.data.sources.settings;
 
 import android.content.Context;
 import android.util.Log;

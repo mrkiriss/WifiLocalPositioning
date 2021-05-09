@@ -2,7 +2,7 @@ package com.mrkiriss.wifilocalpositioning.mvvm.repositiries;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.mrkiriss.wifilocalpositioning.data.sources.SettingsManager;
+import com.mrkiriss.wifilocalpositioning.data.sources.settings.SettingsManager;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.SettingsDao;
 
 import lombok.Data;
