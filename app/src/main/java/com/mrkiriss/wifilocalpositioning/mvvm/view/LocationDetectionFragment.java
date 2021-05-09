@@ -3,7 +3,6 @@ package com.mrkiriss.wifilocalpositioning.mvvm.view;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,23 +71,25 @@ public class LocationDetectionFragment extends Fragment {
         // прослушываем получение результата сканирования, вызываем обработчик данных
         viewModel.getCompleteKitsOfScansResult().observe(getViewLifecycleOwner(), scanResults -> viewModel.startProcessingCompleteKitsOfScansResult(scanResults));
         // прослушываем изменение местоположения, обновляем значение в mapView, если экран на этом этаже, перерисовываем
-        viewModel.getResultOfDefinition().observe(getViewLifecycleOwner(), mapPoint -> {
+        viewModel.getRequestToChangeFloorByMapPoint().observe(getViewLifecycleOwner(), mapPoint -> {
             // обновляем в адаптере для новой строки в поиске
             autoCompleteAdapter.setCurrentLocation(mapPoint.copyForCurrentLocation());
 
-            currentLocation=mapPoint;
+            //currentLocation=mapPoint;
             drawCurrentLocation(mapPoint);
 
-            Toast.makeText(getContext(), mapPoint.getRoomName(), Toast.LENGTH_SHORT).show();
+            // меняем номер во всей вьюмодели и вчастности на табло со стрелками
+            viewModel.getFloorNumber().set(mapPoint.getFloorIdInt());
+
             Log.i("changeMapPoint", "получена новая точка с floorId: "+mapPoint.getFloorWithPointer().getFloorId());
         });
         // прослушываем изменение пола, вызываем перерисовку
-        viewModel.getChangeFloor().observe(getViewLifecycleOwner(), floor -> {
-            currentFloor=floor;
+        viewModel.getRequestToChangeFloor().observe(getViewLifecycleOwner(), floor -> {
+            //currentFloor=floor;
             drawCurrentFloor(floor);
         });
         // прослышиваем кнопку показа текущего местоположения
-        viewModel.getShowCurrentLocation().observe(getViewLifecycleOwner(), this::showCurrentLocation);
+        viewModel.getRequestToChangeFloorByMapPoint().observe(getViewLifecycleOwner(), this::showCurrentLocation);
         // прослушиваем увеломления через Toast
         viewModel.getToastContent().observe(getViewLifecycleOwner(), this::showToastContent);
         // прослушываем запрос на обновление текущего этажа
@@ -102,6 +103,8 @@ public class LocationDetectionFragment extends Fragment {
         viewModel.getWifiEnabledState().observe(getViewLifecycleOwner(), state->{
             if (!state) viewModel.showWifiOffering(getContext());
         });
+        // просшлушываем запрос на скрытие клавиатуры
+        viewModel.getRequestToHideKeyboard().observe(getViewLifecycleOwner(), s->hideKeyboard(requireActivity()));
     }
 
     private void showToastContent(String content){
@@ -109,11 +112,15 @@ public class LocationDetectionFragment extends Fragment {
     }
 
     private void drawCurrentLocation(MapPoint mapPoint){
+        if (mapPoint==null || mapPoint.getFloorWithPointer()==null || mapPoint.getFloorWithPointer().getFloorSchema()==null) return;
+
+        touchImageView.setImageBitmap(mapPoint.getFloorWithPointer().getFloorSchema());
+
         //hideKeyboard(requireActivity());
-        if (mapPoint!=null && mapPoint.getFloorWithPointer()!=null && currentFloor!=null && currentFloor.getFloorSchema()!=null &&
+        /*if (mapPoint!=null && mapPoint.getFloorWithPointer()!=null && currentFloor!=null && currentFloor.getFloorSchema()!=null &&
                 mapPoint.getFloorWithPointer().getFloorId()==currentFloor.getFloorId()
                 // если помимо других условий необходимо рисовать маршрут, текущее местоположение не рисовать
-                && !viewModel.getShowRoute().get()
+                //&& !viewModel.getShowRoute().get()
         ) {
             touchImageView.setImageBitmap(mapPoint.getFloorWithPointer().getFloorSchema());
             Log.i("changeMapPoint", "draw mapPoint's schema");
@@ -121,13 +128,14 @@ public class LocationDetectionFragment extends Fragment {
             if (currentFloor==null || currentFloor.getFloorSchema()==null) return;
             touchImageView.setImageBitmap(currentFloor.getFloorSchema());
             Log.i("changeMapPoint", "draw basic floor schema");
-        }
+        }*/
     }
     private void drawCurrentFloor(Floor floor){
         if (floor==null || floor.getFloorSchema()==null) return;
 
-        hideKeyboard(requireActivity());
-        if (currentLocation!=null && currentLocation.getFloorWithPointer()!=null &&
+        touchImageView.setImageBitmap(floor.getFloorSchema());
+
+        /*if (currentLocation!=null && currentLocation.getFloorWithPointer()!=null &&
                 currentLocation.getFloorWithPointer().getFloorId()==floor.getFloorId()){
             touchImageView.setImageBitmap(currentLocation.getFloorWithPointer().getFloorSchema());
             Log.i("drawCurrentFloor", "Совпадение местоположения и этажа, этаж "+currentLocation.getFloorWithPointer().getFloorId());
@@ -135,23 +143,23 @@ public class LocationDetectionFragment extends Fragment {
         }else{
             touchImageView.setImageBitmap(floor.getFloorSchema());
             Log.i("drawCurrentFloor", "Отрисовка этажа без местопложения, этаж "+floor.getFloorId());
-        }
+        }*/
+
     }
     private void showCurrentLocation(MapPoint mapPoint){
-        if (mapPoint==null){
-            Toast.makeText(getContext(), "Текущее местоположение не определено",Toast.LENGTH_SHORT).show();
-        }else {
-            hideKeyboard(requireActivity());
-            viewModel.getFloorNumber().set(Floor.convertEnumToFloorId(mapPoint.getFloorWithPointer().getFloorId()));
-            currentFloor=mapPoint.getFloorWithPointer();
-            touchImageView.setImageBitmap(mapPoint.getFloorWithPointer().getFloorSchema());
-            Log.i("changeMapPoint", "draw current mapPoint's schema");
 
-            float x = (float)mapPoint.getX()/mapPoint.getFloorWithPointer().getFloorSchema().getWidth();
-            float y = (float)mapPoint.getY()/mapPoint.getFloorWithPointer().getFloorSchema().getHeight();
-            Log.i("changeZoom", "x="+x+" y="+y);
-            touchImageView.setZoom(6, x, y);
-        }
+        hideKeyboard(requireActivity());
+
+        viewModel.getFloorNumber().set(mapPoint.getFloorIdInt());
+       // currentFloor=mapPoint.getFloorWithPointer();
+        touchImageView.setImageBitmap(mapPoint.getFloorWithPointer().getFloorSchema());
+        Log.i("LocationDetectionFrg", "showCurrentLocation");
+
+        float x = (float)mapPoint.getX()/mapPoint.getFloorWithPointer().getFloorSchema().getWidth();
+        float y = (float)mapPoint.getY()/mapPoint.getFloorWithPointer().getFloorSchema().getHeight();
+        Log.i("changeZoom", "x="+x+" y="+y);
+        touchImageView.setZoom(6, x, y);
+
     }
 
     public static void hideKeyboard(Activity activity) {

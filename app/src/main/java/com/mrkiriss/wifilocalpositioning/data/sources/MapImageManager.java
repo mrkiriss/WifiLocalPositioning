@@ -23,6 +23,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Data;
+
+@Data
 public class MapImageManager {
 
     private final AssetManager assetManager;
@@ -47,6 +50,7 @@ public class MapImageManager {
     private final Map<FloorId, Floor> basicFloors;
     // данные о каждом этаже для удаления\добавления еденичной точки без обращения к серверу
     private Map<FloorId, List<MapPoint>> dataOnPointsOnAllFloors;
+
     // данные о каждом этаже с прорисованным маршрутом
     private final Map<FloorId, Floor> routeFloors;
 
@@ -90,6 +94,7 @@ public class MapImageManager {
             return getBasicFloor(floorId);
         }
     }
+
     // запускает создание объектов этажей с маршрутами
     public void startCreatingFloorsWithRout(List<LocationPointInfo> info){
         routeFloors.clear();
@@ -191,14 +196,14 @@ public class MapImageManager {
     }
 
     // возвращает этаж с единственным указателем
-    public Floor getFloorWithPointer(FloorId floorId, int x, int y){
-        Bitmap bitmap = getBasicFloor(floorId).getFloorSchema();
+    public Floor getFloorWithPointer(Floor floor, int x, int y){
+        Bitmap bitmap = floor.getFloorSchema();
 
         bitmap = mergePointerAndBitmap(bitmap, x, y);
 
         if (bitmap==null) Log.e("downloadFloor", "floorWithPointer is null!");
 
-        return new Floor(floorId, bitmap, pointer);
+        return new Floor(floor.getFloorId(), bitmap, pointer);
     }
     // возвращает этаж с отображенными указателями из списка
     public Floor getFloorWithPointers(List<MapPoint> mapPoints, FloorId floorId){
@@ -267,19 +272,6 @@ public class MapImageManager {
                 break;
         }
         return filePath;
-    }
-
-    public Map<FloorId, Floor> getBasicFloors() {
-        return basicFloors;
-    }
-    public Map<FloorId, List<MapPoint>> getDataOnPointsOnAllFloors() {
-        return dataOnPointsOnAllFloors;
-    }
-    public void setDataOnPointsOnAllFloors(Map<FloorId, List<MapPoint>> dataOnPointsOnAllFloors) {
-        this.dataOnPointsOnAllFloors = dataOnPointsOnAllFloors;
-    }
-    public MutableLiveData<String> getRequestToRefreshFloor() {
-        return requestToRefreshFloor;
     }
 
 }

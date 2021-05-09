@@ -1,7 +1,5 @@
 package com.mrkiriss.wifilocalpositioning.data.models.map;
 
-import java.util.Map;
-
 import lombok.Data;
 
 @Data
@@ -53,5 +51,9 @@ public class MapPoint {
         result.setFloorIdInt(floorIdInt);
         result.setFloorWithPointer(floorWithPointer);
         return result;
+    }
+
+    public MapPoint copy(){
+        return new MapPoint(x,y,roomName,isRoom);
     }
 }

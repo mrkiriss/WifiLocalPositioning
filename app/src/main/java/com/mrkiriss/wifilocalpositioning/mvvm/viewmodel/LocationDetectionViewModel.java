@@ -2,6 +2,7 @@ package com.mrkiriss.wifilocalpositioning.mvvm.viewmodel;
 
 import android.content.Context;
 
+import androidx.databinding.Observable;
 import androidx.databinding.ObservableBoolean;
 import androidx.databinding.ObservableField;
 import androidx.databinding.ObservableInt;
@@ -18,6 +19,7 @@ import com.mrkiriss.wifilocalpositioning.mvvm.repositiries.LocationDetectionRepo
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -30,12 +32,13 @@ public class LocationDetectionViewModel extends ViewModel {
     protected LocationDetectionRepository repository;
 
     private final LiveData<CompleteKitsContainer> completeKitsOfScansResult;
-    private final LiveData<MapPoint> resultOfDefinition;
-    private final LiveData<Floor> changeFloor;
+    private final LiveData<MapPoint> requestToChangeFloorByMapPoint; // изменяет этаж и камеру напрявляет на местоположение
+    private final LiveData<Floor> requestToChangeFloor; // изменяет этаж
     private final LiveData<Map<FloorId, List<MapPoint>>> requestToAddAllPointsDataInAutoFinders;
     private final LiveData<Boolean> wifiEnabledState;
+    private final LiveData<String> requestToHideKeyboard;
+
     private final MutableLiveData<String> requestToRefreshFloor;
-    private final MutableLiveData<MapPoint> showCurrentLocation;
     private final MutableLiveData<String> toastContent;
 
     private final ObservableInt floorNumber;
@@ -49,15 +52,14 @@ public class LocationDetectionViewModel extends ViewModel {
         App.getInstance().getComponentManager().getLocationDetectionSubcomponent().inject(this);
 
         completeKitsOfScansResult= repository.getCompleteKitsOfScansResult();
-        resultOfDefinition= repository.getResultOfDefinition();
-        changeFloor= repository.getChangeFloor();
+        requestToChangeFloorByMapPoint = repository.getRequestToChangeFloorByMapPoint();
+        requestToChangeFloor = repository.getRequestToChangeFloor();
         toastContent=repository.getToastContent();
         requestToAddAllPointsDataInAutoFinders=repository.getRequestToAddAllPointsDataInAutoFinders();
         wifiEnabledState=repository.getWifiEnabledState();
+        requestToHideKeyboard=repository.getRequestToHideKeyboard();
 
-        showCurrentLocation=repository.getShowCurrentLocation();
-
-        floorNumber = new ObservableInt(2);
+        floorNumber = new ObservableInt();
         findInput = new ObservableField<>("");
         departureInput = new ObservableField<>("");
         destinationInput = new ObservableField<>("");
@@ -65,15 +67,33 @@ public class LocationDetectionViewModel extends ViewModel {
         showFind = new ObservableBoolean(false);
 
         requestToRefreshFloor=repository.getRequestToRefreshFloor();
+
+        // обозреваем изменение режима навагиции для установки текущего местоположения  в строку начала
+        // + изменяем требования в репозитории, чтобы выбирать изображении для отрисовки местоположения
+        showRoute.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(Observable sender, int propertyId) {
+                if (requestToChangeFloorByMapPoint.getValue()!=null)
+                    departureInput.set(Objects.requireNonNull(requestToChangeFloorByMapPoint.getValue()).getRoomName());
+
+                repository.clearRouteFloors();
+                repository.setShowRoute(showRoute.get());
+            }
+        });
+        // изменяет номер этажа в репозитории
+        floorNumber.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(Observable sender, int propertyId) {
+                repository.setCurrentFloorIdInt(floorNumber.get());
+            }
+        });
+        floorNumber.set(2); // провоцируем начальное изменение при запуске
     }
 
     public void startProcessingCompleteKitsOfScansResult(CompleteKitsContainer scanResults){
         repository.startProcessingCompleteKitsOfScansResult(scanResults);
     }
 
-    public void onShowCurrentLocation(){
-        showCurrentLocation.setValue(resultOfDefinition.getValue());
-    }
     // show\hide route views
     public void onShowRoute(){
         showRoute.set(true);
@@ -106,7 +126,11 @@ public class LocationDetectionViewModel extends ViewModel {
         }
     }
     public void startFloorChanging(){
-        repository.changeFloor(floorNumber.get(), showRoute.get());
+        repository.changeFloor();
+    }
+
+    public void onShowCurrentLocation(){
+        repository.changeFloorWithMapPoint();
     }
 
     public void startBuildRoute(){
