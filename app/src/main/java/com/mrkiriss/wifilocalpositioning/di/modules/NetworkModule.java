@@ -2,7 +2,7 @@ package com.mrkiriss.wifilocalpositioning.di.modules;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.mrkiriss.wifilocalpositioning.data.sources.IMWifiServerApi;
+import com.mrkiriss.wifilocalpositioning.data.sources.LocationDataApi;
 
 import javax.inject.Singleton;
 
@@ -16,7 +16,7 @@ public class NetworkModule {
 
     @Provides
     @Singleton
-    public IMWifiServerApi provideIMWifiServerApi(){
+    public LocationDataApi provideIMWifiServerApi(){
         //String baseUrl = "https://wifilocalpositioning.herokuapp.com/location/";
         String baseUrl = "http://192.168.31.136:8080/location/";
 
@@ -28,6 +28,6 @@ public class NetworkModule {
                 baseUrl(baseUrl).
                 addConverterFactory(GsonConverterFactory.create(gson)).
                 build()
-                .create(IMWifiServerApi.class);
+                .create(LocationDataApi.class);
     }
 }

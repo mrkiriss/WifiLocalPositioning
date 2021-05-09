@@ -1,19 +1,31 @@
 package com.mrkiriss.wifilocalpositioning.data.sources;
 
-import com.mrkiriss.wifilocalpositioning.data.models.preference.Settings;
+import android.content.Context;
+import android.util.Log;
+
+import com.mrkiriss.wifilocalpositioning.data.models.settings.Settings;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.SettingsDao;
 
-import java.util.Set;
+import org.jetbrains.annotations.NotNull;
+
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 import lombok.Data;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 @Data
 public class SettingsManager {
     private SettingsDao settingsDao;
+    private UUIDManager uuidManager;
+    private AccessLevelApi accessLevelApi;
 
     private int scanInterval=-1;
     private int numberOfScanning=-1;
-    private boolean isAdmin=true;
+    private String UUID;
+    private Boolean isAdmin=true;
 
     private final Long settingID=0L;
 
@@ -21,11 +33,16 @@ public class SettingsManager {
     public final int defaultNumberOfScanning = 1;
     public final String[] keys = new String[]{"scanInterval", "variousOfNumberScans"};
 
-    // проверка, для единоразовой проверки
+    // проверка, для существования только одного запроса в определённый момент
     private boolean checkSettingsNow;
+    // проверка, для существования только одного запроса в определённый момент
+    private boolean checkAccessLevelNow;
 
-    public SettingsManager(SettingsDao settingsDao){
+
+    public SettingsManager(SettingsDao settingsDao, UUIDManager uuidManager, AccessLevelApi accessLevelApi){
         this.settingsDao=settingsDao;
+        this.uuidManager=uuidManager;
+        this.accessLevelApi=accessLevelApi;
 
         checkSettingsNow=false;
     }
@@ -40,6 +57,7 @@ public class SettingsManager {
                 settings.setId(settingID);
                 settings.setScanInterval(defaultScanInterval);
                 settings.setNumberOfScans(defaultNumberOfScanning);
+                settings.setUUID(uuidManager.getMUUID());
                 settingsDao.insert(settings);
                 currentSettings=settings;
             }
@@ -50,6 +68,25 @@ public class SettingsManager {
             checkSettingsNow=false;
         };
         new Thread(task).start();
+    }
+    public void checkAccessLevel(){
+        accessLevelApi.getAccessLevel(UUID).enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(@NotNull Call<Boolean> call, @NotNull Response<Boolean> response) {
+                if (response.body()==null){
+                    Log.i("SettingsManager", "response after get accessLevel is null");
+                    isAdmin=null; // будет вызвана перепроверка
+                }else{
+                    isAdmin=response.body();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                t.printStackTrace();
+                isAdmin=null; // будет вызвана перепроверка
+            }
+        });
     }
 
     public void saveChangedSettingsData(int scanInterval, int numberOfScanning){
@@ -67,6 +104,7 @@ public class SettingsManager {
         new Thread(task).start();
     }
 
+    // собственные гетеры, чтобы вызывать обновление при требовании при отсутсвии данных
     public int getScanInterval(){
         if (scanInterval==-1 && !checkSettingsNow){
             checkFirstGettingSettings();
@@ -80,5 +118,12 @@ public class SettingsManager {
             return defaultNumberOfScanning;
         }
         return numberOfScanning;
+    }
+    public boolean isAdmin(){
+        if (isAdmin==null && !checkAccessLevelNow){
+            checkAccessLevel();
+            return false;
+        }
+        return isAdmin != null && isAdmin;
     }
 }

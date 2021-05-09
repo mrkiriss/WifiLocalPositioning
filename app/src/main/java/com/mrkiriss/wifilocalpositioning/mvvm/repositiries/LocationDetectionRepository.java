@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.data.models.server.ListOfAllMapPoints;
 import com.mrkiriss.wifilocalpositioning.data.models.server.LocationPointInfo;
+import com.mrkiriss.wifilocalpositioning.data.sources.LocationDataApi;
 import com.mrkiriss.wifilocalpositioning.data.sources.MapImageManager;
 import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
@@ -18,7 +19,6 @@ import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.AccessPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CalibrationLocationPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.DefinedLocationPoint;
-import com.mrkiriss.wifilocalpositioning.data.sources.IMWifiServerApi;
 import com.mrkiriss.wifilocalpositioning.utils.ConnectionManager;
 
 import java.io.Serializable;
@@ -35,7 +35,7 @@ import retrofit2.Response;
 @Data
 public class LocationDetectionRepository implements Serializable {
 
-    private final IMWifiServerApi retrofit;
+    private final LocationDataApi retrofit;
     private final WifiScanner wifiScanner;
     private final MapImageManager mapImageManager;
     private final ConnectionManager connectionManager;
@@ -51,7 +51,7 @@ public class LocationDetectionRepository implements Serializable {
 
     private List<LocationPointInfo> listOfSearchableLocations;
 
-    public LocationDetectionRepository(IMWifiServerApi retrofit, WifiScanner wifiScanner,
+    public LocationDetectionRepository(LocationDataApi retrofit, WifiScanner wifiScanner,
                                        ConnectionManager connectionManager, MapImageManager mapImageManager){
         this.retrofit=retrofit;
         this.wifiScanner=wifiScanner;

@@ -4,11 +4,10 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 
-import com.mrkiriss.wifilocalpositioning.data.models.preference.Settings;
 import com.mrkiriss.wifilocalpositioning.data.sources.MapImageManager;
 import com.mrkiriss.wifilocalpositioning.data.sources.SettingsManager;
+import com.mrkiriss.wifilocalpositioning.data.sources.UUIDManager;
 import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
-import com.mrkiriss.wifilocalpositioning.data.sources.db.AppDatabase;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.SettingsDao;
 import com.mrkiriss.wifilocalpositioning.utils.ConnectionManager;
 
@@ -37,6 +36,11 @@ public class ManagersModule {
     @Singleton
     public SettingsManager provideSettingsManager(SettingsDao dao) {
         return new SettingsManager(dao);
+    }
+    @Provides
+    @Singleton
+    public UUIDManager provideUUIDManager(Context context) {
+        return new UUIDManager(context);
     }
 
     @Provides

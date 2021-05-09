@@ -11,7 +11,7 @@ import com.mrkiriss.wifilocalpositioning.data.models.server.CalibrationLocationP
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.data.models.server.DefinedLocationPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.StringResponse;
-import com.mrkiriss.wifilocalpositioning.data.sources.IMWifiServerApi;
+import com.mrkiriss.wifilocalpositioning.data.sources.LocationDataApi;
 import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ import retrofit2.Response;
 @Data
 public class TrainingScanRepository {
 
-    private IMWifiServerApi retrofit;
+    private LocationDataApi retrofit;
     private WifiScanner wifiScanner;
 
     private CalibrationLocationPoint calibrationLocationPoint;
@@ -40,7 +40,7 @@ public class TrainingScanRepository {
     private LiveData<Integer> remainingNumberOfScanning;
 
 
-    public TrainingScanRepository(IMWifiServerApi retrofit, WifiScanner wifiScanner){
+    public TrainingScanRepository(LocationDataApi retrofit, WifiScanner wifiScanner){
         this.retrofit=retrofit;
         this.wifiScanner=wifiScanner;
 

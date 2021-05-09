@@ -5,7 +5,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.mrkiriss.wifilocalpositioning.data.models.preference.Settings;
+import com.mrkiriss.wifilocalpositioning.data.models.settings.Settings;
 
 @Dao
 public interface SettingsDao {

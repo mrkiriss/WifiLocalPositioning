@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.data.models.preference;
+package com.mrkiriss.wifilocalpositioning.data.models.settings;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -13,4 +13,5 @@ public class Settings {
 
     private int scanInterval;
     private int numberOfScans;
+    private String UUID;
 }

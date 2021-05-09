@@ -17,7 +17,7 @@ import com.mrkiriss.wifilocalpositioning.data.models.server.Connections;
 import com.mrkiriss.wifilocalpositioning.data.models.server.ListOfAllMapPoints;
 import com.mrkiriss.wifilocalpositioning.data.models.server.LocationPointInfo;
 import com.mrkiriss.wifilocalpositioning.data.models.server.StringResponse;
-import com.mrkiriss.wifilocalpositioning.data.sources.IMWifiServerApi;
+import com.mrkiriss.wifilocalpositioning.data.sources.LocationDataApi;
 import com.mrkiriss.wifilocalpositioning.data.sources.MapImageManager;
 import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 
@@ -35,7 +35,7 @@ import retrofit2.Response;
 @Data
 public class TrainingMapRepository implements Serializable {
 
-    private final IMWifiServerApi retrofit;
+    private final LocationDataApi retrofit;
     private final MapImageManager mapImageManager;
     private WifiScanner wifiScanner;
 
@@ -49,7 +49,7 @@ public class TrainingMapRepository implements Serializable {
     private LiveData<Integer> remainingNumberOfScanning;
     private CalibrationLocationPoint calibrationLocationPoint;
 
-    public TrainingMapRepository(IMWifiServerApi retrofit, MapImageManager mapImageManager, WifiScanner wifiScanner){
+    public TrainingMapRepository(LocationDataApi retrofit, MapImageManager mapImageManager, WifiScanner wifiScanner){
         this.retrofit=retrofit;
         this.mapImageManager = mapImageManager;
         this.wifiScanner=wifiScanner;

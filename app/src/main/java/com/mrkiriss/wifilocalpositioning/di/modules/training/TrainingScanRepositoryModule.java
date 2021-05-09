@@ -1,7 +1,7 @@
 package com.mrkiriss.wifilocalpositioning.di.modules.training;
 
 import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
-import com.mrkiriss.wifilocalpositioning.data.sources.IMWifiServerApi;
+import com.mrkiriss.wifilocalpositioning.data.sources.LocationDataApi;
 import com.mrkiriss.wifilocalpositioning.mvvm.repositiries.TrainingScanRepository;
 
 import dagger.Module;
@@ -12,7 +12,7 @@ public class TrainingScanRepositoryModule {
 
     @Provides
     @TrainingScope
-    public TrainingScanRepository provideRepository(IMWifiServerApi retrofit, WifiScanner wifiScanner){
+    public TrainingScanRepository provideRepository(LocationDataApi retrofit, WifiScanner wifiScanner){
         return new TrainingScanRepository(retrofit, wifiScanner);
     }
 }

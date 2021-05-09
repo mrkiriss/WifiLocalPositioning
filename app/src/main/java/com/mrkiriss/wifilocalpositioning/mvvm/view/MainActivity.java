@@ -3,16 +3,18 @@ package com.mrkiriss.wifilocalpositioning.mvvm.view;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.Menu;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.mrkiriss.wifilocalpositioning.R;
+import com.mrkiriss.wifilocalpositioning.data.sources.SettingsManager;
 import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 import com.mrkiriss.wifilocalpositioning.di.App;
-import com.mrkiriss.wifilocalpositioning.utils.ConnectionManager;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -26,12 +28,18 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
+
 import javax.inject.Inject;
 
 public class MainActivity extends AppCompatActivity {
 
     @Inject
     protected WifiScanner wifiScanner;
+    @Inject
+    protected SettingsManager settingsManager;
 
     private AppBarConfiguration mAppBarConfiguration;
     private DrawerLayout drawer;
@@ -41,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     private Fragment[] fragments;
     private String[] fragmentTAGS;
     private String[] typesOfRequestSources;
+
+    private int currentFragmentIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +79,8 @@ public class MainActivity extends AppCompatActivity {
         createFragments();
         setBottomNavigationListener(navigationView);
 
-        onNavigationDrawerItemSelected(0);
-        navigationView.setCheckedItem(navigationView.getMenu().getItem(0));
+        changeFragment(currentFragmentIndex);
+        navigationView.setCheckedItem(navigationView.getMenu().getItem(currentFragmentIndex));
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
     }
@@ -113,15 +123,31 @@ public class MainActivity extends AppCompatActivity {
     private void setBottomNavigationListener(NavigationView navigationView){
         navigationView.setNavigationItemSelectedListener(item -> {
             int fragmentIndex = defineFragmentIndex(item);
+
+            String androidId = Settings.Secure.getString(this.getApplicationContext().getContentResolver(),
+                    Settings.Secure.ANDROID_ID);
+
+            UUID uuid = null;
+            uuid = UUID.nameUUIDFromBytes(androidId.getBytes(StandardCharsets.UTF_8));
+            Log.i("ANDROID_ID after UUID", uuid==null?"null":uuid.toString());
+
+            // проверка наличия доступа
+            if (!isPresentAccessPermission(typesOfRequestSources[fragmentIndex])) {
+                notifyAboutLackOfAccess();
+                drawer.close();
+                return false;
+            }
+
             item.setChecked(true);
-            onNavigationDrawerItemSelected(fragmentIndex);
+            changeFragment(fragmentIndex);
+            currentFragmentIndex=fragmentIndex;
 
             drawer.close();
 
             return true;
         });
     }
-    public void onNavigationDrawerItemSelected(int position) {
+    public void changeFragment(int position) {
         Log.i("changeFragments","POS "+position);
         FragmentManager fm = navHostFragment.getChildFragmentManager();
 
@@ -161,5 +187,17 @@ public class MainActivity extends AppCompatActivity {
         }else{
             Log.i("Permissions","NOT GRANTED");
         }
+    }
+
+    private boolean isPresentAccessPermission(String type){
+        if (type.equals(WifiScanner.TYPE_TRAINING)){
+            return settingsManager.isAdmin();
+        }
+        return true;
+    }
+    private void notifyAboutLackOfAccess(){
+        Toast.makeText(this, "Доступ запрещён.\n" +
+                "За подробной информацией обратитесь к владельцу приложения",
+                    Toast.LENGTH_LONG).show();
     }
 }
