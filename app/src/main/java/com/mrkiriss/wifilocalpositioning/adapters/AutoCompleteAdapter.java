@@ -28,6 +28,7 @@ public class AutoCompleteAdapter
 
     private List<MapPoint> findResult;
     private Map<FloorId, List<MapPoint>> mapPointsData;
+    private List<MapPoint> hideMapPoints;
     private MapPoint currentLocation;
 
     public AutoCompleteAdapter(){

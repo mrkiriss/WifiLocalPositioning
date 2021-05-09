@@ -87,7 +87,8 @@
             android:layout_marginTop="@dimen/view_settings_element_vertical"
             android:layout_marginBottom="@dimen/view_settings_element_vertical"
             android:onClick="@{()->viewModel.acceptSettingsChange()}"
-            android:text="@string/acceptedChangeSettings" />
+            android:text="@string/acceptedChangeSettings"
+            android:enabled="@{viewModel.repository.currentSavedNumberOfScanning!=viewModel.numberOfScanning || !String.valueOf(viewModel.repository.currentSavedScanInterval).equals(viewModel.scanInterval)}"/>
 
     </LinearLayout>
 </layout>

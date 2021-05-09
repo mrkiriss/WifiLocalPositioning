@@ -16,6 +16,8 @@ public class SettingsRepository {
     private final MutableLiveData<String> requiredToUpdateScanInterval;
     private final MutableLiveData<String> toastContent;
 
+    private int currentSavedScanInterval;
+    private int currentSavedNumberOfScanning;
 
     public SettingsRepository(SettingsDao settingsDao, SettingsManager settingsManager){
         this.settingsDao=settingsDao;
@@ -24,12 +26,17 @@ public class SettingsRepository {
         requiredToUpdateNumberOfScanning=new MutableLiveData<>();
         requiredToUpdateScanInterval=new MutableLiveData<>();
         toastContent=new MutableLiveData<>();
+
+        updateDataFromSaved();
     }
 
-    // TODO: данные могут отрисоваться дефолтные, если настройки не успеют загрузиться в потоке
     public void initSettingValuesFromDB(){
         requiredToUpdateScanInterval.setValue(String.valueOf(settingsManager.getScanInterval()));
         requiredToUpdateNumberOfScanning.setValue(settingsManager.getNumberOfScanning());
+    }
+    public void updateDataFromSaved(){
+        currentSavedScanInterval=settingsManager.getScanInterval();
+        currentSavedNumberOfScanning=settingsManager.getNumberOfScanning();
     }
 
     public void acceptSettingsChange(int scanInterval, int numberOfScanning){
@@ -41,12 +48,18 @@ public class SettingsRepository {
         settingsManager.setScanInterval(scanInterval);
         settingsManager.setNumberOfScanning(numberOfScanning);
 
+        updateDataFromSaved();
+
         settingsManager.saveChangedSettingsData(scanInterval, numberOfScanning);
 
         toastContent.setValue("Настройки успешно изменены");
+
+        // вставляем те же данные, чтобы кнопка обновилась
+        requiredToUpdateScanInterval.setValue(requiredToUpdateScanInterval.getValue());
     }
     private boolean isValidSettingsData(int scanInterval, int numberOfScanning){
         if (scanInterval<3 || numberOfScanning<0 || numberOfScanning>5){
+            requiredToUpdateScanInterval.setValue(String.valueOf(settingsManager.defaultScanInterval));
             toastContent.setValue("Неккоректные данные");
             return false;
         }

@@ -3,6 +3,7 @@ package com.mrkiriss.wifilocalpositioning.mvvm.viewmodel;
 import androidx.databinding.ObservableField;
 import androidx.databinding.ObservableInt;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.mrkiriss.wifilocalpositioning.di.App;
@@ -25,7 +26,7 @@ public class SettingsViewModel extends ViewModel {
 
     private final LiveData<Integer> requiredToUpdateNumberOfScanning;
     private final LiveData<String> requiredToUpdateScanInterval;
-    private final LiveData<String> toastContent;
+    private final MutableLiveData<String> toastContent;
 
     public SettingsViewModel(){
 
@@ -45,6 +46,11 @@ public class SettingsViewModel extends ViewModel {
         repository.initSettingValuesFromDB();
     }
     public void acceptSettingsChange(){
+        if (scanInterval.get().isEmpty()){
+            toastContent.setValue("Пустое поле недопустимо");
+            scanInterval.set(String.valueOf(repository.getSettingsManager().defaultScanInterval));
+            return;
+        }
         repository.acceptSettingsChange(Integer.parseInt(Objects.requireNonNull(scanInterval.get())),
                 numberOfScanning.get());
     }
