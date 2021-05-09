@@ -2,7 +2,7 @@
     <string name="app_name">IMLocation</string>
     <string name="title_activity_main">IMLocation</string>
     <string name="nav_training_scan">Тренировка сканированием</string>
-    <string name="nav_definition">IMLocation</string>
+    <string name="nav_definition">Определение</string>
     <string name="nav_settings">Настройки</string>
 
     <!--TrainingScanFragment-->

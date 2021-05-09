@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     protected SettingsManager settingsManager;
 
     private AppBarConfiguration mAppBarConfiguration;
+    private Toolbar toolbar;
     private DrawerLayout drawer;
     private NavController navController;
     private NavHostFragment navHostFragment;
@@ -59,14 +60,14 @@ public class MainActivity extends AppCompatActivity {
         App.getInstance().getComponentManager().getMainActivitySubcomponent().inject(this);
         checkPermissions();
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_training, R.id.nav_definition)
+                R.id.nav_training, R.id.nav_definition, R.id.nav_settings, R.id.nav_training2)
                 .setDrawerLayout(drawer)
                 .build();
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -78,6 +79,10 @@ public class MainActivity extends AppCompatActivity {
         createFragments();
         setBottomNavigationListener(navigationView);
 
+        if (savedInstanceState!=null){
+            currentFragmentIndex=savedInstanceState.getInt("currentFragmentIndex");
+            Log.i("MainActivityInfo", "currentFragmentIndex from savedInstance = "+currentFragmentIndex);
+        }
         changeFragment(currentFragmentIndex);
         navigationView.setCheckedItem(navigationView.getMenu().getItem(currentFragmentIndex));
 
@@ -103,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
             navHostFragment.getChildFragmentManager().beginTransaction().remove(startFragment).commit();
         }
         fragments=new Fragment[]{new LocationDetectionFragment(), new TrainingScanFragment(), new TrainingMapFragment(), new SettingsFragment()};
-        fragmentTAGS=new String[]{"fDefinition", "fScanTraining_Deparced", "fTraining", "fSettings"};
+        fragmentTAGS=new String[]{"Определение", "Тренировка сканированием", "Тренировка картой", "Настройки"};
         typesOfRequestSources = new String[]{WifiScanner.TYPE_DEFINITION, WifiScanner.TYPE_TRAINING, WifiScanner.TYPE_TRAINING, WifiScanner.TYPE_NO_SCAN};
     }
     private int defineFragmentIndex(MenuItem item) {
@@ -123,13 +128,6 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(item -> {
             int fragmentIndex = defineFragmentIndex(item);
 
-            String androidId = Settings.Secure.getString(this.getApplicationContext().getContentResolver(),
-                    Settings.Secure.ANDROID_ID);
-
-            UUID uuid = null;
-            uuid = UUID.nameUUIDFromBytes(androidId.getBytes(StandardCharsets.UTF_8));
-            Log.i("ANDROID_ID after UUID", uuid==null?"null":uuid.toString());
-
             // проверка наличия доступа
             if (!isPresentAccessPermission(typesOfRequestSources[fragmentIndex])) {
                 notifyAboutLackOfAccess();
@@ -147,7 +145,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     public void changeFragment(int position) {
-        Log.i("changeFragments","POS "+position);
+        toolbar.setTitle(fragmentTAGS[position]);
+
+        Log.i("MainActivityInfo","POS "+position);
         FragmentManager fm = navHostFragment.getChildFragmentManager();
 
         FragmentTransaction fragmentTransaction = fm.beginTransaction();
@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (fm.findFragmentByTag(fragmentTAGS[position]) == null) {
             fragmentTransaction.add(R.id.nav_host_fragment, fragments[position], fragmentTAGS[position]);
-            Log.i("changeFragments","ADD "+fragments[position].getTag());
+            Log.i("MainActivityInfo","ADD "+fragments[position].getTag());
         }
         for (int i = 0; i < fragments.length; i++) {
             if (i == position) {
@@ -163,16 +163,16 @@ public class MainActivity extends AppCompatActivity {
                 // изменяем тип сканирования
                 wifiScanner.setCurrentTypeOfRequestSource(typesOfRequestSources[i]);
 
-                Log.i("changeFragments","SHOW "+fragments[position].getTag());
+                Log.i("MainActivityInfo","SHOW "+fragments[position].getTag());
             } else {
                 if (fm.findFragmentByTag(fragmentTAGS[i]) != null) {
-                    Log.i("changeFragments","HIDE "+fragments[i].getTag());
+                    Log.i("MainActivityInfo","HIDE "+fragments[i].getTag());
                     fragmentTransaction.hide(fragments[i]);
                 }
             }
         }
         fragmentTransaction.commit();
-        Log.i("changeFragments","commit");
+        Log.i("MainActivityInfo","commit");
     }
 
     private void checkPermissions(){
@@ -198,5 +198,11 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "Доступ запрещён.\n" +
                 "За подробной информацией обратитесь к владельцу приложения",
                     Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putInt("currentFragmentIndex", currentFragmentIndex);
     }
 }

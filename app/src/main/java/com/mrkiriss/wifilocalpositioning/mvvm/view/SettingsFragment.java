@@ -20,6 +20,12 @@ public class SettingsFragment extends Fragment {
     private FragmentSettingsBinding binding;
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         viewModel=new ViewModelProvider(this).get(SettingsViewModel.class);
