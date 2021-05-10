@@ -2,6 +2,8 @@ package com.mrkiriss.wifilocalpositioning.data.sources.settings;
 
 import android.util.Log;
 
+import androidx.lifecycle.MutableLiveData;
+
 import com.mrkiriss.wifilocalpositioning.data.models.settings.Settings;
 import com.mrkiriss.wifilocalpositioning.data.sources.api.AccessLevelApi;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.SettingsDao;
@@ -25,7 +27,6 @@ public class SettingsManager {
     private Integer accessLevel;
 
     private final Long settingID=0L;
-
     public final int defaultScanInterval=15; // in seconds
     public final int defaultNumberOfScanning = 1;
     public final String[] keys = new String[]{"scanInterval", "variousOfNumberScans"};
@@ -33,12 +34,16 @@ public class SettingsManager {
     // проверка, для существования только одного запроса в определённый момент
     private boolean checkSettingsNow;
 
+    private final MutableLiveData<Integer> requestToUpdateAccessLevel;
+
     public SettingsManager(SettingsDao settingsDao, UUIDManager uuidManager, AccessLevelApi accessLevelApi){
         this.settingsDao=settingsDao;
         this.uuidManager=uuidManager;
         this.accessLevelApi=accessLevelApi;
 
         checkSettingsNow=false;
+
+        requestToUpdateAccessLevel =new MutableLiveData<>();
 
         checkFirstGettingSettings();
     }
@@ -77,6 +82,7 @@ public class SettingsManager {
                     Log.i("SettingsManager", "response after get accessLevel is null");
                 }else{
                     accessLevel=response.body();
+                    requestToUpdateAccessLevel.setValue(accessLevel);
                     Log.i("SettingsManager", "response after get accessLevel="+accessLevel);
                 }
             }

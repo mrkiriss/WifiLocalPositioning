@@ -12,31 +12,49 @@ public class SettingsRepository {
     private final SettingsDao settingsDao;
     private final SettingsManager settingsManager;
 
-    private final MutableLiveData<Integer> requiredToUpdateNumberOfScanning;
-    private final MutableLiveData<String> requiredToUpdateScanInterval;
+    private final MutableLiveData<Integer> requestToUpdateNumberOfScanning;
+    private final MutableLiveData<String> requestToUpdateScanInterval;
+    private final MutableLiveData<Integer> requestToUpdateAccessLevel;
+    private final MutableLiveData<String> requestToUpdateCopyUUID;
     private final MutableLiveData<String> toastContent;
 
     private int currentSavedScanInterval;
     private int currentSavedNumberOfScanning;
 
+    private int numberOfTryingToCopy;
+    private final int requiredNumberOfTryingToCopy=7;
+
     public SettingsRepository(SettingsDao settingsDao, SettingsManager settingsManager){
         this.settingsDao=settingsDao;
         this.settingsManager=settingsManager;
 
-        requiredToUpdateNumberOfScanning=new MutableLiveData<>();
-        requiredToUpdateScanInterval=new MutableLiveData<>();
+        requestToUpdateNumberOfScanning =new MutableLiveData<>();
+        requestToUpdateScanInterval =new MutableLiveData<>();
+        requestToUpdateAccessLevel =settingsManager.getRequestToUpdateAccessLevel();
         toastContent=new MutableLiveData<>();
+        requestToUpdateCopyUUID =new MutableLiveData<>();
 
         updateDataFromSaved();
     }
 
-    public void initSettingValuesFromDB(){
-        requiredToUpdateScanInterval.setValue(String.valueOf(settingsManager.getScanInterval()));
-        requiredToUpdateNumberOfScanning.setValue(settingsManager.getNumberOfScanning());
+    public void updateSettingValuesFromDB(){
+        requestToUpdateScanInterval.setValue(String.valueOf(settingsManager.getScanInterval()));
+        requestToUpdateNumberOfScanning.setValue(settingsManager.getNumberOfScanning());
+        requestToUpdateAccessLevel.setValue(settingsManager.getAccessLevel());
     }
     public void updateDataFromSaved(){
         currentSavedScanInterval=settingsManager.getScanInterval();
         currentSavedNumberOfScanning=settingsManager.getNumberOfScanning();
+    }
+    public void requestToUpdateAccessLevel(){
+        settingsManager.checkAccessLevel();
+    }
+    public void requestToGetUUID(){
+        numberOfTryingToCopy++;
+        if (numberOfTryingToCopy==requiredNumberOfTryingToCopy){
+            requestToUpdateCopyUUID.setValue(settingsManager.getUUID());
+            numberOfTryingToCopy=0;
+        }
     }
 
     public void acceptSettingsChange(int scanInterval, int numberOfScanning){
@@ -55,11 +73,11 @@ public class SettingsRepository {
         toastContent.setValue("Настройки успешно изменены");
 
         // вставляем те же данные, чтобы кнопка обновилась
-        requiredToUpdateScanInterval.setValue(requiredToUpdateScanInterval.getValue());
+        requestToUpdateScanInterval.setValue(requestToUpdateScanInterval.getValue());
     }
     private boolean isValidSettingsData(int scanInterval, int numberOfScanning){
         if (scanInterval<3 || numberOfScanning<0 || numberOfScanning>5){
-            requiredToUpdateScanInterval.setValue(String.valueOf(settingsManager.defaultScanInterval));
+            requestToUpdateScanInterval.setValue(String.valueOf(settingsManager.defaultScanInterval));
             toastContent.setValue("Неккоректные данные");
             return false;
         }

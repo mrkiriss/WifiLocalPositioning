@@ -23,9 +23,12 @@ public class SettingsViewModel extends ViewModel {
 
     private final ObservableField<String> scanInterval;
     private final ObservableInt numberOfScanning;
+    private final ObservableInt accessLevel;
 
-    private final LiveData<Integer> requiredToUpdateNumberOfScanning;
-    private final LiveData<String> requiredToUpdateScanInterval;
+    private final LiveData<Integer> requestToUpdateNumberOfScanning;
+    private final LiveData<String> requestToUpdateScanInterval;
+    private final LiveData<Integer> requestToUpdateAccessLevel;
+    private final LiveData<String> requestToUpdateCopyUUID;
     private final MutableLiveData<String> toastContent;
 
     public SettingsViewModel(){
@@ -34,16 +37,19 @@ public class SettingsViewModel extends ViewModel {
 
         scanInterval=new ObservableField<>("");
         numberOfScanning =new ObservableInt(0);
+        accessLevel=new ObservableInt(0);
 
-        requiredToUpdateNumberOfScanning=repository.getRequiredToUpdateNumberOfScanning();
-        requiredToUpdateScanInterval= repository.getRequiredToUpdateScanInterval();
+        requestToUpdateNumberOfScanning =repository.getRequestToUpdateNumberOfScanning();
+        requestToUpdateScanInterval = repository.getRequestToUpdateScanInterval();
+        requestToUpdateAccessLevel =repository.getRequestToUpdateAccessLevel();
+        requestToUpdateCopyUUID=repository.getRequestToUpdateCopyUUID();
         toastContent=repository.getToastContent();
 
         initSettingValuesFromDB();
     }
 
     private void initSettingValuesFromDB(){
-        repository.initSettingValuesFromDB();
+        repository.updateSettingValuesFromDB();
     }
     public void acceptSettingsChange(){
         if (scanInterval.get().isEmpty()){
@@ -53,5 +59,11 @@ public class SettingsViewModel extends ViewModel {
         }
         repository.acceptSettingsChange(Integer.parseInt(Objects.requireNonNull(scanInterval.get())),
                 numberOfScanning.get());
+    }
+    public void requestToUpdateAccessLevel(){
+        repository.requestToUpdateAccessLevel();
+    }
+    public void requestToCopyUUID(){
+        repository.requestToGetUUID();
     }
 }

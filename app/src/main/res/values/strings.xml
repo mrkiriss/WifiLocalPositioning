@@ -66,22 +66,11 @@
     <string name="scanGroupTitle">Параметры сканирования</string>
     <string name="scanIntervalText">Интервал между сканированиями в секундах</string>
     <string name="numberOfScansInKitText">Количество единовременных сканирований: </string>
-    <string-array name="versionsOfNumberOfScansInKit">
-        <item>Автоматически</item>
-        <item>Минимально (1 ск.)</item>
-        <item>Достаточно (3 ск.)</item>
-        <item>Максимально (5 ск.)</item>
-    </string-array>
-    <string-array name="entry_values">
-        <item>0</item>
-        <item>1</item>
-        <item>3</item>
-        <item>5</item>
-    </string-array>
-    <string name="acceptedChangeSettings">Подтвердить изменения настроек</string>
-    <!--keys-->
-    <string name="keyScanInterval">scanInterval</string>
-    <string name="keyVariousOfNumberScans">variousOfNumberScans</string>
+    <string name="acceptedChangeSettings">Подтвердить изменения параметров</string>
+    <string name="accessGroupTitle">Информация об уровне доступа</string>
+    <string name="currentAccessLevel">Текущий уровень доступа: </string>
+    <string name="updateSettingInfo">Обновить данные</string>
+
 
 
 </resources>

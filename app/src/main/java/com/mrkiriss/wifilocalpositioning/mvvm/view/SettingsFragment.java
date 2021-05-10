@@ -1,5 +1,8 @@
 package com.mrkiriss.wifilocalpositioning.mvvm.view;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,14 +43,26 @@ public class SettingsFragment extends Fragment {
 
     private void initObservers(){
         // подписываемся на требования по изменения обозреваемого поля интервала сканирования
-        viewModel.getRequiredToUpdateScanInterval().observe(getViewLifecycleOwner(), content -> viewModel.getScanInterval().set(content));
+        viewModel.getRequestToUpdateScanInterval().observe(getViewLifecycleOwner(), content -> viewModel.getScanInterval().set(content));
         // подписываемся на требования по изменения обозреваемого поля количества сканирований
-        viewModel.getRequiredToUpdateNumberOfScanning().observe(getViewLifecycleOwner(), content -> viewModel.getNumberOfScanning().set(content));
+        viewModel.getRequestToUpdateNumberOfScanning().observe(getViewLifecycleOwner(), content -> viewModel.getNumberOfScanning().set(content));
+        // подписываемся на требования по изменения обозреваемого поля уровня доступа
+        viewModel.getRequestToUpdateAccessLevel().observe(getViewLifecycleOwner(), content -> viewModel.getAccessLevel().set(content));
+        // подписываемся на получение UUID для буфера обмена
+        viewModel.getRequestToUpdateCopyUUID().observe(getViewLifecycleOwner(), content -> {
+            showToastContent("ID copied");
+            setContentToChangeBuffer(content);
+        });
         // подписываемся на отоброжение тостов
         viewModel.getToastContent().observe(getViewLifecycleOwner(), this::showToastContent);
     }
 
     private void showToastContent(String content){
         Toast.makeText(getContext(), content, Toast.LENGTH_SHORT).show();
+    }
+    private void setContentToChangeBuffer(String content){
+        ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("id", content);
+        clipboard.setPrimaryClip(clip);
     }
 }
