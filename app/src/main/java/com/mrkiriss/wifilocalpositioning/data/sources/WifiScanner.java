@@ -17,6 +17,7 @@ import android.util.Log;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.data.sources.settings.SettingsManager;
 import com.mrkiriss.wifilocalpositioning.utils.ConnectionManager;
+import com.mrkiriss.wifilocalpositioning.utils.ScanningAbilitiesManager;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -136,7 +137,6 @@ public class WifiScanner {
         return settingsManager.getNumberOfScanning();
     }
 
-
     private void startScanningWithDelay(){
         checkWifiEnabled();
         Runnable task = () -> {
@@ -168,10 +168,7 @@ public class WifiScanner {
 
     private void requestScanResults(){
         scanStarted=true;
-        if (Build.VERSION.SDK_INT<Build.VERSION_CODES.R){
-            wifiManager.startScan();
-        }else {
-        }
+        wifiManager.startScan();
     }
     private void registerListeners(){
         if (Build.VERSION.SDK_INT<Build.VERSION_CODES.R){

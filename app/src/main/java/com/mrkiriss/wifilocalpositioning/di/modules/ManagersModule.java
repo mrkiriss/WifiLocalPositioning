@@ -6,11 +6,13 @@ import android.net.wifi.WifiManager;
 
 import com.mrkiriss.wifilocalpositioning.data.sources.api.AccessLevelApi;
 import com.mrkiriss.wifilocalpositioning.data.sources.MapImageManager;
+import com.mrkiriss.wifilocalpositioning.data.sources.db.AbilitiesDao;
 import com.mrkiriss.wifilocalpositioning.data.sources.settings.SettingsManager;
 import com.mrkiriss.wifilocalpositioning.data.sources.settings.UUIDManager;
 import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.SettingsDao;
 import com.mrkiriss.wifilocalpositioning.utils.ConnectionManager;
+import com.mrkiriss.wifilocalpositioning.utils.ScanningAbilitiesManager;
 
 import javax.inject.Singleton;
 
@@ -22,9 +24,14 @@ public class ManagersModule {
 
     @Provides
     @Singleton
-    public WifiScanner provideWifiScanner(Context context, ConnectionManager connectionManager, SettingsManager settingsManager) {
+    public WifiScanner provideWifiScanner(Context context, ConnectionManager connectionManager, SettingsManager settingsManager ) {
         return new WifiScanner(context,
                 (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE), connectionManager, settingsManager);
+    }
+    @Provides
+    @Singleton
+    public ScanningAbilitiesManager provideScanningAbilitiesManager(AbilitiesDao abilitiesDao) {
+        return new ScanningAbilitiesManager(abilitiesDao);
     }
 
     @Provides

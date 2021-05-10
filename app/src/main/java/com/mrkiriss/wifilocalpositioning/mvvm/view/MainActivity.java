@@ -15,6 +15,7 @@ import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.data.sources.settings.SettingsManager;
 import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 import com.mrkiriss.wifilocalpositioning.di.App;
+import com.mrkiriss.wifilocalpositioning.utils.ScanningAbilitiesManager;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -39,7 +40,10 @@ public class MainActivity extends AppCompatActivity {
     protected WifiScanner wifiScanner;
     @Inject
     protected SettingsManager settingsManager;
+    @Inject
+    protected ScanningAbilitiesManager abilitiesManager;
 
+    private NavigationView navigationView;
     private AppBarConfiguration mAppBarConfiguration;
     private Toolbar toolbar;
     private DrawerLayout drawer;
@@ -60,11 +64,26 @@ public class MainActivity extends AppCompatActivity {
         App.getInstance().getComponentManager().getMainActivitySubcomponent().inject(this);
         checkPermissions();
 
+        createNavigationView();
+        createFragments();
+
+        // установка начального местопоолжения
+        changeFragment(currentFragmentIndex);
+        navigationView.setCheckedItem(navigationView.getMenu().getItem(currentFragmentIndex));
+
+        // установка режима клавиатуры
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
+        // проверка возможностей сканирования
+        abilitiesManager.checkAndroidVersionForShowingScanningAbilities(this);
+    }
+
+    private void createNavigationView(){
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_training, R.id.nav_definition, R.id.nav_settings, R.id.nav_training2)
@@ -76,17 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
         navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
 
-        createFragments();
         setBottomNavigationListener(navigationView);
-
-        if (savedInstanceState!=null){
-            currentFragmentIndex=savedInstanceState.getInt("currentFragmentIndex");
-            Log.i("MainActivityInfo", "currentFragmentIndex from savedInstance = "+currentFragmentIndex);
-        }
-        changeFragment(currentFragmentIndex);
-        navigationView.setCheckedItem(navigationView.getMenu().getItem(currentFragmentIndex));
-
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
     }
 
     @Override

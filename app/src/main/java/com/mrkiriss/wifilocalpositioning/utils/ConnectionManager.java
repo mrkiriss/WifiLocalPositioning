@@ -15,7 +15,6 @@ import java.util.Date;
 
 public class ConnectionManager {
     private long delay_start_time ;
-    private Context context;
 
     private final ConnectivityManager connectivityManager;
     private NetworkInfo netInfo;
