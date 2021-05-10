@@ -8,5 +8,11 @@ public class DefinedLocationPoint {
     private int y;
     private String roomName;
     private int floorId;
+    private String isRoom;
+
     private String steps;
+
+    public boolean isRoom(){
+        return isRoom.equals("true");
+    }
 }

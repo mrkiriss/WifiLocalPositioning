@@ -68,14 +68,31 @@
                         android:hint="@string/hindTextEditEnd"
                         android:text="@={viewModel.destinationInput}" />
 
-                    <Button
-                        android:id="@+id/button3"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_margin="3dp"
                         android:layout_weight="1"
-                        android:onClick="@{()->viewModel.startBuildRoute()}"
-                        android:text="@string/buildRouteButtonText" />
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/button3"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="3dp"
+                            android:layout_weight="8"
+                            android:onClick="@{()->viewModel.startBuildRoute()}"
+                            android:text="@string/buildRouteButtonText"
+                            android:enabled="@{!viewModel.progressOfBuildingRouteStatus}"/>
+
+                        <ProgressBar
+                            android:id="@+id/progressBar"
+                            style="?android:attr/progressBarStyle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:visibility="@{viewModel.progressOfBuildingRouteStatus?View.VISIBLE:View.GONE}"/>
+                    </LinearLayout>
+
                 </LinearLayout>
             </LinearLayout>
 

@@ -84,7 +84,7 @@ public class AutoCompleteAdapter
 
                     List<MapPoint> searchResult = selectSuitableMapPoints(constraint.toString());
                     // добовляем инфомрацию о текущем местоположении
-                    if (currentLocation!=null && !currentLocation.getRoomName().isEmpty())
+                    if (currentLocation!=null && !currentLocation.getRoomName().isEmpty() && currentLocation.isRoom())
                         searchResult.add(0, currentLocation);
 
                     filterResults.values=searchResult;
@@ -112,7 +112,7 @@ public class AutoCompleteAdapter
 
         for (FloorId floorId:mapPointsData.keySet()){
             for (MapPoint mapPoint:mapPointsData.get(floorId)){
-                if (mapPoint.getRoomName().matches(constraint+".*?")){
+                if (mapPoint.getRoomName().matches(constraint+".*?") && mapPoint.isRoom()){
                     result.add(mapPoint);
                 }
             }

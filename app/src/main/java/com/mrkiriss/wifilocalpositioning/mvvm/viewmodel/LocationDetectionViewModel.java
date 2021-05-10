@@ -37,6 +37,7 @@ public class LocationDetectionViewModel extends ViewModel {
     private final LiveData<Map<FloorId, List<MapPoint>>> requestToAddAllPointsDataInAutoFinders;
     private final LiveData<Boolean> wifiEnabledState;
     private final LiveData<String> requestToHideKeyboard;
+    private final LiveData<Boolean> requestToUpdateProgressStatusBuildingRoute;
 
     private final MutableLiveData<String> requestToRefreshFloor;
     private final MutableLiveData<String> toastContent;
@@ -47,6 +48,7 @@ public class LocationDetectionViewModel extends ViewModel {
     private final ObservableField<String> destinationInput;
     private final ObservableBoolean showRoute;
     private final ObservableBoolean showFind;
+    private final ObservableBoolean progressOfBuildingRouteStatus;
 
     public LocationDetectionViewModel(){
         App.getInstance().getComponentManager().getLocationDetectionSubcomponent().inject(this);
@@ -58,6 +60,7 @@ public class LocationDetectionViewModel extends ViewModel {
         requestToAddAllPointsDataInAutoFinders=repository.getRequestToAddAllPointsDataInAutoFinders();
         wifiEnabledState=repository.getWifiEnabledState();
         requestToHideKeyboard=repository.getRequestToHideKeyboard();
+        requestToUpdateProgressStatusBuildingRoute=repository.getRequestToUpdateProgressStatusBuildingRoute();
 
         floorNumber = new ObservableInt();
         findInput = new ObservableField<>("");
@@ -65,6 +68,7 @@ public class LocationDetectionViewModel extends ViewModel {
         destinationInput = new ObservableField<>("");
         showRoute=new ObservableBoolean(false);
         showFind = new ObservableBoolean(false);
+        progressOfBuildingRouteStatus=new ObservableBoolean(false);
 
         requestToRefreshFloor=repository.getRequestToRefreshFloor();
 

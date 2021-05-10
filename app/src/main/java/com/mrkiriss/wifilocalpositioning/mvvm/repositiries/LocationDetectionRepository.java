@@ -48,6 +48,7 @@ public class LocationDetectionRepository implements Serializable {
     private final MutableLiveData<Map<FloorId, List<MapPoint>>> requestToAddAllPointsDataInAutoFinders;
     private final MutableLiveData<Boolean> wifiEnabledState; // для отправки состояния включение wifi
     private final MutableLiveData<String> requestToHideKeyboard;
+    private final MutableLiveData<Boolean> requestToUpdateProgressStatusBuildingRoute;
 
     private List<LocationPointInfo> listOfSearchableLocations;
 
@@ -70,6 +71,7 @@ public class LocationDetectionRepository implements Serializable {
         toastContent=new MutableLiveData<>();
         requestToAddAllPointsDataInAutoFinders=new MutableLiveData<>();
         requestToHideKeyboard=new MutableLiveData<>();
+        requestToUpdateProgressStatusBuildingRoute=new MutableLiveData<>();
 
         wifiEnabledState=wifiScanner.getWifiEnabledState();
 
@@ -154,7 +156,7 @@ public class LocationDetectionRepository implements Serializable {
         Map<FloorId, List<MapPoint>> data = mapImageManager.getDataOnPointsOnAllFloors();
         for (FloorId floorId:data.keySet()){
             for (MapPoint mapPoint:data.get(floorId)){
-                if (mapPoint.getRoomName().equals(name)){
+                if (mapPoint.getRoomName().equals(name) && mapPoint.isRoom()){
                     toastContent.setValue("Локация найдена");
                     // получает базовый этаж и вставялет его в объект точки, чтобы получить внутри фрагмента и прорисовать этаж
                     mapPoint.setFloorWithPointer(mapImageManager.getBasicFloor(floorId));
@@ -205,13 +207,14 @@ public class LocationDetectionRepository implements Serializable {
 
                 if (response.body()==null || response.body().getFloorId()==-1 || response.body().getRoomName()==null)return;
 
-                Log.println(Log.INFO, "SEND_CONVERT_RESULT",
-                        convertToMapPoint(response.body()).toStringAllObject());
-
                 // сохраняет в поле репозитория
                 resultOfDefinition=convertToMapPoint(response.body());
+
+                Log.println(Log.INFO, "SEND_CONVERT_RESULT",
+                        resultOfDefinition.toStringAllObject());
+
                 // уведомление о имени через тост
-                toastContent.setValue("Местоположение: "+resultOfDefinition.getRoomName());
+                if (resultOfDefinition.isRoom()) toastContent.setValue("Местоположение: "+resultOfDefinition.getRoomName());
                 // требует изменение картинки этажа в соответсвии со всеми параметрами
                 changeFloor();
             }
@@ -229,11 +232,13 @@ public class LocationDetectionRepository implements Serializable {
         result.setY(definedLocationPoint.getY());
         result.setRoomName(definedLocationPoint.getRoomName());
         result.setFloorIdInt(definedLocationPoint.getFloorId());
+        result.setRoom(definedLocationPoint.isRoom());
 
         return result;
     }
 
     public void requestRoute(String start, String end){
+        requestToUpdateProgressStatusBuildingRoute.setValue(true);
         retrofit.getRoute(start, end).enqueue(new Callback<List<LocationPointInfo>>() {
             @Override
             public void onResponse(Call<List<LocationPointInfo>> call, Response<List<LocationPointInfo>> response) {
@@ -249,12 +254,16 @@ public class LocationDetectionRepository implements Serializable {
                 mapImageManager.startCreatingFloorsWithRout(response.body());
                 // скрываем клавиатуру (текст роли не играет)
                 requestToHideKeyboard.setValue("successful building route");
+                // обновляем состяоние процесса построения маршурат (кнопка включается, прогрессбар скрывается)
+                requestToUpdateProgressStatusBuildingRoute.setValue(false);
             }
 
             @Override
             public void onFailure(Call<List<LocationPointInfo>> call, Throwable t) {
                 Log.e("SERVER_ERROR", t.getMessage());
                 toastContent.setValue("Маршрут построить не удалось");
+                // обновляем состяоние процесса построения маршурат (кнопка включается, прогрессбар скрывается)
+                requestToUpdateProgressStatusBuildingRoute.setValue(false);
             }
         });
     }

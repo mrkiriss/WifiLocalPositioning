@@ -67,23 +67,18 @@ public class LocationDetectionFragment extends Fragment {
     private void initObservers(){
         // прослушываем получение результата сканирования, вызываем обработчик данных
         viewModel.getCompleteKitsOfScansResult().observe(getViewLifecycleOwner(), scanResults -> viewModel.startProcessingCompleteKitsOfScansResult(scanResults));
-        // прослушываем изменение местоположения, обновляем значение в mapView, если экран на этом этаже, перерисовываем
+        // прослушываем изменение пола, вызываем перерисовку
+        viewModel.getRequestToChangeFloor().observe(getViewLifecycleOwner(), this::drawCurrentFloor);
+        // прослышиваем запрос на изменение экрана с показом местоположения
         viewModel.getRequestToChangeFloorByMapPoint().observe(getViewLifecycleOwner(), mapPoint -> {
             // обновляем в адаптере для новой строки в поиске
             autoCompleteAdapter.setCurrentLocation(mapPoint.copyForCurrentLocation());
 
-            //currentLocation=mapPoint;
-            drawCurrentLocation(mapPoint);
-
             // меняем номер во всей вьюмодели и вчастности на табло со стрелками
             viewModel.getFloorNumber().set(mapPoint.getFloorIdInt());
 
-            Log.i("changeMapPoint", "получена новая точка с floorId: "+mapPoint.getFloorWithPointer().getFloorId());
+            showCurrentLocation(mapPoint);
         });
-        // прослушываем изменение пола, вызываем перерисовку
-        viewModel.getRequestToChangeFloor().observe(getViewLifecycleOwner(), this::drawCurrentFloor);
-        // прослышиваем кнопку показа текущего местоположения
-        viewModel.getRequestToChangeFloorByMapPoint().observe(getViewLifecycleOwner(), this::showCurrentLocation);
         // прослушиваем увеломления через Toast
         viewModel.getToastContent().observe(getViewLifecycleOwner(), this::showToastContent);
         // прослушываем запрос на обновление текущего этажа
@@ -99,6 +94,8 @@ public class LocationDetectionFragment extends Fragment {
         });
         // просшлушываем запрос на скрытие клавиатуры
         viewModel.getRequestToHideKeyboard().observe(getViewLifecycleOwner(), s->hideKeyboard(requireActivity()));
+        // прослушываем запрос на изменение состояние прогресса по построению маршрута
+        viewModel.getRequestToUpdateProgressStatusBuildingRoute().observe(getViewLifecycleOwner(), progress->viewModel.getProgressOfBuildingRouteStatus().set(progress));
     }
 
     private void showToastContent(String content){

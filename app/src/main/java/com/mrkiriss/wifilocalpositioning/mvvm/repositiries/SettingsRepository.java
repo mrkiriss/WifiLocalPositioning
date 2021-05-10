@@ -73,7 +73,7 @@ public class SettingsRepository {
         toastContent.setValue("Настройки успешно изменены");
 
         // вставляем те же данные, чтобы кнопка обновилась
-        requestToUpdateScanInterval.setValue(requestToUpdateScanInterval.getValue());
+        requestToUpdateScanInterval.setValue(String.valueOf(currentSavedScanInterval));
     }
     private boolean isValidSettingsData(int scanInterval, int numberOfScanning){
         if (scanInterval<3 || numberOfScanning<0 || numberOfScanning>5){
