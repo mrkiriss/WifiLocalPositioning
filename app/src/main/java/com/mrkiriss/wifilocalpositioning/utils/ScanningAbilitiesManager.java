@@ -7,6 +7,7 @@ import android.text.style.BackgroundColorSpan;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
@@ -77,7 +78,7 @@ public class ScanningAbilitiesManager {
         dialog.setTitle("Ограничения сканирования");
 
         CheckBox check = new CheckBox(dialog.getContext());
-        check.setText("Больше не показывать");
+        check.setText("  Больше не показывать");
         check.setElegantTextHeight(true);
         dialog.setView(check);
 
@@ -98,7 +99,7 @@ public class ScanningAbilitiesManager {
         dialog.setTitle("Ограничения сканирования");
 
         CheckBox check = new CheckBox(dialog.getContext());
-        check.setText("Больше не показывать");
+        check.setText("  Больше не показывать");
         check.setElegantTextHeight(true);
         dialog.setView(check);
 
@@ -109,6 +110,7 @@ public class ScanningAbilitiesManager {
             }
         });
         dialog.setPositiveButton("Просмотреть инструкцию", (dialog1, which) -> {
+            Toast.makeText(context, "Извините, пока здесь ничего нет", Toast.LENGTH_SHORT).show();
         });
 
         dialog.show();
