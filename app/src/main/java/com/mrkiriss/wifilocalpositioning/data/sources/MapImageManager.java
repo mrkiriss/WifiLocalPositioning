@@ -141,7 +141,7 @@ public class MapImageManager {
             }
         }
 
-        if (info.size()>1){ // требуем нарисовать изображения конца
+        if (info.size()>0){ // требуем нарисовать изображения конца
             FloorId floorId = Floor.convertFloorIdToEnum(info.get(info.size()-1).getFloorId());
             // проверка на наличие требования в карте
             if (!requiredStrokes.containsKey(floorId)) requiredStrokes.put(floorId, new ArrayList<>());

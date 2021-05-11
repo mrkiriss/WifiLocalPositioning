@@ -28,8 +28,8 @@ public class AutoCompleteAdapter
 
     private List<MapPoint> findResult;
     private Map<FloorId, List<MapPoint>> mapPointsData;
-    private List<MapPoint> hideMapPoints;
     private MapPoint currentLocation;
+    private int accessLevel;
 
     public AutoCompleteAdapter(){
         this.findResult=new ArrayList<>();
@@ -40,6 +40,10 @@ public class AutoCompleteAdapter
     public void setCurrentLocation(MapPoint mapPoint){
         this.currentLocation=mapPoint;
     }
+    public void setAccessLevel(int accessLevel) {
+        this.accessLevel = accessLevel;
+    }
+
 
 
     @Override
@@ -84,9 +88,14 @@ public class AutoCompleteAdapter
 
                     List<MapPoint> searchResult = selectSuitableMapPoints(constraint.toString());
                     // добовляем инфомрацию о текущем местоположении
-                    if (currentLocation!=null && !currentLocation.getRoomName().isEmpty() && currentLocation.isRoom())
-                        searchResult.add(0, currentLocation);
-
+                    if (currentLocation!=null && !currentLocation.getRoomName().isEmpty()) {
+                        // если не комната, имя не пишем
+                        if (currentLocation.isRoom()){
+                            searchResult.add(0, currentLocation.copyForCurrentLocation());
+                        }else{
+                            searchResult.add(0, currentLocation.copyForCurrentLocationNotRoom());
+                        }
+                    }
                     filterResults.values=searchResult;
                     Log.i("AutoCompleteAdapter", "filtering result list="+ searchResult);
                     filterResults.count=searchResult.size();
@@ -112,7 +121,7 @@ public class AutoCompleteAdapter
 
         for (FloorId floorId:mapPointsData.keySet()){
             for (MapPoint mapPoint:mapPointsData.get(floorId)){
-                if (mapPoint.getRoomName().matches(constraint+".*?") && mapPoint.isRoom()){
+                if (mapPoint.getRoomName().matches(constraint+".*?") && (mapPoint.isRoom() || accessLevel>0)){
                     result.add(mapPoint);
                 }
             }

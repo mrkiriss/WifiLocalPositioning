@@ -72,7 +72,7 @@ public class LocationDetectionFragment extends Fragment {
         // прослышиваем запрос на изменение экрана с показом местоположения
         viewModel.getRequestToChangeFloorByMapPoint().observe(getViewLifecycleOwner(), mapPoint -> {
             // обновляем в адаптере для новой строки в поиске
-            autoCompleteAdapter.setCurrentLocation(mapPoint.copyForCurrentLocation());
+            autoCompleteAdapter.setCurrentLocation(mapPoint.copy());
 
             // меняем номер во всей вьюмодели и вчастности на табло со стрелками
             viewModel.getFloorNumber().set(mapPoint.getFloorIdInt());
@@ -96,6 +96,8 @@ public class LocationDetectionFragment extends Fragment {
         viewModel.getRequestToHideKeyboard().observe(getViewLifecycleOwner(), s->hideKeyboard(requireActivity()));
         // прослушываем запрос на изменение состояние прогресса по построению маршрута
         viewModel.getRequestToUpdateProgressStatusBuildingRoute().observe(getViewLifecycleOwner(), progress->viewModel.getProgressOfBuildingRouteStatus().set(progress));
+        // прослушываем изменением уровня доступа
+        viewModel.getRequestToUpdateAccessLevel().observe(getViewLifecycleOwner(), al->autoCompleteAdapter.setAccessLevel(al));
     }
 
     private void showToastContent(String content){

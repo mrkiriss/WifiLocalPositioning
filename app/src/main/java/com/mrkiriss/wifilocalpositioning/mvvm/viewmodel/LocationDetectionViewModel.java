@@ -38,6 +38,7 @@ public class LocationDetectionViewModel extends ViewModel {
     private final LiveData<Boolean> wifiEnabledState;
     private final LiveData<String> requestToHideKeyboard;
     private final LiveData<Boolean> requestToUpdateProgressStatusBuildingRoute;
+    private final LiveData<Integer> requestToUpdateAccessLevel;
 
     private final MutableLiveData<String> requestToRefreshFloor;
     private final MutableLiveData<String> toastContent;
@@ -61,6 +62,7 @@ public class LocationDetectionViewModel extends ViewModel {
         wifiEnabledState=repository.getWifiEnabledState();
         requestToHideKeyboard=repository.getRequestToHideKeyboard();
         requestToUpdateProgressStatusBuildingRoute=repository.getRequestToUpdateProgressStatusBuildingRoute();
+        requestToUpdateAccessLevel=repository.getRequestToUpdateAccessLevel();
 
         floorNumber = new ObservableInt();
         findInput = new ObservableField<>("");

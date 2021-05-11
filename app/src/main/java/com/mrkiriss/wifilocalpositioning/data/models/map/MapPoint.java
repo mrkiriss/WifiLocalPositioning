@@ -40,11 +40,10 @@ public class MapPoint {
     }
 
     private final String currentLocationText = "Текущее местоположение: ";
+    private final String currentLocationSmallText = "Текущее местоположение";
     @Override
     public String toString(){
-        String result = roomName;
-        if (result.contains(currentLocationText)) result = result.replace(currentLocationText,"");
-        return result;
+        return roomName;
     }
     public MapPoint copyForCurrentLocation(){
         MapPoint result = new MapPoint(x, y, currentLocationText + roomName, isRoom);
@@ -52,8 +51,17 @@ public class MapPoint {
         result.setFloorWithPointer(floorWithPointer);
         return result;
     }
+    public MapPoint copyForCurrentLocationNotRoom(){
+        MapPoint result = new MapPoint(x, y, currentLocationSmallText, isRoom);
+        result.setFloorIdInt(floorIdInt);
+        result.setFloorWithPointer(floorWithPointer);
+        return result;
+    }
 
     public MapPoint copy(){
-        return new MapPoint(x,y,roomName,isRoom);
+        MapPoint result = new MapPoint(x, y, roomName, isRoom);
+        result.setFloorIdInt(floorIdInt);
+        result.setFloorWithPointer(floorWithPointer);
+        return result;
     }
 }

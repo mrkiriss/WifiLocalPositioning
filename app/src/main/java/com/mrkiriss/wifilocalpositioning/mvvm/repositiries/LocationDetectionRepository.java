@@ -19,6 +19,7 @@ import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.AccessPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CalibrationLocationPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.DefinedLocationPoint;
+import com.mrkiriss.wifilocalpositioning.data.sources.settings.SettingsManager;
 import com.mrkiriss.wifilocalpositioning.utils.ConnectionManager;
 
 import java.io.Serializable;
@@ -39,8 +40,10 @@ public class LocationDetectionRepository implements Serializable {
     private final WifiScanner wifiScanner;
     private final MapImageManager mapImageManager;
     private final ConnectionManager connectionManager;
+    private final SettingsManager settingsManager;
 
     private final LiveData<CompleteKitsContainer> completeKitsOfScansResult;
+    private final LiveData<Integer> requestToUpdateAccessLevel;
     private final MutableLiveData<MapPoint> requestToChangeFloorByMapPoint;
     private final MutableLiveData<Floor> requestToChangeFloor;
     private final MutableLiveData<String> toastContent;
@@ -50,6 +53,7 @@ public class LocationDetectionRepository implements Serializable {
     private final MutableLiveData<String> requestToHideKeyboard;
     private final MutableLiveData<Boolean> requestToUpdateProgressStatusBuildingRoute;
 
+
     private List<LocationPointInfo> listOfSearchableLocations;
 
     private MapPoint resultOfDefinition;
@@ -57,14 +61,16 @@ public class LocationDetectionRepository implements Serializable {
     private int currentFloorIdInt; // VM изменяет, текущий номер этажа
 
     public LocationDetectionRepository(LocationDataApi retrofit, WifiScanner wifiScanner,
-                                       ConnectionManager connectionManager, MapImageManager mapImageManager){
+                                       ConnectionManager connectionManager, MapImageManager mapImageManager, SettingsManager settingsManager){
         this.retrofit=retrofit;
         this.wifiScanner=wifiScanner;
         this.mapImageManager = mapImageManager;
         this.connectionManager=connectionManager;
+        this.settingsManager=settingsManager;
 
         completeKitsOfScansResult=wifiScanner.getCompleteScanResults();
         requestToRefreshFloor=mapImageManager.getRequestToRefreshFloor();
+        requestToUpdateAccessLevel=settingsManager.getRequestToUpdateAccessLevel();
 
         requestToChangeFloorByMapPoint =new MutableLiveData<>();
         requestToChangeFloor =new MutableLiveData<>();
@@ -156,7 +162,7 @@ public class LocationDetectionRepository implements Serializable {
         Map<FloorId, List<MapPoint>> data = mapImageManager.getDataOnPointsOnAllFloors();
         for (FloorId floorId:data.keySet()){
             for (MapPoint mapPoint:data.get(floorId)){
-                if (mapPoint.getRoomName().equals(name) && mapPoint.isRoom()){
+                if (mapPoint.getRoomName().equals(name) && (mapPoint.isRoom() || settingsManager.isModerator())){
                     toastContent.setValue("Локация найдена");
                     // получает базовый этаж и вставялет его в объект точки, чтобы получить внутри фрагмента и прорисовать этаж
                     mapPoint.setFloorWithPointer(mapImageManager.getBasicFloor(floorId));
@@ -214,7 +220,7 @@ public class LocationDetectionRepository implements Serializable {
                         resultOfDefinition.toStringAllObject());
 
                 // уведомление о имени через тост
-                if (resultOfDefinition.isRoom()) toastContent.setValue("Местоположение: "+resultOfDefinition.getRoomName());
+                if (resultOfDefinition.isRoom() || settingsManager.isModerator()) toastContent.setValue("Местоположение: "+resultOfDefinition.getRoomName());
                 // требует изменение картинки этажа в соответсвии со всеми параметрами
                 changeFloor();
             }

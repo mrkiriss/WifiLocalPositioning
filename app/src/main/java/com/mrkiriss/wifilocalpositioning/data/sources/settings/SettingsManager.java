@@ -136,4 +136,14 @@ public class SettingsManager {
         }
         return accessLevel;
     }
+
+    public boolean isUser(){
+        return accessLevel==0;
+    }
+    public boolean isModerator(){
+        return accessLevel>0;
+    }
+    public boolean isAdmin(){
+        return accessLevel==2;
+    }
 }

@@ -21,20 +21,29 @@
             android:layout_height="match_parent"
             android:layout_gravity="center" />
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/routeContainer"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|left"
             android:layout_margin="5dp"
-            android:background="@drawable/round_border_find"
-            android:backgroundTint="@color/routeBack"
-            android:orientation="vertical"
             android:visibility="@{viewModel.showRoute &amp;&amp; !viewModel.showFind?View.VISIBLE:View.GONE}">
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:orientation="horizontal">
+                android:layout_width="wrap_content"
+                android:layout_height="130dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/round_border_find"
+                android:backgroundTint="@color/routeBack"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <ImageButton
                     android:id="@+id/imageButton5"
@@ -49,6 +58,8 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
                     android:layout_weight="17"
                     android:orientation="vertical">
 
@@ -78,11 +89,10 @@
                             android:id="@+id/button3"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_margin="3dp"
                             android:layout_weight="8"
+                            android:enabled="@{!viewModel.progressOfBuildingRouteStatus}"
                             android:onClick="@{()->viewModel.startBuildRoute()}"
-                            android:text="@string/buildRouteButtonText"
-                            android:enabled="@{!viewModel.progressOfBuildingRouteStatus}"/>
+                            android:text="@string/buildRouteButtonText" />
 
                         <ProgressBar
                             android:id="@+id/progressBar"
@@ -90,13 +100,13 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:visibility="@{viewModel.progressOfBuildingRouteStatus?View.VISIBLE:View.GONE}"/>
+                            android:visibility="@{viewModel.progressOfBuildingRouteStatus?View.VISIBLE:View.GONE}" />
                     </LinearLayout>
 
                 </LinearLayout>
             </LinearLayout>
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageButton
             android:id="@+id/showRouteButton"
@@ -112,20 +122,29 @@
             android:visibility="@{viewModel.showRoute || viewModel.showFind?View.GONE:View.VISIBLE}"
             app:srcCompat="@drawable/ic_route" />
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/findContainer"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|left"
             android:layout_margin="5dp"
-            android:background="@drawable/round_border_find"
-            android:backgroundTint="@color/routeBack"
-            android:orientation="vertical"
             android:visibility="@{viewModel.showFind &amp;&amp; !viewModel.showRoute?View.VISIBLE:View.GONE}">
 
             <LinearLayout
+
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:orientation="horizontal">
+                android:layout_height="130dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/round_border_find"
+                android:backgroundTint="@color/routeBack"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <ImageButton
                     android:id="@+id/imageButton8"
@@ -140,6 +159,8 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
                     android:layout_weight="17"
                     android:orientation="vertical">
 
@@ -148,7 +169,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="2"
-                        android:hint="@string/hindTextEditStart"
+                        android:hint="@string/hintFind"
                         android:text="@={viewModel.findInput}" />
 
                     <Button
@@ -162,7 +183,7 @@
                 </LinearLayout>
             </LinearLayout>
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageButton
             android:id="@+id/showFindButton"
