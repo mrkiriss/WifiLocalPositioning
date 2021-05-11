@@ -13,6 +13,6 @@ public class DefinedLocationPoint {
     private String steps;
 
     public boolean isRoom(){
-        return isRoom.equals("true");
+        return isRoom != null && isRoom.equals("true");
     }
 }

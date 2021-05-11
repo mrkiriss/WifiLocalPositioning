@@ -22,8 +22,8 @@ public class NetworkModule {
     @Provides
     @Singleton
     public LocationDataApi provideIMWifiServerApi(){
-        //String baseUrl = "https://wifilocalpositioning.herokuapp.com/location/";
-        String baseUrl = "http://192.168.31.136:8080/location/";
+        String baseUrl = "https://wifilocalpositioning.herokuapp.com/location/";
+        //String baseUrl = "http://192.168.31.136:8080/location/";
 
 
         return new Retrofit.Builder().
@@ -36,8 +36,8 @@ public class NetworkModule {
     @Provides
     @Singleton
     public AccessLevelApi provideAccessLevelApi(){
-        //String baseUrl = "https://wifilocalpositioning.herokuapp.com/";
-        String baseUrl = "http://192.168.31.136:8080/security/";
+        String baseUrl = "https://wifilocalpositioning.herokuapp.com/security/";
+        //String baseUrl = "http://192.168.31.136:8080/security/";
 
 
         return new Retrofit.Builder().
