@@ -8,8 +8,10 @@ import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
 import java.util.Map;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper=false)
 public class ItemMapPointViewModel extends ViewModel {
     private final MapPoint mapPoint;
 

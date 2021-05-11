@@ -15,11 +15,15 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.databinding.FragmentSettingsBinding;
+import com.mrkiriss.wifilocalpositioning.di.App;
 import com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.SettingsViewModel;
+
+import javax.inject.Inject;
 
 public class SettingsFragment extends Fragment {
 
-    private SettingsViewModel viewModel;
+    @Inject
+    protected SettingsViewModel viewModel;
     private FragmentSettingsBinding binding;
 
     @Override
@@ -31,7 +35,9 @@ public class SettingsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        viewModel=new ViewModelProvider(this).get(SettingsViewModel.class);
+
+        App.getInstance().getComponentManager().getSettingsSubcomponent().inject(this);
+
         binding= DataBindingUtil.inflate(inflater, R.layout.fragment_settings, container, false);
 
         initObservers();

@@ -1,8 +1,10 @@
 package com.mrkiriss.wifilocalpositioning.data.models.map;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper=false)
 public class MapPoint {
     private int x;
     private int y;

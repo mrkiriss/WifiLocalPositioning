@@ -23,13 +23,14 @@ import java.util.List;
 import javax.inject.Inject;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Setter;
 
 @Data
+@EqualsAndHashCode(callSuper=false)
 public class TrainingMapViewModel extends ViewModel {
 
-    @Inject
-    protected TrainingMapRepository repository;
+    private final TrainingMapRepository repository;
 
     private ObservableInt selectedMod;
     private ObservableBoolean showMapPoints;
@@ -66,9 +67,9 @@ public class TrainingMapViewModel extends ViewModel {
     private final MutableLiveData<MapPoint> requestToAddSecondlyMapPointToRV;
     private final MutableLiveData<List<MapPoint>> requestToChangeSecondlyMapPointListInRV; // заполняется при ответе сервера или обнулении
 
-    public TrainingMapViewModel(){
+    public TrainingMapViewModel(TrainingMapRepository repository){
 
-        App.getInstance().getComponentManager().getTrainingMapSubcomponent().inject(this);
+        this.repository=repository;
 
         changeFloor= repository.getChangeFloor();
         requestToUpdateFloor=repository.getRequestToUpdateFloor();

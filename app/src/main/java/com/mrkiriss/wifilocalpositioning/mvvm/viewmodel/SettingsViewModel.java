@@ -14,12 +14,13 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper=false)
 public class SettingsViewModel extends ViewModel {
 
-    @Inject
-    protected SettingsRepository repository;
+    private final SettingsRepository repository;
 
     private final ObservableField<String> scanInterval;
     private final ObservableInt numberOfScanning;
@@ -31,9 +32,9 @@ public class SettingsViewModel extends ViewModel {
     private final LiveData<String> requestToUpdateCopyUUID;
     private final MutableLiveData<String> toastContent;
 
-    public SettingsViewModel(){
+    public SettingsViewModel(SettingsRepository repository){
 
-        App.getInstance().getComponentManager().getSettingsSubcomponent().inject(this);
+        this.repository=repository;
 
         scanInterval=new ObservableField<>("");
         numberOfScanning =new ObservableInt(0);

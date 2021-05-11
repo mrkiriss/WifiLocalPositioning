@@ -15,6 +15,7 @@ import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.data.sources.settings.SettingsManager;
 import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 import com.mrkiriss.wifilocalpositioning.di.App;
+import com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.MainViewModel;
 import com.mrkiriss.wifilocalpositioning.utils.ScanningAbilitiesManager;
 
 import androidx.fragment.app.Fragment;
@@ -37,11 +38,7 @@ import javax.inject.Inject;
 public class MainActivity extends AppCompatActivity {
 
     @Inject
-    protected WifiScanner wifiScanner;
-    @Inject
-    protected SettingsManager settingsManager;
-    @Inject
-    protected ScanningAbilitiesManager abilitiesManager;
+    protected MainViewModel viewModel;
 
     private NavigationView navigationView;
     private AppBarConfiguration mAppBarConfiguration;
@@ -62,7 +59,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         App.getInstance().getComponentManager().getMainActivitySubcomponent().inject(this);
+
+        // проверка разрешений для сканирования
         checkPermissions();
+        // проверка ограничений сканирования
+        viewModel.checkAndroidVersionForShowingScanningAbilities(this);
 
         createNavigationView();
         createFragments();
@@ -73,9 +74,6 @@ public class MainActivity extends AppCompatActivity {
 
         // установка режима клавиатуры
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-
-        // проверка возможностей сканирования
-        abilitiesManager.checkAndroidVersionForShowingScanningAbilities(this);
     }
 
     private void createNavigationView(){
@@ -138,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
             int fragmentIndex = defineFragmentIndex(item);
 
             // проверка наличия доступа
-            if (!isPresentAccessPermission(typesOfRequestSources[fragmentIndex])) {
+            if (!viewModel.isPresentAccessPermission(typesOfRequestSources[fragmentIndex])) {
                 notifyAboutLackOfAccess();
                 drawer.close();
                 return false;
@@ -170,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
             if (i == position) {
                 fragmentTransaction.show(fragments[i]);
                 // изменяем тип сканирования
-                wifiScanner.setCurrentTypeOfRequestSource(typesOfRequestSources[i]);
+                viewModel.setCurrentTypeOfRequestSource(typesOfRequestSources[i]);
 
                 Log.i("MainActivityInfo","SHOW "+fragments[position].getTag());
             } else {
@@ -197,21 +195,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private boolean isPresentAccessPermission(String type){
-        if (type.equals(WifiScanner.TYPE_TRAINING)){
-            return settingsManager.getAccessLevel()>0;
-        }
-        return true;
-    }
     private void notifyAboutLackOfAccess(){
         Toast.makeText(this, "Доступ запрещён.\n" +
                 "За подробной информацией обратитесь к владельцу приложения",
                     Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putInt("currentFragmentIndex", currentFragmentIndex);
     }
 }

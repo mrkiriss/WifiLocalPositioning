@@ -26,12 +26,14 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper=false)
 public class TrainingScanViewModel extends ViewModel {
 
-    @Inject
-    protected TrainingScanRepository trainingScanRepository;
+
+    private final TrainingScanRepository trainingScanRepository;
 
     private ObservableInt remainingNumberOfScanning;
     private ObservableField<String> inputNumberOfScanKits;
@@ -49,8 +51,9 @@ public class TrainingScanViewModel extends ViewModel {
     private MutableLiveData<List<String>> requestToClearRV;
     private LiveData<Integer> remainingNumberOfScanningLD;
 
-    public TrainingScanViewModel(){
-        App.getInstance().getComponentManager().getTrainingScanSubcomponent().inject(this);
+    public TrainingScanViewModel(TrainingScanRepository repository){
+
+        this.trainingScanRepository=repository;
 
         completeKitsOfScansResult= trainingScanRepository.getCompleteKitsOfScansResult();
         requestToAddAPs= trainingScanRepository.getRequestToAddAPs();

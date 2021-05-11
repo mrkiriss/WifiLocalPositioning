@@ -28,8 +28,7 @@ import lombok.Data;
 @Data
 public class LocationDetectionViewModel extends ViewModel {
 
-    @Inject
-    protected LocationDetectionRepository repository;
+    private final LocationDetectionRepository repository;
 
     private final LiveData<CompleteKitsContainer> completeKitsOfScansResult;
     private final LiveData<MapPoint> requestToChangeFloorByMapPoint; // изменяет этаж и камеру напрявляет на местоположение
@@ -51,8 +50,9 @@ public class LocationDetectionViewModel extends ViewModel {
     private final ObservableBoolean showFind;
     private final ObservableBoolean progressOfBuildingRouteStatus;
 
-    public LocationDetectionViewModel(){
-        App.getInstance().getComponentManager().getLocationDetectionSubcomponent().inject(this);
+    public LocationDetectionViewModel(LocationDetectionRepository locationDetectionRepository){
+
+        this.repository=locationDetectionRepository;
 
         completeKitsOfScansResult= repository.getCompleteKitsOfScansResult();
         requestToChangeFloorByMapPoint = repository.getRequestToChangeFloorByMapPoint();

@@ -10,10 +10,11 @@ import com.mrkiriss.wifilocalpositioning.di.components.SettingsSubcomponent;
 import com.mrkiriss.wifilocalpositioning.di.components.TrainingMapSubcomponent;
 import com.mrkiriss.wifilocalpositioning.di.components.TrainingScanSubcomponent;
 import com.mrkiriss.wifilocalpositioning.di.modules.AppContextModule;
-import com.mrkiriss.wifilocalpositioning.di.modules.definition.DefinitionRepositoryModule;
-import com.mrkiriss.wifilocalpositioning.di.modules.settings.SettingsRepModule;
-import com.mrkiriss.wifilocalpositioning.di.modules.training.TrainingMapRepModule;
-import com.mrkiriss.wifilocalpositioning.di.modules.training.TrainingScanRepositoryModule;
+import com.mrkiriss.wifilocalpositioning.di.modules.detection.DefinitionRepositoryAndVMModule;
+import com.mrkiriss.wifilocalpositioning.di.modules.main.MainRepositoryAndViewModelModule;
+import com.mrkiriss.wifilocalpositioning.di.modules.settings.SettingsRepAndVMModule;
+import com.mrkiriss.wifilocalpositioning.di.modules.training.TrainingMapRepAndVMModule;
+import com.mrkiriss.wifilocalpositioning.di.modules.training.TrainingScanRepAndVMModule;
 
 public class ComponentManager {
 
@@ -30,10 +31,19 @@ public class ComponentManager {
                 .build();
     }
 
+    public MainActivitySubcomponent getMainActivitySubcomponent() {
+        if (mainActivitySubcomponent == null) {
+            mainActivitySubcomponent = appComponent.mainActivitySubcomponentBuilder()
+                    .repAndVMModule(new MainRepositoryAndViewModelModule())
+                    .build();
+        }
+        return mainActivitySubcomponent;
+    }
+
     public TrainingScanSubcomponent getTrainingScanSubcomponent(){
         if (trainingScanSubcomponent ==null){
             trainingScanSubcomponent =appComponent.trainingSubcomponentBuilder()
-                    .repModule(new TrainingScanRepositoryModule())
+                    .repModule(new TrainingScanRepAndVMModule())
                     .build();
         }
         return trainingScanSubcomponent;
@@ -42,24 +52,16 @@ public class ComponentManager {
     public LocationDetectionSubcomponent getLocationDetectionSubcomponent(){
         if (locationDetectionSubcomponent==null){
             locationDetectionSubcomponent=appComponent.locationDetectionSubcomponentBuilder()
-                    .repModule(new DefinitionRepositoryModule())
+                    .repModule(new DefinitionRepositoryAndVMModule())
                     .build();
         }
         return locationDetectionSubcomponent;
     }
 
-    public MainActivitySubcomponent getMainActivitySubcomponent() {
-        if (mainActivitySubcomponent == null) {
-            mainActivitySubcomponent = appComponent.mainActivitySubcomponentBuilder()
-                    .build();
-        }
-        return mainActivitySubcomponent;
-    }
-
     public TrainingMapSubcomponent getTrainingMapSubcomponent() {
         if (trainingMapSubcomponent == null) {
             trainingMapSubcomponent = appComponent.trainingMapSubcomponent()
-                    .repModule(new TrainingMapRepModule())
+                    .repModule(new TrainingMapRepAndVMModule())
                     .build();
         }
         return trainingMapSubcomponent;
@@ -68,7 +70,7 @@ public class ComponentManager {
     public SettingsSubcomponent getSettingsSubcomponent() {
         if (settingsSubcomponent == null) {
             settingsSubcomponent = appComponent.settingsSubcomponent()
-                    .setRepositoryModule(new SettingsRepModule())
+                    .setRepositoryModule(new SettingsRepAndVMModule())
                     .build();
         }
         return settingsSubcomponent;

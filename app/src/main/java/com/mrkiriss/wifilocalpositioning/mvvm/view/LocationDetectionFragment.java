@@ -18,14 +18,19 @@ import com.mrkiriss.wifilocalpositioning.adapters.AutoCompleteAdapter;
 import com.mrkiriss.wifilocalpositioning.databinding.FragmentLocationDetectionBindingImpl;
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
+import com.mrkiriss.wifilocalpositioning.di.App;
 import com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.LocationDetectionViewModel;
 import com.ortiz.touchview.TouchImageView;
 
+import javax.inject.Inject;
+
 public class LocationDetectionFragment extends Fragment {
 
-    private TouchImageView touchImageView;
-    private LocationDetectionViewModel viewModel;
+    @Inject
+    protected LocationDetectionViewModel viewModel;
     private FragmentLocationDetectionBindingImpl binding;
+
+    private TouchImageView touchImageView;
 
     private AutoCompleteAdapter autoCompleteAdapter;
 
@@ -37,7 +42,8 @@ public class LocationDetectionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        viewModel=new ViewModelProvider(this).get(LocationDetectionViewModel.class);
+
+        App.getInstance().getComponentManager().getLocationDetectionSubcomponent().inject(this);
 
         binding= DataBindingUtil.inflate(inflater, R.layout.fragment_location_detection, container, false);
         binding.setViewModel(viewModel);

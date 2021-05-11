@@ -15,20 +15,27 @@ import android.widget.Toast;
 import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.databinding.FragmentTrainingScanBinding;
 import com.mrkiriss.wifilocalpositioning.adapters.ScanResultsRVAdapter;
+import com.mrkiriss.wifilocalpositioning.di.App;
 import com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.TrainingScanViewModel;
+
+import org.jetbrains.annotations.NotNull;
+
+import javax.inject.Inject;
 
 public class TrainingScanFragment extends Fragment {
 
     private FragmentTrainingScanBinding binding;
-    private TrainingScanViewModel viewModel;
+    @Inject
+    protected TrainingScanViewModel viewModel;
     private ScanResultsRVAdapter adapter;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        App.getInstance().getComponentManager().getTrainingScanSubcomponent().inject(this);
+
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_training_scan, container, false);
-        viewModel=new ViewModelProvider(this).get(TrainingScanViewModel.class);
         binding.setTrainingVM(viewModel);
 
         adapter=new ScanResultsRVAdapter();

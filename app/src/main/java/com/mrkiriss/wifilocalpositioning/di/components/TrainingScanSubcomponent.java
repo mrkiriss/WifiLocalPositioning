@@ -1,20 +1,21 @@
 package com.mrkiriss.wifilocalpositioning.di.components;
 
-import com.mrkiriss.wifilocalpositioning.di.modules.training.TrainingScanRepositoryModule;
+import com.mrkiriss.wifilocalpositioning.di.modules.training.TrainingScanRepAndVMModule;
 import com.mrkiriss.wifilocalpositioning.di.modules.training.TrainingScope;
+import com.mrkiriss.wifilocalpositioning.mvvm.view.TrainingScanFragment;
 import com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.TrainingScanViewModel;
 
 import dagger.Subcomponent;
 
-@Subcomponent(modules = {TrainingScanRepositoryModule.class})
+@Subcomponent(modules = {TrainingScanRepAndVMModule.class})
 @TrainingScope
 public interface TrainingScanSubcomponent {
 
     @Subcomponent.Builder
     interface Builder{
-        TrainingScanSubcomponent.Builder repModule(TrainingScanRepositoryModule repositoryModule);
+        TrainingScanSubcomponent.Builder repModule(TrainingScanRepAndVMModule repositoryModule);
         TrainingScanSubcomponent build();
     }
 
-    void inject(TrainingScanViewModel trainingScanViewModel);
+    void inject(TrainingScanFragment fragment);
 }

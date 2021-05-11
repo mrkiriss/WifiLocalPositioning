@@ -21,11 +21,15 @@ import com.github.chrisbanes.photoview.PhotoView;
 import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.databinding.FragmentTrainingMapBinding;
 import com.mrkiriss.wifilocalpositioning.adapters.MapPointsRVAdapter;
+import com.mrkiriss.wifilocalpositioning.di.App;
 import com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.TrainingMapViewModel;
+
+import javax.inject.Inject;
 
 public class TrainingMapFragment extends Fragment {
 
-    private TrainingMapViewModel viewModel;
+    @Inject
+    protected TrainingMapViewModel viewModel;
     private FragmentTrainingMapBinding binding;
     private PhotoView photoView;
     private MapPointsRVAdapter mapPointsAdapter;
@@ -33,7 +37,8 @@ public class TrainingMapFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        viewModel=new ViewModelProvider(this).get(TrainingMapViewModel.class);
+
+        App.getInstance().getComponentManager().getTrainingMapSubcomponent().inject(this);
 
         binding= DataBindingUtil.inflate(inflater, R.layout.fragment_training_map, container, false);
 
