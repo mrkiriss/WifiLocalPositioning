@@ -120,7 +120,7 @@ public class LocationDetectionFragment extends Fragment {
         hideKeyboard(requireActivity());
 
         viewModel.getFloorNumber().set(mapPoint.getFloorIdInt());
-        touchImageView.setImageBitmap(mapPoint.getFloorWithPointer().getFloorSchema());
+        drawCurrentLocation(mapPoint);
         Log.i("LocationDetectionFrg", "showCurrentLocation");
 
         float x = (float)mapPoint.getX()/mapPoint.getFloorWithPointer().getFloorSchema().getWidth();

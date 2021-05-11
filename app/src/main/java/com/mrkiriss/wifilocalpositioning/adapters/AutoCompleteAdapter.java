@@ -88,6 +88,7 @@ public class AutoCompleteAdapter
 
                     List<MapPoint> searchResult = selectSuitableMapPoints(constraint.toString());
                     // добовляем инфомрацию о текущем местоположении
+                    Log.i("AutoCompleteAdapter", "currentLocation"+currentLocation);
                     if (currentLocation!=null && !currentLocation.getRoomName().isEmpty()) {
                         // если не комната, имя не пишем
                         if (currentLocation.isRoom()){
