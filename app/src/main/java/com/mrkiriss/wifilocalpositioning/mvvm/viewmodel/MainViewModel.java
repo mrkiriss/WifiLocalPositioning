@@ -2,6 +2,7 @@ package com.mrkiriss.wifilocalpositioning.mvvm.viewmodel;
 
 import android.content.Context;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
@@ -11,8 +12,15 @@ public class MainViewModel extends ViewModel {
 
     private final MainRepository repository;
 
+    private final LiveData<String> requestToOpenInstructionObYouTube;
+    public LiveData<String> getRequestToOpenInstructionObYouTube() {
+        return requestToOpenInstructionObYouTube;
+    }
+
     public MainViewModel(MainRepository repository){
         this.repository=repository;
+
+        requestToOpenInstructionObYouTube=repository.getRequestToOpenInstructionObYouTube();
     }
 
     public boolean isPresentAccessPermission(String type){

@@ -18,6 +18,9 @@ import retrofit2.http.Query;
 
 public interface LocationDataApi {
 
+    @GET("define/instruction")
+    Call<StringResponse> getInstructionURL();
+
     @POST("define/room")
     Call<DefinedLocationPoint> defineLocation(@Body CalibrationLocationPoint calibrationLocationPoint);
 

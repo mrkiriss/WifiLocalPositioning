@@ -1,7 +1,10 @@
 package com.mrkiriss.wifilocalpositioning.mvvm.view;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -60,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
 
         App.getInstance().getComponentManager().getMainActivitySubcomponent().inject(this);
 
+        // подписываемсян на запрос открытия инструкции
+        viewModel.getRequestToOpenInstructionObYouTube().observe(this, this::watchYoutubeVideo);
+
         // проверка разрешений для сканирования
         checkPermissions();
         // проверка ограничений сканирования
@@ -74,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
         // установка режима клавиатуры
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
     }
 
     private void createNavigationView(){
@@ -199,5 +206,18 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "Доступ запрещён.\n" +
                 "За подробной информацией обратитесь к владельцу приложения",
                     Toast.LENGTH_LONG).show();
+    }
+
+    public void watchYoutubeVideo(String id) {
+        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + id));
+        Intent webIntent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("http://www.youtube.com/watch?v=" + id));
+        try {
+            startActivity(appIntent);
+        } catch (ActivityNotFoundException ex) {
+            startActivity(webIntent);
+        }catch (Exception e){
+            Toast.makeText(this, "Извините, пока здесь ничего нет", Toast.LENGTH_SHORT).show();
+        }
     }
 }

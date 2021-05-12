@@ -1,27 +1,34 @@
 package com.mrkiriss.wifilocalpositioning.utils;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Build;
-import android.text.style.BackgroundColorSpan;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
+import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.mrkiriss.wifilocalpositioning.R;
+import com.mrkiriss.wifilocalpositioning.data.models.server.StringResponse;
 import com.mrkiriss.wifilocalpositioning.data.models.settings.AbilitiesScanningData;
+import com.mrkiriss.wifilocalpositioning.data.sources.api.LocationDataApi;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.AbilitiesDao;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ScanningAbilitiesManager {
 
     private final AbilitiesDao abilitiesDao;
+    private final LocationDataApi instructionApi;
 
     private boolean needShowInformationAboutAbilities=true;
 
+    public MutableLiveData<String> getRequestToOpenInstructionObYouTube() {
+        return requestToOpenInstructionObYouTube;
+    }
+
+    private final MutableLiveData<String> requestToOpenInstructionObYouTube;
 
     private final String androidV9MessageContent = "На устройстве обнаружена ОС Android версии 9.\n" +
             "В связи с ограничениями версии приложение может запрашивать только 4 wi-fi сканирования в 2 минуты.\n" +
@@ -35,8 +42,11 @@ public class ScanningAbilitiesManager {
             "Подробную инструкцию вы можете просмотреть в видео по ссылке ниже\n\n\n"+
             "Приносим извенения за неудобства";
 
-    public ScanningAbilitiesManager(AbilitiesDao abilitiesDao){
+    public ScanningAbilitiesManager(AbilitiesDao abilitiesDao, LocationDataApi instructionApi){
         this.abilitiesDao=abilitiesDao;
+        this.instructionApi=instructionApi;
+
+        requestToOpenInstructionObYouTube=new MutableLiveData<>();
 
         requestToUpdateNeedToShowDialogFromBD();
     }
@@ -110,9 +120,26 @@ public class ScanningAbilitiesManager {
             }
         });
         dialog.setPositiveButton("Просмотреть инструкцию", (dialog1, which) -> {
-            Toast.makeText(context, "Извините, пока здесь ничего нет", Toast.LENGTH_SHORT).show();
+            startInstructionURL(context);
         });
 
         dialog.show();
+    }
+
+    private void startInstructionURL(Context context){
+        instructionApi.getInstructionURL().enqueue(new Callback<StringResponse>() {
+            @Override
+            public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
+                if (response.body()==null || response.body().getResponse().isEmpty()){
+                    Toast.makeText(context, "Извините, пока здесь ничего нет", Toast.LENGTH_SHORT).show();
+                }
+                requestToOpenInstructionObYouTube.setValue(response.body().getResponse());
+            }
+
+            @Override
+            public void onFailure(Call<StringResponse> call, Throwable t) {
+                Toast.makeText(context, "Извините, пока здесь ничего нет", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

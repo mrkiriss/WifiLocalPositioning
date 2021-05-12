@@ -6,6 +6,7 @@ import android.net.wifi.WifiManager;
 
 import com.mrkiriss.wifilocalpositioning.data.sources.api.AccessLevelApi;
 import com.mrkiriss.wifilocalpositioning.data.sources.MapImageManager;
+import com.mrkiriss.wifilocalpositioning.data.sources.api.LocationDataApi;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.AbilitiesDao;
 import com.mrkiriss.wifilocalpositioning.data.sources.settings.SettingsManager;
 import com.mrkiriss.wifilocalpositioning.data.sources.settings.UUIDManager;
@@ -30,8 +31,8 @@ public class ManagersModule {
     }
     @Provides
     @Singleton
-    public ScanningAbilitiesManager provideScanningAbilitiesManager(AbilitiesDao abilitiesDao) {
-        return new ScanningAbilitiesManager(abilitiesDao);
+    public ScanningAbilitiesManager provideScanningAbilitiesManager(AbilitiesDao abilitiesDao, LocationDataApi api) {
+        return new ScanningAbilitiesManager(abilitiesDao, api);
     }
 
     @Provides
