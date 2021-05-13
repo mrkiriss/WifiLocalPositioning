@@ -125,6 +125,7 @@
                 android:weightSum="9">
 
                 <TextView
+                    app:autoSizeTextType="uniform"
                     android:id="@+id/currentChosenPointInfo"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -133,6 +134,7 @@
                     android:text="@string/selectedMapPoint" />
 
                 <TextView
+                    app:autoSizeTextType="uniform"
                     android:id="@+id/currentChosenPointContent"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -141,6 +143,7 @@
                     android:text="@{viewModel.selectedMapPoint.toStringAllObject()}" />
 
                 <Button
+                    app:autoSizeTextType="uniform"
                     android:id="@+id/actionWithPointButton"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -158,6 +161,7 @@
                 android:weightSum="7">
 
                 <TextView
+                    app:autoSizeTextType="uniform"
                     android:id="@+id/textView10"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -165,6 +169,7 @@
                     android:text="@string/neighbors" />
 
                 <TextView
+                    app:autoSizeTextType="uniform"
                     android:id="@+id/textView9"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -188,6 +193,7 @@
                 android:orientation="horizontal">
 
                 <Button
+                    app:autoSizeTextType="uniform"
                     android:id="@+id/button2"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -197,6 +203,7 @@
                     android:text="@string/cancel" />
 
                 <Button
+                    app:autoSizeTextType="uniform"
                     android:id="@+id/button6"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -226,6 +233,7 @@
                 android:weightSum="7">
 
                 <TextView
+                    app:autoSizeTextType="uniform"
                     android:id="@+id/textView8"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -234,6 +242,7 @@
                     android:text="@string/selectedMapPoint" />
 
                 <TextView
+                    app:autoSizeTextType="uniform"
                     android:id="@+id/mapPointTextInfo"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -250,6 +259,7 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    app:autoSizeTextType="uniform"
                     android:id="@+id/remainingNumberOfScanningText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -257,6 +267,7 @@
                     android:text="@string/numberOfSuccessfulScans" />
 
                 <TextView
+                    app:autoSizeTextType="uniform"
                     android:id="@+id/remainingNumberOfScanning"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -273,6 +284,7 @@
                 android:orientation="horizontal">
 
                 <EditText
+                    app:autoSizeTextType="uniform"
                     android:id="@+id/inputNumberOfKits"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -283,6 +295,7 @@
                     android:text="@={viewModel.inputNumberOfScanKits}" />
 
                 <Button
+                    app:autoSizeTextType="uniform"
                     android:id="@+id/startScaning"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -318,6 +331,7 @@
                     android:weightSum="4">
 
                     <EditText
+                        app:autoSizeTextType="uniform"
                         android:id="@+id/editY"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -328,6 +342,7 @@
                         android:text="@={viewModel.inputY}" />
 
                     <EditText
+                        app:autoSizeTextType="uniform"
                         android:id="@+id/editX"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -338,6 +353,7 @@
                         android:text="@={viewModel.inputX}" />
 
                     <EditText
+                        app:autoSizeTextType="uniform"
                         android:id="@+id/editRoomName"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -378,6 +394,7 @@
             </LinearLayout>
 
             <Button
+                app:autoSizeTextType="uniform"
                 android:id="@+id/button5"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -386,6 +403,7 @@
                 android:text="@string/showPointOnMap" />
 
             <Button
+                app:autoSizeTextType="uniform"
                 android:id="@+id/button4"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -411,6 +429,7 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    app:autoSizeTextType="uniform"
                     android:id="@+id/textView6"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -418,6 +437,7 @@
                     android:text="@string/selectedMapPoint" />
 
                 <TextView
+                    app:autoSizeTextType="uniform"
                     android:id="@+id/textView5"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -426,6 +446,7 @@
             </LinearLayout>
 
             <EditText
+                app:autoSizeTextType="uniform"
                 android:id="@+id/editTextTextPersonName"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -436,6 +457,7 @@
                 android:text="@={viewModel.inputCabId}" />
 
             <Button
+                app:autoSizeTextType="uniform"
                 android:id="@+id/deleteLPButton"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -444,6 +466,7 @@
                 android:text="@string/deleteLPButtonText" />
 
             <Button
+                app:autoSizeTextType="uniform"
                 android:id="@+id/deleteLPINfoButton"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -465,7 +488,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/serverResponseText"
+                     android:id="@+id/serverResponseText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@{viewModel.serverResponse}" />
