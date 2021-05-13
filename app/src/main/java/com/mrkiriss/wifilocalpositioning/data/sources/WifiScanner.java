@@ -17,10 +17,8 @@ import android.util.Log;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.data.sources.settings.SettingsManager;
 import com.mrkiriss.wifilocalpositioning.utils.ConnectionManager;
-import com.mrkiriss.wifilocalpositioning.utils.ScanningAbilitiesManager;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import lombok.Data;
@@ -65,12 +63,11 @@ public class WifiScanner {
         this.handler = new Handler(Looper.getMainLooper());
         this.scanStarted=false;
         this.wifiEnabledState=new MutableLiveData<>();
-
-        registerListeners();
     }
 
     public void setCurrentTypeOfRequestSource(String type){
         this.currentTypeOfRequestSource=type;
+        scanStarted=false;
         Log.i("WifiScanner", "Change source type to "+type);
         // оправялем пустой ответ для запуска бесконечного цикла сканирований для карты через запрос от DefinitionRepository
         if (type.equals(TYPE_DEFINITION)){
@@ -86,8 +83,9 @@ public class WifiScanner {
         wifiEnabledState.setValue(connectionManager.checkWifiEnabled());
     }
 
-    public boolean startTrainingScan(int requiredNumberOfScans, String typeOfRequestSource){
-        if (!typeOfRequestSource.equals(currentTypeOfRequestSource)) return false;
+    public void startTrainingScan(int requiredNumberOfScans, String typeOfRequestSource){
+        if (!typeOfRequestSource.equals(currentTypeOfRequestSource) || scanStarted) return;
+        scanStarted=true;
 
         Log.i("startScan", "start scanning from training");
 
@@ -99,27 +97,26 @@ public class WifiScanner {
         remainingNumberOfScanning.setValue(requiredNumberOfScans);
 
         // выход, если сканирований не планируется
-        if (requiredNumberOfScans==0) return false;
+        if (requiredNumberOfScans==0) return;
         registerListeners();
 
         Log.i("WifiScanner", "training scan start with settingDelay="+scanDelay+" and requiredNUmberOfScan="+requiredNumberOfScans);
 
         startScanningWithDelay();
 
-        return true;
     }
-    public boolean startDefiningScan(String typeOfRequestSource){
-        if (!typeOfRequestSource.equals(currentTypeOfRequestSource)) return false;
+    public void startDefiningScan(String typeOfRequestSource){
+        if (!typeOfRequestSource.equals(currentTypeOfRequestSource) || scanStarted) return;
+        scanStarted=true;
 
         Log.i("WifiScanner", "start scanning from definition");
-
 
         scanDelay = getScanIntervalFromSettings();
         int numberOfScanning = getNumberOfScanningFromSettings();
         remainingNumberOfScanning.setValue(numberOfScanning);
 
         // выход, если сканирований не планируется
-        if (numberOfScanning==0) return false;
+        if (numberOfScanning==0) return;
         registerListeners();
 
         uncompleteKitsContainer =new CompleteKitsContainer();
@@ -131,7 +128,6 @@ public class WifiScanner {
 
         startScanningWithDelay();
 
-        return true;
     }
     private long getScanIntervalFromSettings(){
         return settingsManager.getScanInterval()*1000;
@@ -143,35 +139,41 @@ public class WifiScanner {
     private void startScanningWithDelay(){
         checkWifiEnabled();
         Runnable task = () -> {
-            if (remainingNumberOfScanning.getValue()>0 && !scanStarted){ // если данные в remainingNumberOfScanning успели дойти
+            if (remainingNumberOfScanning.getValue()>0){ // если данные в remainingNumberOfScanning успели дойти
                 Log.i( "WifiScanner", "successful continue, remainingNumberOfScanning "+ remainingNumberOfScanning.getValue());
                 remainingNumberOfScanning.postValue(remainingNumberOfScanning.getValue()-1);
             }else{ // комплект собран, отправка на обработку и далее на сервер
+
                 Log.i( "WifiScanner", "unsuccessful continue (scanStarted="+scanStarted +"), start creating datablock, remainingNumberOfScanning  "+remainingNumberOfScanning.getValue());
 
+
                 CompleteKitsContainer container = uncompleteKitsContainer;
-                if (container.getRequestSourceType()==null || !container.getRequestSourceType().equals(currentTypeOfRequestSource)) {
+                if (container.getRequestSourceType()==null || !container.getRequestSourceType().equals(currentTypeOfRequestSource) || container.getCompleteKits().size()==0) {
                     return;
                 }
 
+                // post data about all scans in kits
                 completeScanResults.postValue(container);
+                Log.i( "WifiScanner", "completeScanResults posted with data= "+container);
 
+                // недопускаем лишних сканирований
                 unregisterListeners();
+                scanStarted=false;
+
                 return;
             }
 
             Log.println(Log.INFO, "WifiScanner",
                     String.format("START_ONE_SCANNING _Parameters: remaining number of scans=%s", remainingNumberOfScanning.getValue()));
-            scanStarted=true;
             requestScanResults();
         };
         handler.postDelayed(task, scanDelay);
         // после первого запуска обнуляем задержку, чтобы пачка прошла разом
-        if (scanDelay!=50) scanDelay=50;
+        if (scanDelay!=50) scanDelay=minScanDelay;
     }
 
     private void requestScanResults(){
-        scanStarted=true;
+        //scanStarted=true;
         wifiManager.startScan();
     }
     private void registerListeners(){
@@ -196,7 +198,7 @@ public class WifiScanner {
                 public void onReceive(Context context, Intent intent) {
                     Log.i("WifiScanner",
                             "SCAN_RESULTS_RECEIVED__successful");
-                    scanStarted=false;
+                    //scanStarted=false;
 
                     // прекращение сканирований
                     if (currentTypeOfRequestSource.equals(TYPE_NO_SCAN) || uncompleteKitsContainer.getCompleteKits()==null) return;
@@ -209,7 +211,11 @@ public class WifiScanner {
         context.registerReceiver(scanResultBR, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
     }
     private void unregisterScanReceiver(){
-        context.unregisterReceiver(scanResultBR);
+        try {
+            context.unregisterReceiver(scanResultBR);
+        }catch (IllegalArgumentException e){
+            Log.e("WifiScanner",e.getMessage());
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.R)
@@ -220,7 +226,7 @@ public class WifiScanner {
                 public void onScanResultsAvailable() {
                     Log.println(Log.INFO, "WifiScanner",
                             "SCAN_RESULTS_CALLBACK__successful");
-                    scanStarted=false;
+                    //scanStarted=false;
 
                     // прекращение сканирований
                     if (currentTypeOfRequestSource.equals(TYPE_NO_SCAN) || uncompleteKitsContainer.getCompleteKits()==null) return;
@@ -234,6 +240,10 @@ public class WifiScanner {
     };
     @RequiresApi(api = Build.VERSION_CODES.R)
     public void unregisterScanCallback(){
-        wifiManager.unregisterScanResultsCallback(scanResultsCallback);
+        try {
+            wifiManager.unregisterScanResultsCallback(scanResultsCallback);
+        }catch (IllegalArgumentException e){
+            Log.e("WifiScanner",e.getMessage());
+        }
     }
 }

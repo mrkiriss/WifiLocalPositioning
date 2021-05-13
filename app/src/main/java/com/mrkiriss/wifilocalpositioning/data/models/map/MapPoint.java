@@ -45,6 +45,7 @@ public class MapPoint {
     private final String currentLocationSmallText = "Текущее местоположение";
     @Override
     public String toString(){
+        if (roomName.contains(currentLocationText)) return roomName.replace(currentLocationText,"");
         return roomName;
     }
     public MapPoint copyForCurrentLocation(){

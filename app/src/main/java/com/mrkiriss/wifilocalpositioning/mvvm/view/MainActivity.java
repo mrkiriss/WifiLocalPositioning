@@ -1,6 +1,7 @@
 package com.mrkiriss.wifilocalpositioning.mvvm.view;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,7 +11,9 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.Menu;
+import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
@@ -159,7 +162,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     public void changeFragment(int position) {
+        // change top title
         toolbar.setTitle(fragmentTAGS[position]);
+        // hide keyboard
+        hideKeyboard(this);
 
         Log.i("MainActivityInfo","POS "+position);
         FragmentManager fm = navHostFragment.getChildFragmentManager();
@@ -219,5 +225,14 @@ public class MainActivity extends AppCompatActivity {
         }catch (Exception e){
             Toast.makeText(this, "Извините, пока здесь ничего нет", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        View view = activity.getCurrentFocus();
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

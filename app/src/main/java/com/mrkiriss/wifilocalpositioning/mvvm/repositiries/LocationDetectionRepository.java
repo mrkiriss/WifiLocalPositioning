@@ -22,11 +22,14 @@ import com.mrkiriss.wifilocalpositioning.data.models.server.DefinedLocationPoint
 import com.mrkiriss.wifilocalpositioning.data.sources.settings.SettingsManager;
 import com.mrkiriss.wifilocalpositioning.utils.ConnectionManager;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import lombok.Data;
 import retrofit2.Call;
@@ -161,11 +164,12 @@ public class LocationDetectionRepository implements Serializable {
     public void findRoom(String name){
         Map<FloorId, List<MapPoint>> data = mapImageManager.getDataOnPointsOnAllFloors();
         for (FloorId floorId:data.keySet()){
-            for (MapPoint mapPoint:data.get(floorId)){
+            for (MapPoint mapPoint: Objects.requireNonNull(data.get(floorId))){
                 if (mapPoint.getRoomName().equals(name) && (mapPoint.isRoom() || settingsManager.isModerator())){
                     toastContent.setValue("Локация найдена");
                     // получает базовый этаж и вставялет его в объект точки, чтобы получить внутри фрагмента и прорисовать этаж
-                    mapPoint.setFloorWithPointer(mapImageManager.getBasicFloor(floorId));
+                    MapPoint result = mapPoint.copy();
+                    result.setFloorWithPointer(defineNecessaryFloor());
                     // прорисовываем
                     requestToChangeFloorByMapPoint.setValue(mapPoint);
 
@@ -179,7 +183,7 @@ public class LocationDetectionRepository implements Serializable {
     // scanning
     public void startProcessingCompleteKitsOfScansResult(CompleteKitsContainer completeKitsContainer){
 
-        if (completeKitsContainer.getRequestSourceType()!=WifiScanner.TYPE_DEFINITION) return;
+        if (!completeKitsContainer.getRequestSourceType().equals(WifiScanner.TYPE_DEFINITION)) return;
 
         CalibrationLocationPoint calibrationLocationPoint = new CalibrationLocationPoint();
         for (List<ScanResult> oneScanResults: completeKitsContainer.getCompleteKits()) {
@@ -203,20 +207,23 @@ public class LocationDetectionRepository implements Serializable {
             return;
         }
 
+        Log.println(Log.INFO, "LocationDetectionRep",
+                String.format("start definition location with data=%s", calibrationLocationPoint));
+
         retrofit.defineLocation(calibrationLocationPoint).enqueue(new Callback<DefinedLocationPoint>() {
             @Override
-            public void onResponse(Call<DefinedLocationPoint> call, Response<DefinedLocationPoint> response) {
+            public void onResponse(@NotNull Call<DefinedLocationPoint> call, @NotNull Response<DefinedLocationPoint> response) {
                 wifiScanner.startDefiningScan(WifiScanner.TYPE_DEFINITION);
 
-                Log.println(Log.INFO, "GOOD_DEFINITION_ROOM",
-                        String.format("Server definition=%s", response.body()));
+                Log.println(Log.INFO, "LocationDetectionRep",
+                        String.format("Server define location result=%s", response.body()));
 
                 if (response.body()==null || response.body().getFloorId()==-1 || response.body().getRoomName()==null)return;
 
                 // сохраняет в поле репозитория
                 resultOfDefinition=convertToMapPoint(response.body());
 
-                Log.println(Log.INFO, "SEND_CONVERT_RESULT",
+                Log.println(Log.INFO, "convert result= ",
                         resultOfDefinition.toStringAllObject());
 
                 // уведомление о имени через тост
@@ -226,7 +233,7 @@ public class LocationDetectionRepository implements Serializable {
             }
             @Override
             public void onFailure(Call<DefinedLocationPoint> call, Throwable t) {
-                Log.e("SERVER_ERROR", t.getMessage());
+                Log.e("SERVER_ERROR_LDRep", t.getMessage());
                 wifiScanner.startDefiningScan(WifiScanner.TYPE_DEFINITION);
             }
         });
@@ -248,11 +255,11 @@ public class LocationDetectionRepository implements Serializable {
         retrofit.getRoute(start, end).enqueue(new Callback<List<LocationPointInfo>>() {
             @Override
             public void onResponse(Call<List<LocationPointInfo>> call, Response<List<LocationPointInfo>> response) {
-                Log.println(Log.INFO, "GOOD_DEFINITION_ROOM",
+                Log.println(Log.INFO, "LocationDetectionRep",
                         String.format("Server route=%s", response.body()));
 
                 if (response.body()==null){
-                    Log.e("SERVER_ERROR", "Response body is null");
+                    Log.e("SERVER_ERROR_LDRep", "Response body is null");
                     toastContent.setValue("Маршрут построить не удалось");
                     return;
                 }
