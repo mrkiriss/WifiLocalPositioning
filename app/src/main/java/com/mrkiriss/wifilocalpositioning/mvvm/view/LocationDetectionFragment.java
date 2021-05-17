@@ -82,10 +82,13 @@ public class LocationDetectionFragment extends Fragment {
 
             showCurrentLocation(mapPoint);
         });
-        // прослушываем запрос на обновление местоположения для строки автодополнения
+        // прослушываем запрос на обновление местоположения для строки автодополнения и ...
+        // в меню маршрутизации при условии его скрытия в данный момент
         viewModel.getRequestToUpdateCurrentLocationOnAutoComplete().observe(getViewLifecycleOwner(), mapPoint -> {
             // обновляем в адаптере для новой строки в поиске
             autoCompleteAdapter.setCurrentLocation(mapPoint);
+            // обновляем маршрутизацию
+            if (!viewModel.getShowRoute().get()) viewModel.getDepartureInput().set(mapPoint.getRoomName());
         });
         // прослушиваем увеломления через Toast
         viewModel.getToastContent().observe(getViewLifecycleOwner(), this::showToastContent);
