@@ -77,13 +77,15 @@ public class LocationDetectionFragment extends Fragment {
         viewModel.getRequestToChangeFloor().observe(getViewLifecycleOwner(), this::drawCurrentFloor);
         // прослышиваем запрос на изменение экрана с показом местоположения
         viewModel.getRequestToChangeFloorByMapPoint().observe(getViewLifecycleOwner(), mapPoint -> {
-            // обновляем в адаптере для новой строки в поиске
-            autoCompleteAdapter.setCurrentLocation(mapPoint.copy());
-
             // меняем номер во всей вьюмодели и вчастности на табло со стрелками
             viewModel.getFloorNumber().set(mapPoint.getFloorIdInt());
 
             showCurrentLocation(mapPoint);
+        });
+        // прослушываем запрос на обновление местоположения для строки автодополнения
+        viewModel.getRequestToUpdateCurrentLocationOnAutoComplete().observe(getViewLifecycleOwner(), mapPoint -> {
+            // обновляем в адаптере для новой строки в поиске
+            autoCompleteAdapter.setCurrentLocation(mapPoint);
         });
         // прослушиваем увеломления через Toast
         viewModel.getToastContent().observe(getViewLifecycleOwner(), this::showToastContent);

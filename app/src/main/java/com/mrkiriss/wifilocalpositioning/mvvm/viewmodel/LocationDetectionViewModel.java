@@ -39,6 +39,7 @@ public class LocationDetectionViewModel {
     private final LiveData<String> requestToHideKeyboard;
     private final LiveData<Boolean> requestToUpdateProgressStatusBuildingRoute;
     private final LiveData<Integer> requestToUpdateAccessLevel;
+    private final LiveData<MapPoint> requestToUpdateCurrentLocationOnAutoComplete;
 
     private final MutableLiveData<String> requestToRefreshFloor;
     private final MutableLiveData<String> toastContent;
@@ -64,6 +65,7 @@ public class LocationDetectionViewModel {
         requestToHideKeyboard=repository.getRequestToHideKeyboard();
         requestToUpdateProgressStatusBuildingRoute=repository.getRequestToUpdateProgressStatusBuildingRoute();
         requestToUpdateAccessLevel=repository.getRequestToUpdateAccessLevel();
+        requestToUpdateCurrentLocationOnAutoComplete=repository.getRequestToUpdateCurrentLocationOnAutoComplete();
 
         floorNumber = new ObservableInt();
         findInput = new ObservableField<>("");

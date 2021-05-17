@@ -55,6 +55,7 @@ public class LocationDetectionRepository implements Serializable {
     private final MutableLiveData<Boolean> wifiEnabledState; // для отправки состояния включение wifi
     private final MutableLiveData<String> requestToHideKeyboard;
     private final MutableLiveData<Boolean> requestToUpdateProgressStatusBuildingRoute;
+    private final MutableLiveData<MapPoint> requestToUpdateCurrentLocationOnAutoComplete;
 
 
     private List<LocationPointInfo> listOfSearchableLocations;
@@ -81,6 +82,7 @@ public class LocationDetectionRepository implements Serializable {
         requestToAddAllPointsDataInAutoFinders=new MutableLiveData<>();
         requestToHideKeyboard=new MutableLiveData<>();
         requestToUpdateProgressStatusBuildingRoute=new MutableLiveData<>();
+        requestToUpdateCurrentLocationOnAutoComplete=new MutableLiveData<>();
 
         wifiEnabledState=wifiScanner.getWifiEnabledState();
 
@@ -176,10 +178,6 @@ public class LocationDetectionRepository implements Serializable {
                     // получает базовый этаж и вставялет его в объект точки, чтобы получить внутри фрагмента и прорисовать этаж
                     MapPoint result = mapPoint.copy();
                     if (result.getFloorWithPointer()==null) result.setFloorWithPointer(mapImageManager.getBasicFloor(Floor.convertFloorIdToEnum(mapPoint.getFloorIdInt())));
-                    /*Floor requiredFloor = defineNecessaryFloor();
-                    if (requiredFloor==null) return;
-                    result.setFloorWithPointer(requiredFloor);
-                    Log.i("LocationDetectionRep", "[findRoom] set requiredRoom="+requiredFloor);*/
 
                     // прорисовываем
                     requestToChangeFloorByMapPoint.setValue(result);
@@ -240,8 +238,10 @@ public class LocationDetectionRepository implements Serializable {
                             resultOfDefinition.toStringAllObject());
 
                     // уведомление о имени через тост
-                    if (resultOfDefinition.isRoom() || settingsManager.isModerator())
+                    if (resultOfDefinition.isRoom() || settingsManager.isModerator()) {
                         toastContent.setValue("Местоположение: " + resultOfDefinition.getRoomName());
+                        requestToUpdateCurrentLocationOnAutoComplete.setValue(resultOfDefinition);
+                    }
                     // требует изменение картинки этажа в соответсвии со всеми параметрами
                     changeFloor();
                 }catch (Exception e){
