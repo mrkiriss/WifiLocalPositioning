@@ -23,10 +23,11 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
+import com.mrkiriss.wifilocalpositioning.mvvm.repositiries.TrainingMapRepository;
 import lombok.Data;
 
 @Data
-public class LocationDetectionViewModel extends ViewModel {
+public class LocationDetectionViewModel {
 
     private final LocationDetectionRepository repository;
 

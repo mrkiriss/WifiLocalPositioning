@@ -96,7 +96,9 @@ public class LocationDetectionRepository implements Serializable {
 
     // floor changing
     public void changeFloor(){
-        requestToChangeFloor.setValue(defineNecessaryFloor());
+        Floor requiredFloor = defineNecessaryFloor();
+        if (requiredFloor==null) return;
+        requestToChangeFloor.setValue(requiredFloor);
     }
     private Floor defineNecessaryFloor(){
         Floor requiredFloor;
@@ -121,6 +123,11 @@ public class LocationDetectionRepository implements Serializable {
             }
         }
 
+        if (requiredFloor==null){
+            Log.e("LocationDetectionRep", "required floor is null");
+            return null;
+        }
+        Log.i("LocationDetectionRep", "required floor is="+requiredFloor);
         return requiredFloor;
     }
     private Floor defineNecessaryFloorForShowCurrentLocation(){
@@ -166,12 +173,17 @@ public class LocationDetectionRepository implements Serializable {
         for (FloorId floorId:data.keySet()){
             for (MapPoint mapPoint: Objects.requireNonNull(data.get(floorId))){
                 if (mapPoint.getRoomName().equals(name) && (mapPoint.isRoom() || settingsManager.isModerator())){
-                    toastContent.setValue("Локация найдена");
                     // получает базовый этаж и вставялет его в объект точки, чтобы получить внутри фрагмента и прорисовать этаж
                     MapPoint result = mapPoint.copy();
-                    result.setFloorWithPointer(defineNecessaryFloor());
+                    if (result.getFloorWithPointer()==null) result.setFloorWithPointer(mapImageManager.getBasicFloor(Floor.convertFloorIdToEnum(mapPoint.getFloorIdInt())));
+                    /*Floor requiredFloor = defineNecessaryFloor();
+                    if (requiredFloor==null) return;
+                    result.setFloorWithPointer(requiredFloor);
+                    Log.i("LocationDetectionRep", "[findRoom] set requiredRoom="+requiredFloor);*/
+
                     // прорисовываем
-                    requestToChangeFloorByMapPoint.setValue(mapPoint);
+                    requestToChangeFloorByMapPoint.setValue(result);
+                    toastContent.setValue("Локация найдена");
 
                     return;
                 }
@@ -217,19 +229,24 @@ public class LocationDetectionRepository implements Serializable {
 
                 Log.println(Log.INFO, "LocationDetectionRep",
                         String.format("Server define location result=%s", response.body()));
+                try {
+                    if (response.body() == null || response.body().getFloorId() == -1 || response.body().getRoomName() == null)
+                        return;
 
-                if (response.body()==null || response.body().getFloorId()==-1 || response.body().getRoomName()==null)return;
+                    // сохраняет в поле репозитория
+                    resultOfDefinition = convertToMapPoint(response.body());
 
-                // сохраняет в поле репозитория
-                resultOfDefinition=convertToMapPoint(response.body());
+                    Log.println(Log.INFO, "convert result= ",
+                            resultOfDefinition.toStringAllObject());
 
-                Log.println(Log.INFO, "convert result= ",
-                        resultOfDefinition.toStringAllObject());
-
-                // уведомление о имени через тост
-                if (resultOfDefinition.isRoom() || settingsManager.isModerator()) toastContent.setValue("Местоположение: "+resultOfDefinition.getRoomName());
-                // требует изменение картинки этажа в соответсвии со всеми параметрами
-                changeFloor();
+                    // уведомление о имени через тост
+                    if (resultOfDefinition.isRoom() || settingsManager.isModerator())
+                        toastContent.setValue("Местоположение: " + resultOfDefinition.getRoomName());
+                    // требует изменение картинки этажа в соответсвии со всеми параметрами
+                    changeFloor();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
             @Override
             public void onFailure(Call<DefinedLocationPoint> call, Throwable t) {
@@ -244,6 +261,7 @@ public class LocationDetectionRepository implements Serializable {
         result.setX(definedLocationPoint.getX());
         result.setY(definedLocationPoint.getY());
         result.setRoomName(definedLocationPoint.getRoomName());
+        result.setFloorWithPointer(mapImageManager.getBasicFloor(Floor.convertFloorIdToEnum(definedLocationPoint.getFloorId())));
         result.setFloorIdInt(definedLocationPoint.getFloorId());
         result.setRoom(definedLocationPoint.isRoom());
 

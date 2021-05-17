@@ -129,11 +129,10 @@ public class LocationDetectionFragment extends Fragment {
         drawCurrentLocation(mapPoint);
         Log.i("LocationDetectionFrg", "showCurrentLocation");
 
-        float x = (float)mapPoint.getX()/mapPoint.getFloorWithPointer().getFloorSchema().getWidth();
-        float y = (float)mapPoint.getY()/mapPoint.getFloorWithPointer().getFloorSchema().getHeight();
+        float x = (float) mapPoint.getX() / mapPoint.getFloorWithPointer().getFloorSchema().getWidth();
+        float y = (float) mapPoint.getY() / mapPoint.getFloorWithPointer().getFloorSchema().getHeight();
         Log.i("changeZoom", "x="+x+" y="+y);
         touchImageView.setZoom(6, x, y);
-
     }
 
     public static void hideKeyboard(Activity activity) {

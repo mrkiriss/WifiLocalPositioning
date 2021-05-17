@@ -17,6 +17,7 @@ import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.TrainingScanViewModel;
 import lombok.Data;
 import retrofit2.Call;
 import retrofit2.Callback;
