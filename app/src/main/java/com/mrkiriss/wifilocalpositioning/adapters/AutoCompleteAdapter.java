@@ -118,7 +118,8 @@ public class AutoCompleteAdapter
 
         for (FloorId floorId:mapPointsData.keySet()){
             for (MapPoint mapPoint:mapPointsData.get(floorId)){
-                if (mapPoint.getRoomName().matches(constraint+".*?") && (mapPoint.isRoom() || accessLevel>0)){
+                // mapPoint.getRoomName().matches(constraint+".*?") for begin
+                if (mapPoint.getRoomName().contains(constraint) && (mapPoint.isRoom() || accessLevel>0)){
                     result.add(mapPoint);
                 }
             }
