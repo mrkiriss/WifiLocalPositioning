@@ -107,6 +107,111 @@
         </FrameLayout>
 
         <LinearLayout
+            android:id="@+id/modScanningContainer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="2dp"
+            android:layout_weight="8"
+            android:orientation="vertical"
+            android:visibility="@{viewModel.selectedMod==1?View.VISIBLE:View.GONE}"
+            android:weightSum="12">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:orientation="horizontal"
+                android:weightSum="14">
+
+                <TextView
+                    android:id="@+id/textView8"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:gravity="center"
+                    android:text="@string/selectedMapPoint"
+                    app:autoSizeTextType="uniform" />
+
+                <TextView
+                    android:id="@+id/mapPointTextInfo"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="7"
+                    android:gravity="center"
+                    android:text="@{viewModel.selectedMapPoint.toStringAllObject()}"
+                    app:autoSizeTextType="uniform" />
+
+                <Button
+                    app:autoSizeTextType="uniform"
+                    android:id="@+id/button8"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="4"
+                    android:text="@string/moreDetailed"
+                    android:onClick="@{()->viewModel.getScanInfoAboutLocation()}"/>
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/scanInfoRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="7" />
+
+            <LinearLayout
+                android:id="@+id/numberOfScanningContainer"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/remainingNumberOfScanningText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/numberOfSuccessfulScans"
+                    app:autoSizeTextType="uniform" />
+
+                <TextView
+                    android:id="@+id/remainingNumberOfScanning"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@{String.valueOf(viewModel.remainingNumberOfScanKits)}"
+                    app:autoSizeTextType="uniform" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/inputNumberOfKits"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="@string/hintRequiredQuantity"
+                    android:inputType="numberDecimal"
+                    android:text="@={viewModel.inputNumberOfScanKits}"
+                    app:autoSizeTextType="uniform" />
+
+                <Button
+                    android:id="@+id/startScaning"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="@{()->viewModel.startScanning()}"
+                    android:text="@string/startScanning"
+                    app:autoSizeTextType="uniform" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/modNeighborsContainer"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -213,96 +318,6 @@
                     android:text="@string/accept" />
             </LinearLayout>
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/modScanningContainer"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_margin="2dp"
-            android:layout_weight="8"
-            android:orientation="vertical"
-            android:visibility="@{viewModel.selectedMod==1?View.VISIBLE:View.GONE}"
-            android:weightSum="6">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="2"
-                android:orientation="horizontal"
-                android:weightSum="7">
-
-                <TextView
-                    app:autoSizeTextType="uniform"
-                    android:id="@+id/textView8"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:gravity="center"
-                    android:text="@string/selectedMapPoint" />
-
-                <TextView
-                    app:autoSizeTextType="uniform"
-                    android:id="@+id/mapPointTextInfo"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="5"
-                    android:gravity="center"
-                    android:text="@{viewModel.selectedMapPoint.toStringAllObject()}" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/numberOfScanningContainer"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-                <TextView
-                    app:autoSizeTextType="uniform"
-                    android:id="@+id/remainingNumberOfScanningText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/numberOfSuccessfulScans" />
-
-                <TextView
-                    app:autoSizeTextType="uniform"
-                    android:id="@+id/remainingNumberOfScanning"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="@{String.valueOf(viewModel.remainingNumberOfScanKits)}" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="3"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <EditText
-                    app:autoSizeTextType="uniform"
-                    android:id="@+id/inputNumberOfKits"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:hint="@string/hintRequiredQuantity"
-                    android:inputType="numberDecimal"
-                    android:text="@={viewModel.inputNumberOfScanKits}" />
-
-                <Button
-                    app:autoSizeTextType="uniform"
-                    android:id="@+id/startScaning"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:onClick="@{()->viewModel.startScanning()}"
-                    android:text="@string/startScanning" />
-            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout

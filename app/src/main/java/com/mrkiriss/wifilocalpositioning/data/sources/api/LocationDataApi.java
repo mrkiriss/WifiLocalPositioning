@@ -5,6 +5,7 @@ import com.mrkiriss.wifilocalpositioning.data.models.server.Connections;
 import com.mrkiriss.wifilocalpositioning.data.models.server.DefinedLocationPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.ListOfAllMapPoints;
 import com.mrkiriss.wifilocalpositioning.data.models.server.LocationPointInfo;
+import com.mrkiriss.wifilocalpositioning.data.models.server.ScanInformation;
 import com.mrkiriss.wifilocalpositioning.data.models.server.StringResponse;
 
 import java.util.List;
@@ -38,6 +39,9 @@ public interface LocationDataApi {
 
     @DELETE("training/room/aps")
     Call<StringResponse> deleteLPAps(@Query("roomName")  String roomName);
+
+    @GET("training/room/aps/info")
+    Call<List<ScanInformation>> getScanningInfoAboutLocation(@Query("name") String name);
 
     @POST("training/connections")
     Call<StringResponse> postConnections(@Body Connections connections);

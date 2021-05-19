@@ -16,6 +16,7 @@ import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContaine
 import com.mrkiriss.wifilocalpositioning.data.models.server.Connections;
 import com.mrkiriss.wifilocalpositioning.data.models.server.ListOfAllMapPoints;
 import com.mrkiriss.wifilocalpositioning.data.models.server.LocationPointInfo;
+import com.mrkiriss.wifilocalpositioning.data.models.server.ScanInformation;
 import com.mrkiriss.wifilocalpositioning.data.models.server.StringResponse;
 import com.mrkiriss.wifilocalpositioning.data.sources.api.LocationDataApi;
 import com.mrkiriss.wifilocalpositioning.data.sources.MapImageManager;
@@ -44,6 +45,7 @@ public class TrainingMapRepository implements Serializable {
     private final MutableLiveData<String> serverResponse;
     private final MutableLiveData<List<MapPoint>> serverConnectionsResponse;
     private final MutableLiveData<String> requestToUpdateFloor;
+    private final MutableLiveData<List<ScanInformation>> requestToSetListOfScanInformation;
 
     private final LiveData<CompleteKitsContainer> completeKitsOfScansResult;
     private LiveData<Integer> remainingNumberOfScanning;
@@ -59,6 +61,7 @@ public class TrainingMapRepository implements Serializable {
         serverResponse=new MutableLiveData<>();
         serverConnectionsResponse=new MutableLiveData<>();
         requestToUpdateFloor=new MutableLiveData<>();
+        requestToSetListOfScanInformation=new MutableLiveData<>();
 
         completeKitsOfScansResult=wifiScanner.getCompleteScanResults();
         remainingNumberOfScanning=wifiScanner.getRemainingNumberOfScanning();
@@ -237,6 +240,40 @@ public class TrainingMapRepository implements Serializable {
                 Log.e("SERVER_ERROR", t.getMessage());
             }
         });
+    }
+    // получение списка информации о сканированиях для точки
+    public void getScanningInformationAboutLocation(String locationName){
+        if (locationName==null || locationName.isEmpty()){
+            toastContent.setValue("Имя некорректно");
+            return;
+        }
+        retrofit.getScanningInfoAboutLocation(locationName).enqueue(new Callback<List<ScanInformation>>() {
+            @Override
+            public void onResponse(Call<List<ScanInformation>> call, Response<List<ScanInformation>> response) {
+                Log.println(Log.INFO, "TrainingMapRepository",
+                        String.format("Server response after getScanningInfoAboutLocation=%s", response.body()));
+                if (response.body()==null){
+                    serverResponse.setValue("Response body is null");
+                    return;
+                }
+                serverResponse.setValue(response.body().toString());
+                // отправляем на вставку в RecyclerView предварительно удалив объекты с невалидным именем
+                requestToSetListOfScanInformation.setValue(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<List<ScanInformation>> call, Throwable t) {
+                serverResponse.setValue(call.toString()+"\n"+t.getMessage());
+                Log.e("SERVER_ERROR", t.getMessage());
+            }
+        });
+    }
+    private List<ScanInformation> deleteInvalidInfoByName(List<ScanInformation> info){
+        List<ScanInformation> result = new ArrayList<>();
+        for(ScanInformation scanInformation:info){
+            if (scanInformation.getDate()!=null && !scanInformation.getDate().isEmpty()) result.add(scanInformation);
+        }
+        return result;
     }
 
     // удаление информации о точки, самой точки с её информацией о APs

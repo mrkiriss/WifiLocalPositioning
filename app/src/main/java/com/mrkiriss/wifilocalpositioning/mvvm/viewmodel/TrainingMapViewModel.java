@@ -11,6 +11,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
+import com.mrkiriss.wifilocalpositioning.data.models.server.ScanInformation;
 import com.mrkiriss.wifilocalpositioning.di.App;
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
@@ -60,6 +61,7 @@ public class TrainingMapViewModel extends ViewModel {
     private final MutableLiveData<String> toastContent;
     private final MutableLiveData<int[]> moveCamera;
 
+    private final LiveData<List<ScanInformation>> requestToSetListOfScanInformation;
     private final LiveData<CompleteKitsContainer> completeKitsOfScansResult;
     private final LiveData<Integer> remainingNumberOfScanning;
 
@@ -81,6 +83,7 @@ public class TrainingMapViewModel extends ViewModel {
         requestToAddSecondlyMapPointToRV =new MutableLiveData<>();
         requestToChangeSecondlyMapPointListInRV =new MutableLiveData<>();
         serverConnectionsResponse=repository.getServerConnectionsResponse();
+        requestToSetListOfScanInformation=repository.getRequestToSetListOfScanInformation();
 
         selectedMod=new ObservableInt(0);
         showMapPoints=new ObservableBoolean(false);
@@ -228,6 +231,14 @@ public class TrainingMapViewModel extends ViewModel {
     // вызов обработки результатов сканирования
     public void processCompleteKitsOfScanResults(CompleteKitsContainer completeKitsContainer){
         repository.processCompleteKitsOfScanResults(completeKitsContainer);
+    }
+    // запрос на информацию о сканированиях для выбранной точки
+    public void getScanInfoAboutLocation(){
+        if (selectedMapPoint.get()==null){
+            toastContent.setValue("Точка не выбрана");
+            return;
+        }
+        repository.getScanningInformationAboutLocation(selectedMapPoint.get().getRoomName());
     }
 
     // CHANGING MODE

@@ -7,6 +7,9 @@
 
     <!--TrainingScanFragment-->
     <string name="scanningTitle">Панель сканирования</string>
+    <string name="moreDetailed">Подробнее</string>
+    <string name="scanningDate">Дата сканирования: </string>
+    <string name="scanningNumber">Количество наборов сканирования: </string>
     <string name="numberOfSuccessfulScans">Количество оставшихся сканирований: </string>
     <string name="hintRequiredQuantity">Введите кол-во сканирований</string>
     <string name="startScanning">Начать сканирование</string>

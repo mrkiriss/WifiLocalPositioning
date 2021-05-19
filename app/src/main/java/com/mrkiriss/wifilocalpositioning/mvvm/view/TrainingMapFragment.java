@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.github.chrisbanes.photoview.PhotoView;
 import com.mrkiriss.wifilocalpositioning.R;
+import com.mrkiriss.wifilocalpositioning.adapters.ScanInfoRVAdapter;
 import com.mrkiriss.wifilocalpositioning.databinding.FragmentTrainingMapBinding;
 import com.mrkiriss.wifilocalpositioning.adapters.MapPointsRVAdapter;
 import com.mrkiriss.wifilocalpositioning.di.App;
@@ -33,6 +34,7 @@ public class TrainingMapFragment extends Fragment {
     private FragmentTrainingMapBinding binding;
     private PhotoView photoView;
     private MapPointsRVAdapter mapPointsAdapter;
+    private ScanInfoRVAdapter scanInfoAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -42,6 +44,7 @@ public class TrainingMapFragment extends Fragment {
 
         binding= DataBindingUtil.inflate(inflater, R.layout.fragment_training_map, container, false);
 
+        initScanInfoAdapter();
         initMapPointsAdapter();
         initPhotoView();
         initObservers();
@@ -51,6 +54,11 @@ public class TrainingMapFragment extends Fragment {
         return binding.getRoot();
     }
 
+    private void initScanInfoAdapter(){
+        scanInfoAdapter=new ScanInfoRVAdapter();
+        binding.scanInfoRecyclerView.setAdapter(scanInfoAdapter);
+        binding.scanInfoRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+    }
     private void initMapPointsAdapter(){
         mapPointsAdapter=new MapPointsRVAdapter();
         binding.mapPointsRV.setAdapter(mapPointsAdapter);
@@ -113,6 +121,8 @@ public class TrainingMapFragment extends Fragment {
         });
         viewModel.getRequestToAddSecondlyMapPointToRV().observe(getViewLifecycleOwner(), mapPoint -> mapPointsAdapter.addMapPoint(mapPoint));
         viewModel.getRequestToChangeSecondlyMapPointListInRV().observe(getViewLifecycleOwner(), mapPoints -> mapPointsAdapter.setContent(mapPoints));
+        // вставляем информацию о сканированиях точки в адаптер
+        viewModel.getRequestToSetListOfScanInformation().observe(getViewLifecycleOwner(), content -> scanInfoAdapter.setContent(content));
 
 
         viewModel.startFloorChanging();
