@@ -78,7 +78,7 @@ public class LocationDetectionFragment extends Fragment {
         // прослышиваем запрос на изменение экрана с показом местоположения
         viewModel.getRequestToChangeFloorByMapPoint().observe(getViewLifecycleOwner(), this::showCurrentLocation);
         // прослушываем запрос на обновление местоположения для строки автодополнения и ...
-        // в меню маршрутизации при условии его скрытия в данный момент
+            // в меню маршрутизации при условии его скрытия в данный момент
         viewModel.getRequestToUpdateCurrentLocationOnAutoComplete().observe(getViewLifecycleOwner(), mapPoint -> {
             // обновляем в адаптере для новой строки в поиске
             autoCompleteAdapter.setCurrentLocation(mapPoint);

@@ -33,14 +33,14 @@ public class ScanningAbilitiesManager {
     private final String androidV9MessageContent = "На устройстве обнаружена ОС Android версии 9.\n" +
             "В связи с ограничениями версии приложение может запрашивать только 4 wi-fi сканирования в 2 минуты.\n" +
             "Пожалуйста, имейте это ввиду, задавая настройки сканирования\n\n\n" +
-            "Приносим извенения за неудобства";
+            "Приносим извинения за неудобства.\n\n";
 
     private final String androidV10HMessageContent = "На устройстве обнаружена ОС Android версии 10 или выше.\n" +
             "В связи с ограничениями версии приложение может запрашивать только 4 wi-fi сканирования в 2 минуты.\n\n" +
             "Для отключения ограничений перейдите в \"Режим разработчика\" в настройках устройства " +
-            "и снимите галочку с \"WI-FI scan throttling\" \n\n" +
+            "и отключите \"WI-FI scan throttling\" \n\n" +
             "Подробную инструкцию вы можете просмотреть в видео по ссылке ниже\n\n\n"+
-            "Приносим извенения за неудобства";
+            "Приносим извинения за неудобства.\n\n";
 
     public ScanningAbilitiesManager(AbilitiesDao abilitiesDao, LocationDataApi instructionApi){
         this.abilitiesDao=abilitiesDao;
@@ -75,7 +75,7 @@ public class ScanningAbilitiesManager {
 
         // только 4 на 2 минуты, без возможности изменить
         if (Build.VERSION.SDK_INT==Build.VERSION_CODES.P){
-            showNotificationOfPermanentRestrictions(context);
+            showNotificationOfNotPermanentRestrictions(context);
         }else if (Build.VERSION.SDK_INT>Build.VERSION_CODES.P){ // только 4 на 2 минуты, изменить через режим разработчика возможно
             showNotificationOfNotPermanentRestrictions(context);
         }

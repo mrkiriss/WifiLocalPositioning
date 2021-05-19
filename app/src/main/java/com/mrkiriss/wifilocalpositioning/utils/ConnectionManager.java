@@ -7,10 +7,12 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.provider.Settings;
+import android.util.Log;
 import android.widget.CheckBox;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import java.lang.reflect.Method;
 import java.util.Date;
 
 public class ConnectionManager {
@@ -21,10 +23,24 @@ public class ConnectionManager {
     private final WifiManager wifiManager;
 
     private boolean showNow;
+    private Method mobileDataCheckMethod;
+
+    private final String messageContent= "Отсутствует подключение к сети Интернет или доступ к сканированию Wi-fi.\n\n" +
+            "Функционал приложения ограничен.\n\n";
+
 
     public ConnectionManager(ConnectivityManager connectivityManager, WifiManager wifiManager){
         this.connectivityManager=connectivityManager;
         this.wifiManager=wifiManager;
+
+        // получение метода для проверки мобильного соединения
+        try {
+            Class cmClass = Class.forName(connectivityManager.getClass().getName());
+            mobileDataCheckMethod = cmClass.getDeclaredMethod("getMobileDataEnabled");
+            mobileDataCheckMethod.setAccessible(true);
+        } catch (Exception e) {
+            Log.e("ConnectionManager", e.getMessage());
+        }
     }
 
     public boolean checkWifiEnabled() {
@@ -33,7 +49,18 @@ public class ConnectionManager {
         }
         netInfo = connectivityManager.getActiveNetworkInfo();
 
-        return (netInfo != null && netInfo.isConnected() && wifiManager.isWifiEnabled());
+        // проверка включения мобильной передачи данных
+        boolean mobileDataEnabled=false;
+        if (mobileDataCheckMethod!=null) {
+            try {
+                mobileDataEnabled= (Boolean) mobileDataCheckMethod.invoke(connectivityManager);
+            } catch (Exception e) {
+                Log.e("ConnectionManager", e.getMessage());
+            }
+        }
+
+        // интерент есть и есть одно из видов соединения
+        return  (netInfo != null && netInfo.isConnected() && (wifiManager.isWifiEnabled() || mobileDataEnabled));
     }
     public void showOfferSetting(Context context) {
         // проверить, показывается ли уже
@@ -51,7 +78,7 @@ public class ConnectionManager {
         check.setText("Не показывать следующие 10 минут");
         dialog.setView(check);
 
-        dialog.setMessage("Отсутствует подключение к сети Интернет или доступ Wi-fi.\n\nФункционал приложения недоступен");
+        dialog.setMessage(messageContent);
         dialog.setNeutralButton("Продолжить", (dialog12, which) -> {
             showNow=false;
             if (check.isChecked()){
