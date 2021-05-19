@@ -76,12 +76,7 @@ public class LocationDetectionFragment extends Fragment {
         // прослушываем изменение пола, вызываем перерисовку
         viewModel.getRequestToChangeFloor().observe(getViewLifecycleOwner(), this::drawCurrentFloor);
         // прослышиваем запрос на изменение экрана с показом местоположения
-        viewModel.getRequestToChangeFloorByMapPoint().observe(getViewLifecycleOwner(), mapPoint -> {
-            // меняем номер во всей вьюмодели и вчастности на табло со стрелками
-            viewModel.getFloorNumber().set(mapPoint.getFloorIdInt());
-
-            showCurrentLocation(mapPoint);
-        });
+        viewModel.getRequestToChangeFloorByMapPoint().observe(getViewLifecycleOwner(), this::showCurrentLocation);
         // прослушываем запрос на обновление местоположения для строки автодополнения и ...
         // в меню маршрутизации при условии его скрытия в данный момент
         viewModel.getRequestToUpdateCurrentLocationOnAutoComplete().observe(getViewLifecycleOwner(), mapPoint -> {
@@ -131,6 +126,7 @@ public class LocationDetectionFragment extends Fragment {
         hideKeyboard(requireActivity());
 
         viewModel.getFloorNumber().set(mapPoint.getFloorIdInt());
+
         drawCurrentLocation(mapPoint);
         Log.i("LocationDetectionFrg", "showCurrentLocation");
 

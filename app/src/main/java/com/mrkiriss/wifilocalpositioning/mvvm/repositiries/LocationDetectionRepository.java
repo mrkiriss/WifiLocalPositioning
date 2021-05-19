@@ -177,7 +177,10 @@ public class LocationDetectionRepository implements Serializable {
                 if (mapPoint.getRoomName().equals(name) && (mapPoint.isRoom() || settingsManager.isModerator())){
                     // получает базовый этаж и вставялет его в объект точки, чтобы получить внутри фрагмента и прорисовать этаж
                     MapPoint result = mapPoint.copy();
-                    if (result.getFloorWithPointer()==null) result.setFloorWithPointer(mapImageManager.getBasicFloor(Floor.convertFloorIdToEnum(mapPoint.getFloorIdInt())));
+                    // изменяем номер этажа для успешного определения необходимого объекта Floor с помощью defineNecessaryFloor()
+                    currentFloorIdInt=result.getFloorIdInt();
+                    // определяем этаж и вставляем его в обхект для отправки
+                    result.setFloorWithPointer(defineNecessaryFloor());
 
                     // прорисовываем
                     requestToChangeFloorByMapPoint.setValue(result);
