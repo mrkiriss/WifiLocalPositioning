@@ -90,7 +90,7 @@ public class LocationDetectionRepository implements Serializable {
 
         wifiScanner.startDefiningScan(WifiScanner.TYPE_DEFINITION);
 
-        requestListOfLocationPointsInfo();
+        requestListOfLocationPointsInfo(5);
     }
 
     // запрашивает вызов диалога о необходимости включения wifi
@@ -309,12 +309,18 @@ public class LocationDetectionRepository implements Serializable {
         });
     }
 
-    public void requestListOfLocationPointsInfo(){
+    public void requestListOfLocationPointsInfo(int remainingNumberOfScanning){
         retrofit.getListOfAllMapPoints().enqueue(new Callback<ListOfAllMapPoints>() {
             @Override
             public void onResponse(Call<ListOfAllMapPoints> call, Response<ListOfAllMapPoints> response) {
                 if (response.body()==null) {
                     Log.i("LocationDetectionRep", "server response: is null");
+
+                    // повторный запрос на точки
+                    if (remainingNumberOfScanning>0){
+                        requestListOfLocationPointsInfo(remainingNumberOfScanning-1);
+                    }
+
                     return;
                 }
                 Log.i("LocationDetectionRep", "server response about allInfo: "+response.body().toString());
