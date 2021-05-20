@@ -82,8 +82,10 @@ public class LocationDetectionFragment extends Fragment {
         viewModel.getRequestToUpdateCurrentLocationOnAutoComplete().observe(getViewLifecycleOwner(), mapPoint -> {
             // обновляем в адаптере для новой строки в поиске
             autoCompleteAdapter.setCurrentLocation(mapPoint);
-            // обновляем маршрутизацию
-            if (!viewModel.getShowRoute().get()) viewModel.getDepartureInput().set(mapPoint.getRoomName());
+        });
+        // прослушиваем обновление строки точки старта в меню построения маршрута
+        viewModel.getRequestToChangeDepartureInput().observe(getViewLifecycleOwner(), departureInput->{
+            if (!viewModel.getShowRoute().get())viewModel.getDepartureInput().set(departureInput);
         });
         // прослушиваем увеломления через Toast
         viewModel.getToastContent().observe(getViewLifecycleOwner(), this::showToastContent);

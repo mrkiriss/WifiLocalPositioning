@@ -75,7 +75,7 @@ public class ScanningAbilitiesManager {
 
         // только 4 на 2 минуты, без возможности изменить
         if (Build.VERSION.SDK_INT==Build.VERSION_CODES.P){
-            showNotificationOfNotPermanentRestrictions(context);
+            showNotificationOfPermanentRestrictions(context);
         }else if (Build.VERSION.SDK_INT>Build.VERSION_CODES.P){ // только 4 на 2 минуты, изменить через режим разработчика возможно
             showNotificationOfNotPermanentRestrictions(context);
         }

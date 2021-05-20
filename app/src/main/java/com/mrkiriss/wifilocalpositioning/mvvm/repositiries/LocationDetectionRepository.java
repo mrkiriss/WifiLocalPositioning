@@ -56,6 +56,7 @@ public class LocationDetectionRepository implements Serializable {
     private final MutableLiveData<String> requestToHideKeyboard;
     private final MutableLiveData<Boolean> requestToUpdateProgressStatusBuildingRoute;
     private final MutableLiveData<MapPoint> requestToUpdateCurrentLocationOnAutoComplete;
+    private final MutableLiveData<String> requestToChangeDepartureInput;
 
 
     private List<LocationPointInfo> listOfSearchableLocations;
@@ -83,6 +84,7 @@ public class LocationDetectionRepository implements Serializable {
         requestToHideKeyboard=new MutableLiveData<>();
         requestToUpdateProgressStatusBuildingRoute=new MutableLiveData<>();
         requestToUpdateCurrentLocationOnAutoComplete=new MutableLiveData<>();
+        requestToChangeDepartureInput=new MutableLiveData<>();
 
         wifiEnabledState=wifiScanner.getWifiEnabledState();
 
@@ -181,6 +183,8 @@ public class LocationDetectionRepository implements Serializable {
                     currentFloorIdInt=result.getFloorIdInt();
                     // определяем этаж и вставляем его в обхект для отправки
                     result.setFloorWithPointer(defineNecessaryFloor());
+                    // изменяем строку ввода начала маршрута в меню построения маршрута
+                    requestToChangeDepartureInput.setValue(result.getRoomName());
 
                     // прорисовываем
                     requestToChangeFloorByMapPoint.setValue(result);
@@ -241,9 +245,12 @@ public class LocationDetectionRepository implements Serializable {
                             resultOfDefinition.toStringAllObject());
 
                     // уведомление о имени через тост
+                    // + обновление текущего местоположения в автодополняющемся поиске
+                    // + обновление строки ввода начала маршруту в меню построения маршрута
                     if (resultOfDefinition.isRoom() || settingsManager.isModerator()) {
                         toastContent.setValue("Местоположение: " + resultOfDefinition.getRoomName());
                         requestToUpdateCurrentLocationOnAutoComplete.setValue(resultOfDefinition);
+                        requestToChangeDepartureInput.setValue(resultOfDefinition.getRoomName());
                     }
                     // требует изменение картинки этажа в соответсвии со всеми параметрами
                     changeFloor();

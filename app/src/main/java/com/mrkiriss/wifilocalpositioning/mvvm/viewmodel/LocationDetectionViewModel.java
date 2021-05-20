@@ -40,6 +40,7 @@ public class LocationDetectionViewModel {
     private final LiveData<Boolean> requestToUpdateProgressStatusBuildingRoute;
     private final LiveData<Integer> requestToUpdateAccessLevel;
     private final LiveData<MapPoint> requestToUpdateCurrentLocationOnAutoComplete;
+    private final LiveData<String> requestToChangeDepartureInput;
 
     private final MutableLiveData<String> requestToRefreshFloor;
     private final MutableLiveData<String> toastContent;
@@ -66,6 +67,7 @@ public class LocationDetectionViewModel {
         requestToUpdateProgressStatusBuildingRoute=repository.getRequestToUpdateProgressStatusBuildingRoute();
         requestToUpdateAccessLevel=repository.getRequestToUpdateAccessLevel();
         requestToUpdateCurrentLocationOnAutoComplete=repository.getRequestToUpdateCurrentLocationOnAutoComplete();
+        requestToChangeDepartureInput=repository.getRequestToChangeDepartureInput();
 
         floorNumber = new ObservableInt();
         findInput = new ObservableField<>("");
@@ -82,8 +84,8 @@ public class LocationDetectionViewModel {
         showRoute.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
             @Override
             public void onPropertyChanged(Observable sender, int propertyId) {
-                if (requestToChangeFloorByMapPoint.getValue()!=null)
-                    departureInput.set(Objects.requireNonNull(requestToChangeFloorByMapPoint.getValue()).getRoomName());
+                /*if (requestToChangeFloorByMapPoint.getValue()!=null)
+                    departureInput.set(Objects.requireNonNull(requestToChangeFloorByMapPoint.getValue()).getRoomName());*/
 
                 repository.clearRouteFloors();
                 repository.setShowRoute(showRoute.get());
