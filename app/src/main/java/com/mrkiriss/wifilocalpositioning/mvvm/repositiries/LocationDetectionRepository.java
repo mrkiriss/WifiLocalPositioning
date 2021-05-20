@@ -57,6 +57,7 @@ public class LocationDetectionRepository implements Serializable {
     private final MutableLiveData<Boolean> requestToUpdateProgressStatusBuildingRoute;
     private final MutableLiveData<MapPoint> requestToUpdateCurrentLocationOnAutoComplete;
     private final MutableLiveData<String> requestToChangeDepartureInput;
+    private final MutableLiveData<String> requestToChangeDestinationInput;
 
 
     private List<LocationPointInfo> listOfSearchableLocations;
@@ -85,6 +86,7 @@ public class LocationDetectionRepository implements Serializable {
         requestToUpdateProgressStatusBuildingRoute=new MutableLiveData<>();
         requestToUpdateCurrentLocationOnAutoComplete=new MutableLiveData<>();
         requestToChangeDepartureInput=new MutableLiveData<>();
+        requestToChangeDestinationInput=new MutableLiveData<>();
 
         wifiEnabledState=wifiScanner.getWifiEnabledState();
 
@@ -183,8 +185,8 @@ public class LocationDetectionRepository implements Serializable {
                     currentFloorIdInt=result.getFloorIdInt();
                     // определяем этаж и вставляем его в обхект для отправки
                     result.setFloorWithPointer(defineNecessaryFloor());
-                    // изменяем строку ввода начала маршрута в меню построения маршрута
-                    requestToChangeDepartureInput.setValue(result.getRoomName());
+                    // изменяем строку ввода конца маршрута в меню построения маршрута
+                    requestToChangeDestinationInput.setValue(result.getRoomName());
 
                     // прорисовываем
                     requestToChangeFloorByMapPoint.setValue(result);

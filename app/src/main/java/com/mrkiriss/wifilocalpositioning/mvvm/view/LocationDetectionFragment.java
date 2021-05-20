@@ -87,6 +87,10 @@ public class LocationDetectionFragment extends Fragment {
         viewModel.getRequestToChangeDepartureInput().observe(getViewLifecycleOwner(), departureInput->{
             if (!viewModel.getShowRoute().get())viewModel.getDepartureInput().set(departureInput);
         });
+        // прослушиваем обновление строки точки конца в меню построения маршрута
+        viewModel.getRequestToChangeDestinationInput().observe(getViewLifecycleOwner(), destinationInput->{
+            if (!viewModel.getShowRoute().get())viewModel.getDestinationInput().set(destinationInput);
+        });
         // прослушиваем увеломления через Toast
         viewModel.getToastContent().observe(getViewLifecycleOwner(), this::showToastContent);
         // прослушываем запрос на обновление текущего этажа

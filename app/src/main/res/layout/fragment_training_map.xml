@@ -155,13 +155,13 @@
                 android:id="@+id/scanInfoRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="7" />
+                android:layout_weight="5" />
 
             <LinearLayout
                 android:id="@+id/numberOfScanningContainer"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:orientation="horizontal">
 
                 <TextView
@@ -185,7 +185,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="2"
+                android:layout_weight="3"
                 android:gravity="center"
                 android:orientation="horizontal">
 
