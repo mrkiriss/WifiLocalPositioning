@@ -19,6 +19,7 @@ import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.AccessPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CalibrationLocationPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.DefinedLocationPoint;
+import com.mrkiriss.wifilocalpositioning.data.sources.db.MapPointsDao;
 import com.mrkiriss.wifilocalpositioning.data.sources.settings.SettingsManager;
 import com.mrkiriss.wifilocalpositioning.utils.ConnectionManager;
 
@@ -44,6 +45,7 @@ public class LocationDetectionRepository implements Serializable {
     private final MapImageManager mapImageManager;
     private final ConnectionManager connectionManager;
     private final SettingsManager settingsManager;
+    private final MapPointsDao mapPointsDao;
 
     private final LiveData<CompleteKitsContainer> completeKitsOfScansResult;
     private final LiveData<Integer> requestToUpdateAccessLevel;
@@ -67,12 +69,14 @@ public class LocationDetectionRepository implements Serializable {
     private int currentFloorIdInt; // VM изменяет, текущий номер этажа
 
     public LocationDetectionRepository(LocationDataApi retrofit, WifiScanner wifiScanner,
-                                       ConnectionManager connectionManager, MapImageManager mapImageManager, SettingsManager settingsManager){
+                                       ConnectionManager connectionManager, MapImageManager mapImageManager,
+                                       SettingsManager settingsManager, MapPointsDao mapPointsDao){
         this.retrofit=retrofit;
         this.wifiScanner=wifiScanner;
         this.mapImageManager = mapImageManager;
         this.connectionManager=connectionManager;
         this.settingsManager=settingsManager;
+        this.mapPointsDao=mapPointsDao;
 
         completeKitsOfScansResult=wifiScanner.getCompleteScanResults();
         requestToRefreshFloor=mapImageManager.getRequestToRefreshFloor();
@@ -92,7 +96,7 @@ public class LocationDetectionRepository implements Serializable {
 
         wifiScanner.startDefiningScan(WifiScanner.TYPE_DEFINITION);
 
-        requestListOfLocationPointsInfo(5);
+        requestListOfLocationPointsInfo();
     }
 
     // запрашивает вызов диалога о необходимости включения wifi
@@ -311,33 +315,67 @@ public class LocationDetectionRepository implements Serializable {
         });
     }
 
-    public void requestListOfLocationPointsInfo(int remainingNumberOfScanning){
+    public void requestListOfLocationPointsInfo(){
         retrofit.getListOfAllMapPoints().enqueue(new Callback<ListOfAllMapPoints>() {
             @Override
             public void onResponse(Call<ListOfAllMapPoints> call, Response<ListOfAllMapPoints> response) {
                 if (response.body()==null) {
-                    Log.i("LocationDetectionRep", "server response: is null");
+                    Log.i("LocationDetectionRep", "server response about listOfLPIs: is null");
 
-                    // повторный запрос на точки
-                    if (remainingNumberOfScanning>0){
-                        requestListOfLocationPointsInfo(remainingNumberOfScanning-1);
-                    }
+                    // повторный запрос на точки из локальной бд
+                    getListOfLocationPointsInfoFromDB();
 
                     return;
                 }
                 Log.i("LocationDetectionRep", "server response about allInfo: "+response.body().toString());
-                Map<FloorId, List<MapPoint>> converted = response.body().convertToMap();
-                mapImageManager.setDataOnPointsOnAllFloors(converted);
-                // отправляем данны во все поисковые строки с автодополнением
-                requestToAddAllPointsDataInAutoFinders.setValue(converted);
-                Log.i("LocationDetectionRep", "after convert List of allInfo: "+converted.toString());
-
+                // обрабатываем
+                processListOfLPI(response.body());
+                // актуализируем в локальной бд
+                saveActualListOfLocationPointsInfo(response.body());
             }
 
             @Override
             public void onFailure(Call<ListOfAllMapPoints> call, Throwable t) {
+                // повторный запрос на точки из локальной бд
+                getListOfLocationPointsInfoFromDB();
+
                 Log.i("LocationDetectionRep", "server error: "+ Arrays.toString(t.getStackTrace()));
             }
         });
+    }
+    // получает данные из бд и запускает их обработки
+    private void getListOfLocationPointsInfoFromDB(){
+        Runnable task = () -> {
+            List<LocationPointInfo> currentDbData = mapPointsDao.findAll();
+            ListOfAllMapPoints container = new ListOfAllMapPoints();
+            container.setLocationPointInfos(currentDbData);
+
+            Log.i("LocationDetectionRep", "mapPointsFromDB: "+ currentDbData.toString());
+
+            processListOfLPI(container);
+        };
+        new Thread(task).start();
+    }
+    // сохраняет данные, пришедшие с сервера в бд, актуилизируя их
+    private void saveActualListOfLocationPointsInfo(ListOfAllMapPoints data){
+        if (data==null || data.getLocationPointInfos()==null) return;
+
+        Runnable task = () -> {
+            // удаляем старые
+            mapPointsDao.deleteAll();
+            // сохраняем новые
+            Log.i("LocationDetectionRep", "save mapPoints to BD: "+ data.toString());
+            mapPointsDao.saveAll(data.getLocationPointInfos());
+        };
+        new Thread(task).start();
+    }
+    // обрабатывает данные, полученные от сервера или с лок. бд - конвертирует и отправляет в менеджер изображений и строку ввода аудиторий
+    private void processListOfLPI(ListOfAllMapPoints data){
+        if (data==null || data.getLocationPointInfos()==null) return;
+
+        Map<FloorId, List<MapPoint>> converted = data.convertToMap();
+        mapImageManager.setDataOnPointsOnAllFloors(converted);
+        // отправляем данны во все поисковые строки с автодополнением
+        requestToAddAllPointsDataInAutoFinders.postValue(converted);
     }
 }

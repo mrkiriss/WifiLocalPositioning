@@ -6,7 +6,6 @@ import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,11 +13,14 @@ import lombok.Data;
 
 @Data
 public class ListOfAllMapPoints {
+
     private List<LocationPointInfo> locationPointInfos;
 
     public Map<FloorId, List<MapPoint>> convertToMap(){
         HashMap<FloorId, List<MapPoint>> result = new HashMap<>();
-        FloorId floorId = null;
+        FloorId floorId;
+
+        if (locationPointInfos==null) return result;
 
         for (LocationPointInfo info: locationPointInfos){
             floorId = Floor.convertFloorIdToEnum(info.getFloorId());

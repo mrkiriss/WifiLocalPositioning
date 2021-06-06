@@ -1,9 +1,22 @@
 package com.mrkiriss.wifilocalpositioning.data.models.server;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
+import org.jetbrains.annotations.NotNull;
+
 import lombok.Data;
 
 @Data
+@Entity
 public class LocationPointInfo {
+
+    @PrimaryKey
+    @NonNull
+    private Long id;
+
     private String roomName;
 
     private int floorId;
@@ -11,6 +24,7 @@ public class LocationPointInfo {
     private int y;
     private String isRoom; // иначе коридор (для создания маршрута)
 
+    @Ignore
     public LocationPointInfo(int x, int y, String roomName, int floorId, String isRoom){
         this.x=x;
         this.y=y;

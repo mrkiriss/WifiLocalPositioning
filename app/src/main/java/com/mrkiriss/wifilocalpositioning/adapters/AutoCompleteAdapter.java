@@ -119,7 +119,7 @@ public class AutoCompleteAdapter
         for (FloorId floorId:mapPointsData.keySet()){
             for (MapPoint mapPoint:mapPointsData.get(floorId)){
                 // mapPoint.getRoomName().matches(constraint+".*?") for begin
-                if (!mapPoint.toString().equals(currentLocation.toString()) &&
+                if ((currentLocation==null || !mapPoint.toString().equals(currentLocation.toString())) &&
                         mapPoint.getRoomName().contains(constraint) && (mapPoint.isRoom() || accessLevel>0)){
                     result.add(mapPoint);
                 }
