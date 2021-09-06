@@ -21,7 +21,7 @@
         <activity
             android:windowSoftInputMode="stateHidden|adjustResize"
             android:screenOrientation="portrait"
-            android:name=".mvvm.view.MainActivity"
+            android:name=".view.MainActivity"
             android:icon="@drawable/ic_location"
             android:label="@string/title_activity_main"
             android:theme="@style/Theme.WifiLocalPositioning.NoActionBar">

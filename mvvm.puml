@@ -51,7 +51,7 @@ class com.mrkiriss.wifilocalpositioning.mvvm.view.SettingsFragment {
 - void showToastContent(String)
 - void setContentToChangeBuffer(String)
 }
-class com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.TrainingMapViewModel {
+class TrainingMapViewModel {
 - TrainingMapRepository repository
 - ObservableInt selectedMod
 - ObservableBoolean showMapPoints
@@ -163,7 +163,7 @@ class com.mrkiriss.wifilocalpositioning.mvvm.repositiries.TrainingScanRepository
 - void postFromTrainingWithAPs()
 - void postFromDefinitionLocation()
 }
-class com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.LocationDetectionViewModel {
+class LocationDetectionViewModel {
 - LocationDetectionRepository repository
 - LiveData<CompleteKitsContainer> completeKitsOfScansResult
 - LiveData<MapPoint> requestToChangeFloorByMapPoint
@@ -233,7 +233,7 @@ class com.mrkiriss.wifilocalpositioning.mvvm.view.TrainingMapFragment {
 - void showToast(String)
 - void moveCamera(int[])
 }
-class com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.TrainingScanViewModel {
+class TrainingScanViewModel {
 - TrainingScanRepository trainingScanRepository
 - ObservableInt remainingNumberOfScanning
 - ObservableField<String> inputNumberOfScanKits
@@ -255,7 +255,7 @@ class com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.TrainingScanViewModel {
 + void changeScanningStatus(boolean)
 + void resetElements()
 }
-class com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.SettingsViewModel {
+class SettingsViewModel {
 - SettingsRepository repository
 - ObservableField<String> scanInterval
 - ObservableInt numberOfScanning
@@ -280,7 +280,7 @@ class com.mrkiriss.wifilocalpositioning.mvvm.repositiries.MainRepository {
 + void setCurrentTypeOfRequestSource(String)
 + void checkAndroidVersionForShowingScanningAbilities(Context)
 }
-class com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.MainViewModel {
+class MainViewModel {
 - MainRepository repository
 - LiveData<String> requestToOpenInstructionObYouTube
 + LiveData<String> getRequestToOpenInstructionObYouTube()
@@ -307,7 +307,7 @@ class com.mrkiriss.wifilocalpositioning.mvvm.repositiries.SettingsRepository {
 + void acceptSettingsChange(int,int)
 - boolean isValidSettingsData(int,int)
 }
-class com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.ItemMapPointViewModel {
+class ItemMapPointViewModel {
 - MapPoint mapPoint
 - MutableLiveData<MapPoint> requestToDelete
 + void onDeleteClick()
@@ -317,14 +317,14 @@ class com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.ItemMapPointViewModel {
 java.io.Serializable <|.. com.mrkiriss.wifilocalpositioning.mvvm.repositiries.TrainingMapRepository
 androidx.fragment.app.Fragment <|-- com.mrkiriss.wifilocalpositioning.mvvm.view.LocationDetectionFragment
 androidx.fragment.app.Fragment <|-- com.mrkiriss.wifilocalpositioning.mvvm.view.SettingsFragment
-androidx.lifecycle.ViewModel <|-- com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.TrainingMapViewModel
+androidx.lifecycle.ViewModel <|-- TrainingMapViewModel
 androidx.fragment.app.Fragment <|-- com.mrkiriss.wifilocalpositioning.mvvm.view.TrainingScanFragment
 java.io.Serializable <|.. com.mrkiriss.wifilocalpositioning.mvvm.repositiries.LocationDetectionRepository
-androidx.lifecycle.ViewModel <|-- com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.LocationDetectionViewModel
+androidx.lifecycle.ViewModel <|-- LocationDetectionViewModel
 androidx.appcompat.app.AppCompatActivity <|-- com.mrkiriss.wifilocalpositioning.mvvm.view.MainActivity
 androidx.fragment.app.Fragment <|-- com.mrkiriss.wifilocalpositioning.mvvm.view.TrainingMapFragment
-androidx.lifecycle.ViewModel <|-- com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.TrainingScanViewModel
-androidx.lifecycle.ViewModel <|-- com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.SettingsViewModel
-androidx.lifecycle.ViewModel <|-- com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.MainViewModel
-androidx.lifecycle.ViewModel <|-- com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.ItemMapPointViewModel
+androidx.lifecycle.ViewModel <|-- TrainingScanViewModel
+androidx.lifecycle.ViewModel <|-- SettingsViewModel
+androidx.lifecycle.ViewModel <|-- MainViewModel
+androidx.lifecycle.ViewModel <|-- ItemMapPointViewModel
 @enduml

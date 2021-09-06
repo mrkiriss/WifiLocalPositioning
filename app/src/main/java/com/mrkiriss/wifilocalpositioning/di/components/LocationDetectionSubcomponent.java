@@ -2,7 +2,7 @@ package com.mrkiriss.wifilocalpositioning.di.components;
 
 import com.mrkiriss.wifilocalpositioning.di.modules.detection.DefinitionRepositoryAndVMModule;
 import com.mrkiriss.wifilocalpositioning.di.modules.detection.DefinitionScope;
-import com.mrkiriss.wifilocalpositioning.mvvm.view.LocationDetectionFragment;
+import com.mrkiriss.wifilocalpositioning.view.LocationDetectionFragment;
 
 import dagger.Subcomponent;
 

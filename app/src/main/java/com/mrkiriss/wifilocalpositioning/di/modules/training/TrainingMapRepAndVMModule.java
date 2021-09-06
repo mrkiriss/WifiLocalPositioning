@@ -3,8 +3,8 @@ package com.mrkiriss.wifilocalpositioning.di.modules.training;
 import com.mrkiriss.wifilocalpositioning.data.sources.api.LocationDataApi;
 import com.mrkiriss.wifilocalpositioning.data.sources.MapImageManager;
 import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
-import com.mrkiriss.wifilocalpositioning.mvvm.repositiries.TrainingMapRepository;
-import com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.TrainingMapViewModel;
+import com.mrkiriss.wifilocalpositioning.data.repositiries.TrainingMapRepository;
+import com.mrkiriss.wifilocalpositioning.viewmodel.TrainingMapViewModel;
 
 import dagger.Module;
 import dagger.Provides;

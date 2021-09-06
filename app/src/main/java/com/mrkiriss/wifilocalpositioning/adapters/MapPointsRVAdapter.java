@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
 import com.mrkiriss.wifilocalpositioning.databinding.ItemMapPointBinding;
-import com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.ItemMapPointViewModel;
+import com.mrkiriss.wifilocalpositioning.viewmodel.ItemMapPointViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

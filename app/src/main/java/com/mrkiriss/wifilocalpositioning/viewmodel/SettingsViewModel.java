@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.mvvm.viewmodel;
+package com.mrkiriss.wifilocalpositioning.viewmodel;
 
 import androidx.databinding.ObservableField;
 import androidx.databinding.ObservableInt;
@@ -6,12 +6,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.mrkiriss.wifilocalpositioning.di.App;
-import com.mrkiriss.wifilocalpositioning.mvvm.repositiries.SettingsRepository;
+import com.mrkiriss.wifilocalpositioning.data.repositiries.SettingsRepository;
 
 import java.util.Objects;
-
-import javax.inject.Inject;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

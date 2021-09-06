@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.mvvm.view;
+package com.mrkiriss.wifilocalpositioning.view;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
@@ -23,7 +22,7 @@ import com.mrkiriss.wifilocalpositioning.adapters.ScanInfoRVAdapter;
 import com.mrkiriss.wifilocalpositioning.databinding.FragmentTrainingMapBinding;
 import com.mrkiriss.wifilocalpositioning.adapters.MapPointsRVAdapter;
 import com.mrkiriss.wifilocalpositioning.di.App;
-import com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.TrainingMapViewModel;
+import com.mrkiriss.wifilocalpositioning.viewmodel.TrainingMapViewModel;
 
 import javax.inject.Inject;
 

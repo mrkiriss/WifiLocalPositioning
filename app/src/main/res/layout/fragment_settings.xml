@@ -3,7 +3,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.SettingsViewModel" />
+            type="com.mrkiriss.wifilocalpositioning.viewmodel.SettingsViewModel" />
     </data>
 
     <LinearLayout

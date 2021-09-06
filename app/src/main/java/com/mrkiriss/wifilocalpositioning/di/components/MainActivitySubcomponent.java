@@ -2,9 +2,7 @@ package com.mrkiriss.wifilocalpositioning.di.components;
 
 import com.mrkiriss.wifilocalpositioning.di.modules.main.MainRepositoryAndViewModelModule;
 import com.mrkiriss.wifilocalpositioning.di.modules.main.MainScope;
-import com.mrkiriss.wifilocalpositioning.mvvm.view.MainActivity;
-
-import javax.inject.Singleton;
+import com.mrkiriss.wifilocalpositioning.view.MainActivity;
 
 import dagger.Subcomponent;
 

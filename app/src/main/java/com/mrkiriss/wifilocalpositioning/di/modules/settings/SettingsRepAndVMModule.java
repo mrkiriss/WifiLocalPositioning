@@ -2,8 +2,8 @@ package com.mrkiriss.wifilocalpositioning.di.modules.settings;
 
 import com.mrkiriss.wifilocalpositioning.data.sources.settings.SettingsManager;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.SettingsDao;
-import com.mrkiriss.wifilocalpositioning.mvvm.repositiries.SettingsRepository;
-import com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.SettingsViewModel;
+import com.mrkiriss.wifilocalpositioning.data.repositiries.SettingsRepository;
+import com.mrkiriss.wifilocalpositioning.viewmodel.SettingsViewModel;
 
 import dagger.Module;
 import dagger.Provides;

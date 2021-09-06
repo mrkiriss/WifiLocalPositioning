@@ -6,13 +6,13 @@
         <import type="android.view.View"/>
         <variable
             name="viewModel"
-            type="com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.LocationDetectionViewModel" />
+            type="com.mrkiriss.wifilocalpositioning.viewmodel.LocationDetectionViewModel" />
     </data>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".mvvm.view.LocationDetectionFragment"
+        tools:context=".view.LocationDetectionFragment"
         android:clipChildren="false">
 
         <com.ortiz.touchview.TouchImageView

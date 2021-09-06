@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.mvvm.repositiries;
+package com.mrkiriss.wifilocalpositioning.data.repositiries;
 
 import android.content.Context;
 import android.net.wifi.ScanResult;

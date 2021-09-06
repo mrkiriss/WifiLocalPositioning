@@ -2,8 +2,8 @@ package com.mrkiriss.wifilocalpositioning.di.modules.training;
 
 import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 import com.mrkiriss.wifilocalpositioning.data.sources.api.LocationDataApi;
-import com.mrkiriss.wifilocalpositioning.mvvm.repositiries.TrainingScanRepository;
-import com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.TrainingScanViewModel;
+import com.mrkiriss.wifilocalpositioning.data.repositiries.TrainingScanRepository;
+import com.mrkiriss.wifilocalpositioning.viewmodel.TrainingScanViewModel;
 
 import dagger.Module;
 import dagger.Provides;

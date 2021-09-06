@@ -1,12 +1,11 @@
-package com.mrkiriss.wifilocalpositioning.mvvm.viewmodel;
+package com.mrkiriss.wifilocalpositioning.viewmodel;
 
 import android.content.Context;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
-import com.mrkiriss.wifilocalpositioning.mvvm.repositiries.MainRepository;
+import com.mrkiriss.wifilocalpositioning.data.repositiries.MainRepository;
 
 public class MainViewModel extends ViewModel {
 

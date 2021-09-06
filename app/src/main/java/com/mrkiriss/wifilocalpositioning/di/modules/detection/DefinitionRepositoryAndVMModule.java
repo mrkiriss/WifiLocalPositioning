@@ -7,8 +7,8 @@ import com.mrkiriss.wifilocalpositioning.data.sources.MapImageManager;
 import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.MapPointsDao;
 import com.mrkiriss.wifilocalpositioning.data.sources.settings.SettingsManager;
-import com.mrkiriss.wifilocalpositioning.mvvm.repositiries.LocationDetectionRepository;
-import com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.LocationDetectionViewModel;
+import com.mrkiriss.wifilocalpositioning.data.repositiries.LocationDetectionRepository;
+import com.mrkiriss.wifilocalpositioning.viewmodel.LocationDetectionViewModel;
 import com.mrkiriss.wifilocalpositioning.utils.ConnectionManager;
 
 import dagger.Module;

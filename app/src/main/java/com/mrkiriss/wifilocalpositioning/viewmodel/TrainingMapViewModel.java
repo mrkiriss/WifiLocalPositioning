@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.mvvm.viewmodel;
+package com.mrkiriss.wifilocalpositioning.viewmodel;
 
 import android.util.Log;
 
@@ -12,20 +12,15 @@ import androidx.lifecycle.ViewModel;
 
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.data.models.server.ScanInformation;
-import com.mrkiriss.wifilocalpositioning.di.App;
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
-import com.mrkiriss.wifilocalpositioning.mvvm.repositiries.TrainingMapRepository;
+import com.mrkiriss.wifilocalpositioning.data.repositiries.TrainingMapRepository;
 
-import java.lang.reflect.MalformedParameterizedTypeException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Setter;
 
 @Data
 @EqualsAndHashCode(callSuper=false)

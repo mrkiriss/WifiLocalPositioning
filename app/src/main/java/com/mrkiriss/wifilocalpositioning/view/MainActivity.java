@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.mvvm.view;
+package com.mrkiriss.wifilocalpositioning.view;
 
 import android.Manifest;
 import android.app.Activity;
@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.Menu;
@@ -18,11 +17,9 @@ import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.mrkiriss.wifilocalpositioning.R;
-import com.mrkiriss.wifilocalpositioning.data.sources.settings.SettingsManager;
 import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 import com.mrkiriss.wifilocalpositioning.di.App;
-import com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.MainViewModel;
-import com.mrkiriss.wifilocalpositioning.utils.ScanningAbilitiesManager;
+import com.mrkiriss.wifilocalpositioning.viewmodel.MainViewModel;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -35,9 +32,6 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
-import java.nio.charset.StandardCharsets;
-import java.util.UUID;
 
 import javax.inject.Inject;
 

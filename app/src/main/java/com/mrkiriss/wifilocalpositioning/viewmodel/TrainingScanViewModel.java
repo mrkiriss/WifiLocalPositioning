@@ -1,13 +1,5 @@
-package com.mrkiriss.wifilocalpositioning.mvvm.viewmodel;
+package com.mrkiriss.wifilocalpositioning.viewmodel;
 
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-
-import androidx.databinding.BindingAdapter;
-import androidx.databinding.InverseBindingAdapter;
-import androidx.databinding.InverseBindingListener;
 import androidx.databinding.ObservableBoolean;
 import androidx.databinding.ObservableField;
 import androidx.databinding.ObservableInt;
@@ -16,14 +8,11 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
-import com.mrkiriss.wifilocalpositioning.di.App;
-import com.mrkiriss.wifilocalpositioning.mvvm.repositiries.TrainingScanRepository;
+import com.mrkiriss.wifilocalpositioning.data.repositiries.TrainingScanRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import javax.inject.Inject;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

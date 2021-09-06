@@ -2,8 +2,7 @@ package com.mrkiriss.wifilocalpositioning.di.components;
 
 import com.mrkiriss.wifilocalpositioning.di.modules.settings.SettingsRepAndVMModule;
 import com.mrkiriss.wifilocalpositioning.di.modules.settings.SettingsScope;
-import com.mrkiriss.wifilocalpositioning.mvvm.view.SettingsFragment;
-import com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.SettingsViewModel;
+import com.mrkiriss.wifilocalpositioning.view.SettingsFragment;
 
 import dagger.Subcomponent;
 

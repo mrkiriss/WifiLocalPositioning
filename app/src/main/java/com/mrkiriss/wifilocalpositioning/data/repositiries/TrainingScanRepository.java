@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.mvvm.repositiries;
+package com.mrkiriss.wifilocalpositioning.data.repositiries;
 
 import android.net.wifi.ScanResult;
 import android.util.Log;
@@ -17,7 +17,6 @@ import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.TrainingScanViewModel;
 import lombok.Data;
 import retrofit2.Call;
 import retrofit2.Callback;

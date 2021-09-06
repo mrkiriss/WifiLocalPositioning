@@ -2,11 +2,9 @@ package com.mrkiriss.wifilocalpositioning.di.modules.main;
 
 import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 import com.mrkiriss.wifilocalpositioning.data.sources.settings.SettingsManager;
-import com.mrkiriss.wifilocalpositioning.mvvm.repositiries.MainRepository;
-import com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.MainViewModel;
+import com.mrkiriss.wifilocalpositioning.data.repositiries.MainRepository;
+import com.mrkiriss.wifilocalpositioning.viewmodel.MainViewModel;
 import com.mrkiriss.wifilocalpositioning.utils.ScanningAbilitiesManager;
-
-import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;

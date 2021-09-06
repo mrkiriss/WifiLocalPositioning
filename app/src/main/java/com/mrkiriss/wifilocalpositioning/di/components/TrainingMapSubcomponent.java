@@ -2,7 +2,7 @@ package com.mrkiriss.wifilocalpositioning.di.components;
 
 import com.mrkiriss.wifilocalpositioning.di.modules.training.TrainingMapRepAndVMModule;
 import com.mrkiriss.wifilocalpositioning.di.modules.training.TrainingScope;
-import com.mrkiriss.wifilocalpositioning.mvvm.view.TrainingMapFragment;
+import com.mrkiriss.wifilocalpositioning.view.TrainingMapFragment;
 
 import dagger.Subcomponent;
 

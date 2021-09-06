@@ -6,7 +6,7 @@
         <import type="android.view.View"/>
         <variable
             name="trainingVM"
-            type="com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.TrainingScanViewModel" />
+            type="com.mrkiriss.wifilocalpositioning.viewmodel.TrainingScanViewModel" />
     </data>
 
     <LinearLayout
@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:weightSum="13"
-        tools:context=".mvvm.view.TrainingScanFragment">
+        tools:context=".view.TrainingScanFragment">
 
         <LinearLayout
             android:id="@+id/scanning"

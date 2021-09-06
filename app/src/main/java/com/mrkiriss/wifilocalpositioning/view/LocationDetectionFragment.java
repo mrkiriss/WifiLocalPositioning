@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.mvvm.view;
+package com.mrkiriss.wifilocalpositioning.view;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.adapters.AutoCompleteAdapter;
@@ -19,7 +18,7 @@ import com.mrkiriss.wifilocalpositioning.databinding.FragmentLocationDetectionBi
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
 import com.mrkiriss.wifilocalpositioning.di.App;
-import com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.LocationDetectionViewModel;
+import com.mrkiriss.wifilocalpositioning.viewmodel.LocationDetectionViewModel;
 import com.ortiz.touchview.TouchImageView;
 
 import javax.inject.Inject;

@@ -1,10 +1,9 @@
-package com.mrkiriss.wifilocalpositioning.mvvm.view;
+package com.mrkiriss.wifilocalpositioning.view;
 
 import android.os.Bundle;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
@@ -16,7 +15,7 @@ import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.databinding.FragmentTrainingScanBinding;
 import com.mrkiriss.wifilocalpositioning.adapters.ScanResultsRVAdapter;
 import com.mrkiriss.wifilocalpositioning.di.App;
-import com.mrkiriss.wifilocalpositioning.mvvm.viewmodel.TrainingScanViewModel;
+import com.mrkiriss.wifilocalpositioning.viewmodel.TrainingScanViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
