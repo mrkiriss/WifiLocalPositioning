@@ -10,6 +10,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.mrkiriss.wifilocalpositioning.data.models.map.FloorId;
+import com.mrkiriss.wifilocalpositioning.data.models.search.SearchData;
+import com.mrkiriss.wifilocalpositioning.data.models.search.TypeOfSearchRequester;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
@@ -44,8 +46,8 @@ public class LocationDetectionViewModel {
     private final ObservableField<String> findInput;
     private final ObservableField<String> departureInput;
     private final ObservableField<String> destinationInput;
-    private final ObservableBoolean showRoute;
-    private final ObservableBoolean showFind;
+    //private final ObservableBoolean showRoute;
+    //private final ObservableBoolean showFind;
     private final ObservableBoolean progressOfBuildingRouteStatus;
 
     public LocationDetectionViewModel(LocationDetectionRepository locationDetectionRepository){
@@ -69,24 +71,25 @@ public class LocationDetectionViewModel {
         findInput = new ObservableField<>("");
         departureInput = new ObservableField<>("");
         destinationInput = new ObservableField<>("");
-        showRoute=new ObservableBoolean(false);
-        showFind = new ObservableBoolean(false);
+        //showRoute=new ObservableBoolean(false);
+        //showFind = new ObservableBoolean(false);
         progressOfBuildingRouteStatus=new ObservableBoolean(false);
 
         requestToRefreshFloor=repository.getRequestToRefreshFloor();
 
+        /*
         // обозреваем изменение режима навагиции для установки текущего местоположения  в строку начала
         // + изменяем требования в репозитории, чтобы выбирать изображении для отрисовки местоположения
         showRoute.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
             @Override
             public void onPropertyChanged(Observable sender, int propertyId) {
-                /*if (requestToChangeFloorByMapPoint.getValue()!=null)
-                    departureInput.set(Objects.requireNonNull(requestToChangeFloorByMapPoint.getValue()).getRoomName());*/
+                //(requestToChangeFloorByMapPoint.getValue()!=null)
+                  //  departureInput.set(Objects.requireNonNull(requestToChangeFloorByMapPoint.getValue()).getRoomName());
 
                 repository.clearRouteFloors();
                 repository.setShowRoute(showRoute.get());
             }
-        });
+        });*/
         // изменяет номер этажа в репозитории
         floorNumber.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
             @Override
@@ -100,7 +103,7 @@ public class LocationDetectionViewModel {
     public void startProcessingCompleteKitsOfScansResult(CompleteKitsContainer scanResults){
         repository.startProcessingCompleteKitsOfScansResult(scanResults);
     }
-
+/*
     // show\hide route views
     public void onShowRoute(){
         showRoute.set(true);
@@ -119,7 +122,11 @@ public class LocationDetectionViewModel {
         showFind.set(false);
         requestToRefreshFloor.setValue("Меню поиска скрыто");
     }
-
+*/
+    // зупскает сборку данных SearchData репозиторием и отправку запроса на запуск фрагмента
+    public void startLocationSearchProcess(TypeOfSearchRequester type) {
+        repository.createActuallySearchDataAndRequestToLaunchSearchMode(type);
+    }
     public void arrowInc(){
         if (floorNumber.get()<4){
             floorNumber.set(floorNumber.get()+1);
@@ -147,13 +154,13 @@ public class LocationDetectionViewModel {
         }
         repository.requestRoute(departureInput.get(), destinationInput.get());
     }
-    public void startFindRoom(){
+    /*public void startFindRoom(){
         if (findInput.get().isEmpty()){
             requestToRefreshFloor.setValue("Поле поиска не заполнено!");
             return;
         }
         repository.findRoom(findInput.get());
-    }
+    }*/
 
     // получение информации для фильтрации при поиске
     public void showWifiOffering(Context context){

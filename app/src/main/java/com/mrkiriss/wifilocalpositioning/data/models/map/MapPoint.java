@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class MapPoint {
+public class MapPoint{
     private int x;
     private int y;
     private Floor floorWithPointer;

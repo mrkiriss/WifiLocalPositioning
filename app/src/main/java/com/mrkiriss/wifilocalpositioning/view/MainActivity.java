@@ -17,6 +17,9 @@ import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.mrkiriss.wifilocalpositioning.R;
+import com.mrkiriss.wifilocalpositioning.data.models.search.SearchData;
+import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
+import com.mrkiriss.wifilocalpositioning.data.models.search.TypeOfSearchRequester;
 import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 import com.mrkiriss.wifilocalpositioning.di.App;
 import com.mrkiriss.wifilocalpositioning.viewmodel.MainViewModel;
@@ -35,7 +38,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import javax.inject.Inject;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements INameChoosingNavHost {
 
     @Inject
     protected MainViewModel viewModel;
@@ -228,5 +231,23 @@ public class MainActivity extends AppCompatActivity {
             view = new View(activity);
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    @Override
+    public void navigateToFindFragment(Fragment current, SearchData searchData) {
+        getSupportFragmentManager().beginTransaction()
+                .hide(current)
+                .add(R.id.nav_host_fragment, LocationNameChoosingFragment.newInstance(current, searchData), "LocationFindFragment")
+                .addToBackStack("LocationFindFragment")
+                .commit();
+    }
+
+    @Override
+    public void navigateToDefinitionFragment(Fragment current, Fragment target, TypeOfSearchRequester typeOfRequester, MapPoint selectedLocation) {
+        getSupportFragmentManager().beginTransaction()
+                .remove(current)
+                .show(target)
+                .commit();
+        ((IProcessingSelectedByFindLocation) target).processSelectedByFindLocation(typeOfRequester, selectedLocation);
     }
 }

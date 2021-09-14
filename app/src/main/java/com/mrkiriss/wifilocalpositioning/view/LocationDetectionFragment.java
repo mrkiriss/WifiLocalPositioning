@@ -11,9 +11,11 @@ import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.adapters.AutoCompleteAdapter;
+import com.mrkiriss.wifilocalpositioning.data.models.search.TypeOfSearchRequester;
 import com.mrkiriss.wifilocalpositioning.databinding.FragmentLocationDetectionBindingImpl;
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
@@ -21,9 +23,11 @@ import com.mrkiriss.wifilocalpositioning.di.App;
 import com.mrkiriss.wifilocalpositioning.viewmodel.LocationDetectionViewModel;
 import com.ortiz.touchview.TouchImageView;
 
+import java.io.Serializable;
+
 import javax.inject.Inject;
 
-public class LocationDetectionFragment extends Fragment {
+public class LocationDetectionFragment extends Fragment implements Serializable, IProcessingSelectedByFindLocation {
 
     @Inject
     protected LocationDetectionViewModel viewModel;
@@ -31,7 +35,7 @@ public class LocationDetectionFragment extends Fragment {
 
     private TouchImageView touchImageView;
 
-    private AutoCompleteAdapter autoCompleteAdapter;
+    //private AutoCompleteAdapter autoCompleteAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -48,9 +52,9 @@ public class LocationDetectionFragment extends Fragment {
         binding.setViewModel(viewModel);
 
         createAndShowMapView();
-        createSearchAdapterAndSetSettings();
         initObservers();
         viewModel.startFloorChanging();
+        NavHostFragment.findNavController(this);
 
         return binding.getRoot();
     }
@@ -61,54 +65,47 @@ public class LocationDetectionFragment extends Fragment {
         touchImageView.setMaxZoom(7f);
         touchImageView.setZoom(2f);
     }
-    private void createSearchAdapterAndSetSettings(){
-        autoCompleteAdapter=new AutoCompleteAdapter();
-        binding.autoCompleteTextView.setAdapter(autoCompleteAdapter);
-        binding.autoCompleteTextView2.setAdapter(autoCompleteAdapter);
-        binding.autoCompleteTextView3.setAdapter(autoCompleteAdapter);
-        binding.autoCompleteTextView3.setThreshold(2);
-    }
 
     private void initObservers(){
-        // прослушываем получение результата сканирования, вызываем обработчик данных
+        // прослушиваем получение результата сканирования, вызываем обработчик данных
         viewModel.getCompleteKitsOfScansResult().observe(getViewLifecycleOwner(), scanResults -> viewModel.startProcessingCompleteKitsOfScansResult(scanResults));
-        // прослушываем изменение пола, вызываем перерисовку
+        // прослушиваем изменение пола, вызываем перерисовку
         viewModel.getRequestToChangeFloor().observe(getViewLifecycleOwner(), this::drawCurrentFloor);
         // прослышиваем запрос на изменение экрана с показом местоположения
         viewModel.getRequestToChangeFloorByMapPoint().observe(getViewLifecycleOwner(), this::showCurrentLocation);
         // прослушываем запрос на обновление местоположения для строки автодополнения и ...
             // в меню маршрутизации при условии его скрытия в данный момент
-        viewModel.getRequestToUpdateCurrentLocationOnAutoComplete().observe(getViewLifecycleOwner(), mapPoint -> {
+        /*viewModel.getRequestToUpdateCurrentLocationOnAutoComplete().observe(getViewLifecycleOwner(), mapPoint -> {
             // обновляем в адаптере для новой строки в поиске
             autoCompleteAdapter.setCurrentLocation(mapPoint);
-        });
+        });*/
         // прослушиваем обновление строки точки старта в меню построения маршрута
-        viewModel.getRequestToChangeDepartureInput().observe(getViewLifecycleOwner(), departureInput->{
+        /*viewModel.getRequestToChangeDepartureInput().observe(getViewLifecycleOwner(), departureInput->{
             if (!viewModel.getShowRoute().get())viewModel.getDepartureInput().set(departureInput);
-        });
+        });*/
         // прослушиваем обновление строки точки конца в меню построения маршрута
-        viewModel.getRequestToChangeDestinationInput().observe(getViewLifecycleOwner(), destinationInput->{
+        /*viewModel.getRequestToChangeDestinationInput().observe(getViewLifecycleOwner(), destinationInput->{
             if (!viewModel.getShowRoute().get())viewModel.getDestinationInput().set(destinationInput);
-        });
+        });*/
         // прослушиваем увеломления через Toast
         viewModel.getToastContent().observe(getViewLifecycleOwner(), this::showToastContent);
-        // прослушываем запрос на обновление текущего этажа
+        // прослушиваем запрос на обновление текущего этажа
         viewModel.getRequestToRefreshFloor().observe(getViewLifecycleOwner(), s -> {
             showToastContent(s);
             viewModel.startFloorChanging();
         });
         // прослушиваем запрос на добавление данных в строки поиска
-        viewModel.getRequestToAddAllPointsDataInAutoFinders().observe(getViewLifecycleOwner(), data -> autoCompleteAdapter.setDataForFilter(data));
-        // прослушываем состояние включения wifi
+        //viewModel.getRequestToAddAllPointsDataInAutoFinders().observe(getViewLifecycleOwner(), data -> autoCompleteAdapter.setDataForFilter(data));
+        // прослушиваем состояние включения wifi
         viewModel.getWifiEnabledState().observe(getViewLifecycleOwner(), state->{
             if (!state) viewModel.showWifiOffering(getContext());
         });
-        // просшлушываем запрос на скрытие клавиатуры
+        // прослушиваем запрос на скрытие клавиатуры
         viewModel.getRequestToHideKeyboard().observe(getViewLifecycleOwner(), s->hideKeyboard(requireActivity()));
-        // прослушываем запрос на изменение состояние прогресса по построению маршрута
+        // прослушиваем запрос на изменение состояние прогресса по построению маршрута
         viewModel.getRequestToUpdateProgressStatusBuildingRoute().observe(getViewLifecycleOwner(), progress->viewModel.getProgressOfBuildingRouteStatus().set(progress));
-        // прослушываем изменением уровня доступа
-        viewModel.getRequestToUpdateAccessLevel().observe(getViewLifecycleOwner(), al->autoCompleteAdapter.setAccessLevel(al));
+        // прослушиваем изменением уровня доступа
+        //viewModel.getRequestToUpdateAccessLevel().observe(getViewLifecycleOwner(), al->autoCompleteAdapter.setAccessLevel(al));
     }
 
     private void showToastContent(String content){
@@ -148,5 +145,10 @@ public class LocationDetectionFragment extends Fragment {
             view = new View(activity);
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    @Override
+    public void processSelectedByFindLocation(TypeOfSearchRequester typeOfRequester, MapPoint selectedLocation) {
+
     }
 }

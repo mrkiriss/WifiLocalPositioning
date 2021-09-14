@@ -60,10 +60,9 @@
     <!-- DefinitionMap -->
     <string name="hindTextEditStart">Откуда</string>
     <string name="hindTextEditEnd">Куда</string>
-    <string name="hintFind">Введите название локации</string>
+    <string name="hintFindLine">Поиск локации</string>
     <string name="buildRouteButtonText">Построить маршрут</string>
     <string name="findRoomButtonText">Найти локацию</string>
-
 
 
     <!-- Settings -->
@@ -74,7 +73,8 @@
     <string name="accessGroupTitle">Информация об уровне доступа</string>
     <string name="currentAccessLevel">Текущий уровень доступа: </string>
     <string name="updateSettingInfo">Обновить данные</string>
-
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

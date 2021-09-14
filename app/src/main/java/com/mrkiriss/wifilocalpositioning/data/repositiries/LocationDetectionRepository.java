@@ -7,6 +7,8 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.mrkiriss.wifilocalpositioning.data.models.search.SearchData;
+import com.mrkiriss.wifilocalpositioning.data.models.search.TypeOfSearchRequester;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.data.models.server.ListOfAllMapPoints;
 import com.mrkiriss.wifilocalpositioning.data.models.server.LocationPointInfo;
@@ -60,11 +62,12 @@ public class LocationDetectionRepository implements Serializable {
     private final MutableLiveData<MapPoint> requestToUpdateCurrentLocationOnAutoComplete;
     private final MutableLiveData<String> requestToChangeDepartureInput;
     private final MutableLiveData<String> requestToChangeDestinationInput;
+    private final MutableLiveData<SearchData> requestToLaunchSearchMode;
 
 
     private List<LocationPointInfo> listOfSearchableLocations;
 
-    private MapPoint resultOfDefinition;
+    private MapPoint resultOfDefinition; // актуальное местоположение
     private boolean showRoute; // VM изменяет, отвечает за идикацию необходимости рисовать маршрут
     private int currentFloorIdInt; // VM изменяет, текущий номер этажа
 
@@ -91,6 +94,7 @@ public class LocationDetectionRepository implements Serializable {
         requestToUpdateCurrentLocationOnAutoComplete=new MutableLiveData<>();
         requestToChangeDepartureInput=new MutableLiveData<>();
         requestToChangeDestinationInput=new MutableLiveData<>();
+        requestToLaunchSearchMode = new MutableLiveData<>();
 
         wifiEnabledState=wifiScanner.getWifiEnabledState();
 
@@ -178,7 +182,10 @@ public class LocationDetectionRepository implements Serializable {
     }
 
     // find
-    public void findRoom(String name){
+    public void createActuallySearchDataAndRequestToLaunchSearchMode(TypeOfSearchRequester typeOfRequester) {
+
+    }
+    /*public void findRoom(String name){
         Map<FloorId, List<MapPoint>> data = mapImageManager.getDataOnPointsOnAllFloors();
         for (FloorId floorId:data.keySet()){
             for (MapPoint mapPoint: Objects.requireNonNull(data.get(floorId))){
@@ -201,7 +208,7 @@ public class LocationDetectionRepository implements Serializable {
             }
         }
         toastContent.setValue("Локация не найдена");
-    }
+    }*/
 
     // scanning
     public void startProcessingCompleteKitsOfScansResult(CompleteKitsContainer completeKitsContainer){

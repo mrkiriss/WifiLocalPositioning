@@ -15,11 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.data.models.map.FloorId;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
-import com.mrkiriss.wifilocalpositioning.databinding.ItemMapPointFindBinding;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -62,10 +59,10 @@ public class AutoCompleteAdapter
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        MapPointFindViewHolder holder;
+        /*MapPointFindViewHolder holder;
         MapPoint content = findResult.get(position);
         if (convertView==null) {
-            holder = new MapPointFindViewHolder(DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_map_point_find, parent, false));
+            holder = new MapPointFindViewHolder(DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_find_current_location, parent, false));
             convertView = holder.itemView;
             convertView.setTag(holder);
         } else {
@@ -74,7 +71,8 @@ public class AutoCompleteAdapter
         }
         holder.bindMapPoint(content);
         Log.i("AutoCompleteAdapter", "map point data = "+content.toStringAllObject());
-        return holder.itemView;
+        return holder.itemView;*/
+        return null;
     }
 
     @Override
@@ -129,7 +127,7 @@ public class AutoCompleteAdapter
         return result;
     }
 
-    static class MapPointFindViewHolder extends RecyclerView.ViewHolder{
+    /*static class MapPointFindViewHolder extends RecyclerView.ViewHolder{
         private ItemMapPointFindBinding binding;
 
         public MapPointFindViewHolder(@NonNull ItemMapPointFindBinding binding) {
@@ -140,5 +138,5 @@ public class AutoCompleteAdapter
         public void bindMapPoint(MapPoint mapPoint){
             binding.setMapPoint(mapPoint);
         }
-    }
+    }*/
 }
