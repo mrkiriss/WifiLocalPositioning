@@ -80,7 +80,7 @@ public class WifiScanner {
 
     // проверяет состояние wifi и наличия интернет соединения
     private void checkWifiEnabled(){
-        wifiEnabledState.setValue(connectionManager.checkWifiEnabled());
+        wifiEnabledState.postValue(connectionManager.checkWifiEnabled());
     }
 
     public void startTrainingScan(int requiredNumberOfScans, String typeOfRequestSource){

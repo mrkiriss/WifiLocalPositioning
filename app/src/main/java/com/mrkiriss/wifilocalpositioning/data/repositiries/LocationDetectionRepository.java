@@ -7,6 +7,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.mrkiriss.wifilocalpositioning.data.models.search.PreviousNameInput;
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchData;
 import com.mrkiriss.wifilocalpositioning.data.models.search.TypeOfSearchRequester;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
@@ -22,12 +23,14 @@ import com.mrkiriss.wifilocalpositioning.data.models.server.AccessPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CalibrationLocationPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.DefinedLocationPoint;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.MapPointsDao;
+import com.mrkiriss.wifilocalpositioning.data.sources.db.PreviousMapPointsDao;
 import com.mrkiriss.wifilocalpositioning.data.sources.settings.SettingsManager;
 import com.mrkiriss.wifilocalpositioning.utils.ConnectionManager;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -48,6 +51,7 @@ public class LocationDetectionRepository implements Serializable {
     private final ConnectionManager connectionManager;
     private final SettingsManager settingsManager;
     private final MapPointsDao mapPointsDao;
+    private final PreviousMapPointsDao previousInputDao;
 
     private final LiveData<CompleteKitsContainer> completeKitsOfScansResult;
     private final LiveData<Integer> requestToUpdateAccessLevel;
@@ -73,13 +77,15 @@ public class LocationDetectionRepository implements Serializable {
 
     public LocationDetectionRepository(LocationDataApi retrofit, WifiScanner wifiScanner,
                                        ConnectionManager connectionManager, MapImageManager mapImageManager,
-                                       SettingsManager settingsManager, MapPointsDao mapPointsDao){
+                                       SettingsManager settingsManager, MapPointsDao mapPointsDao,
+                                       PreviousMapPointsDao previousInputDao){
         this.retrofit=retrofit;
         this.wifiScanner=wifiScanner;
         this.mapImageManager = mapImageManager;
         this.connectionManager=connectionManager;
         this.settingsManager=settingsManager;
         this.mapPointsDao=mapPointsDao;
+        this.previousInputDao=previousInputDao;
 
         completeKitsOfScansResult=wifiScanner.getCompleteScanResults();
         requestToRefreshFloor=mapImageManager.getRequestToRefreshFloor();
@@ -184,6 +190,28 @@ public class LocationDetectionRepository implements Serializable {
     // find
     public void createActuallySearchDataAndRequestToLaunchSearchMode(TypeOfSearchRequester typeOfRequester) {
 
+        Runnable task = () -> {
+            String hint = "";
+            switch (typeOfRequester) {
+                case DEPARTURE:
+                    hint = "Откуда";
+                    break;
+                case DESTINATION:
+                    hint = "Куда";
+                    break;
+                case FIND:
+                default:
+                    hint = "Название локации";
+            }
+
+            SearchData data = new SearchData(getListOfPreviousInputs(),
+                    mapImageManager.getDataOnPointsOnAllFloors(),
+                    resultOfDefinition, hint, typeOfRequester);
+
+            Log.i("searchMode", "start post searchSata to liveData container from rep");
+            requestToLaunchSearchMode.postValue(data);
+        };
+        new Thread(task).start();
     }
     /*public void findRoom(String name){
         Map<FloorId, List<MapPoint>> data = mapImageManager.getDataOnPointsOnAllFloors();
@@ -209,6 +237,31 @@ public class LocationDetectionRepository implements Serializable {
         }
         toastContent.setValue("Локация не найдена");
     }*/
+
+    // db for previousSearchInput
+    // добавляет входной объект в базу данных, если такой уже пресутсвует - удаляет и добавляет в конец бд
+    public void addPrevInputInDB(PreviousNameInput previousNameInput) {
+        previousNameInput.setInputDate(System.currentTimeMillis());
+
+        Runnable task = () -> {
+            PreviousNameInput duplicate = previousInputDao.findByInputName(previousNameInput.getInputName());
+            if (duplicate != null) {
+                previousInputDao.delete(duplicate);
+            }
+
+            previousInputDao.insert(previousNameInput);
+        };
+        new Thread(task).start();
+    }
+    // возвращает список введённых ранее названий [возможно придёться реализовать сортировку]
+    private List<String> getListOfPreviousInputs() {
+        List<String> mapPointNames = new ArrayList<>();
+        for (PreviousNameInput i : previousInputDao.findAll()) {
+            mapPointNames.add(i.getInputName());
+        }
+        return mapPointNames;
+    }
+
 
     // scanning
     public void startProcessingCompleteKitsOfScansResult(CompleteKitsContainer completeKitsContainer){

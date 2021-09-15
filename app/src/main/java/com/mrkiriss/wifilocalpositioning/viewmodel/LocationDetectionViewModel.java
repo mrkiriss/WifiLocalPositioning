@@ -1,6 +1,7 @@
 package com.mrkiriss.wifilocalpositioning.viewmodel;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.databinding.Observable;
 import androidx.databinding.ObservableBoolean;
@@ -38,6 +39,7 @@ public class LocationDetectionViewModel {
     private final LiveData<MapPoint> requestToUpdateCurrentLocationOnAutoComplete;
     private final LiveData<String> requestToChangeDepartureInput;
     private final LiveData<String> requestToChangeDestinationInput;
+    private final LiveData<SearchData> requestToLaunchSearchMode;
 
     private final MutableLiveData<String> requestToRefreshFloor;
     private final MutableLiveData<String> toastContent;
@@ -49,6 +51,7 @@ public class LocationDetectionViewModel {
     //private final ObservableBoolean showRoute;
     //private final ObservableBoolean showFind;
     private final ObservableBoolean progressOfBuildingRouteStatus;
+    private final ObservableBoolean searchLineIsDisplayed; // true - показывается строка поиска, false - показывается панель построения маршрута
 
     public LocationDetectionViewModel(LocationDetectionRepository locationDetectionRepository){
 
@@ -66,6 +69,7 @@ public class LocationDetectionViewModel {
         requestToUpdateCurrentLocationOnAutoComplete=repository.getRequestToUpdateCurrentLocationOnAutoComplete();
         requestToChangeDepartureInput=repository.getRequestToChangeDepartureInput();
         requestToChangeDestinationInput=repository.getRequestToChangeDestinationInput();
+        requestToLaunchSearchMode = repository.getRequestToLaunchSearchMode();
 
         floorNumber = new ObservableInt();
         findInput = new ObservableField<>("");
@@ -73,6 +77,7 @@ public class LocationDetectionViewModel {
         destinationInput = new ObservableField<>("");
         //showRoute=new ObservableBoolean(false);
         //showFind = new ObservableBoolean(false);
+        searchLineIsDisplayed = new ObservableBoolean(true);
         progressOfBuildingRouteStatus=new ObservableBoolean(false);
 
         requestToRefreshFloor=repository.getRequestToRefreshFloor();
@@ -123,8 +128,9 @@ public class LocationDetectionViewModel {
         requestToRefreshFloor.setValue("Меню поиска скрыто");
     }
 */
-    // зупскает сборку данных SearchData репозиторием и отправку запроса на запуск фрагмента
+    // запускает сборку данных SearchData репозиторием и отправку запроса на запуск фрагмента
     public void startLocationSearchProcess(TypeOfSearchRequester type) {
+        Log.i("searchMode", "got onCLick from fragment");
         repository.createActuallySearchDataAndRequestToLaunchSearchMode(type);
     }
     public void arrowInc(){

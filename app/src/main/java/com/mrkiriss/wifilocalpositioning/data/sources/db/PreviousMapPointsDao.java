@@ -7,21 +7,24 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
+import com.mrkiriss.wifilocalpositioning.data.models.search.PreviousNameInput;
 import com.mrkiriss.wifilocalpositioning.data.models.server.LocationPointInfo;
 
 import java.util.List;
 
 @Dao
 public interface PreviousMapPointsDao {
-    @Query("SELECT * FROM mappoint")
-    List<MapPoint> findAll();
+
+    @Query("SELECT * FROM previousnameinput")
+    List<PreviousNameInput> findAll();
+
+    @Query("SELECT * FROM previousnameinput WHERE inputName = :inputName")
+    PreviousNameInput findByInputName(String inputName);
 
     @Insert
-    MapPoint insert(MapPoint mapPoint);
+    void insert(PreviousNameInput previousNameInput);
 
     @Delete
-    void delete(MapPoint mapPoint);
+    void delete(PreviousNameInput previousNameInput);
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void saveAll( List<LocationPointInfo> data);
 }

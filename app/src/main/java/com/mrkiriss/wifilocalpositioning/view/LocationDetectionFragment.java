@@ -15,6 +15,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.adapters.AutoCompleteAdapter;
+import com.mrkiriss.wifilocalpositioning.data.models.search.SearchData;
 import com.mrkiriss.wifilocalpositioning.data.models.search.TypeOfSearchRequester;
 import com.mrkiriss.wifilocalpositioning.databinding.FragmentLocationDetectionBindingImpl;
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
@@ -106,6 +107,8 @@ public class LocationDetectionFragment extends Fragment implements Serializable,
         viewModel.getRequestToUpdateProgressStatusBuildingRoute().observe(getViewLifecycleOwner(), progress->viewModel.getProgressOfBuildingRouteStatus().set(progress));
         // прослушиваем изменением уровня доступа
         //viewModel.getRequestToUpdateAccessLevel().observe(getViewLifecycleOwner(), al->autoCompleteAdapter.setAccessLevel(al));
+        // прослушываем запрос на запуск фрагмента поиска локации
+        viewModel.getRequestToLaunchSearchMode().observe(getViewLifecycleOwner(), this::launchSearchModeFragment);
     }
 
     private void showToastContent(String content){
@@ -147,6 +150,10 @@ public class LocationDetectionFragment extends Fragment implements Serializable,
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
+    private void launchSearchModeFragment(SearchData data) {
+        Log.i("searchMode", "start launchSearchModeFragment");
+        ((INameChoosingNavHost) requireActivity()).navigateToFindFragment(this, data);
+    }
     @Override
     public void processSelectedByFindLocation(TypeOfSearchRequester typeOfRequester, MapPoint selectedLocation) {
 

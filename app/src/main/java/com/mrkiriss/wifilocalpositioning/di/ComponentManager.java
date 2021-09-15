@@ -18,7 +18,7 @@ import com.mrkiriss.wifilocalpositioning.di.modules.training.TrainingScanRepAndV
 
 public class ComponentManager {
 
-    private AppComponent appComponent;
+    private final AppComponent appComponent;
     private MainActivitySubcomponent mainActivitySubcomponent;
     private TrainingScanSubcomponent trainingScanSubcomponent;
     private LocationDetectionSubcomponent locationDetectionSubcomponent;

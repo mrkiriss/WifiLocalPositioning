@@ -7,6 +7,7 @@ import androidx.room.Room;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.AbilitiesDao;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.AppDatabase;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.MapPointsDao;
+import com.mrkiriss.wifilocalpositioning.data.sources.db.PreviousMapPointsDao;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.SettingsDao;
 
 import javax.inject.Singleton;
@@ -40,5 +41,11 @@ public class DatabaseModule {
     @Singleton
     MapPointsDao provideMapPointsDao(AppDatabase db){
         return db.mapPointsDao();
+    }
+
+    @Provides
+    @Singleton
+    PreviousMapPointsDao providePrevMapPointsDao(AppDatabase db){
+        return db.previousMapPointsDao();
     }
 }

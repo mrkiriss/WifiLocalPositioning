@@ -24,6 +24,7 @@ import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 import com.mrkiriss.wifilocalpositioning.di.App;
 import com.mrkiriss.wifilocalpositioning.viewmodel.MainViewModel;
 
+import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -35,6 +36,8 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -101,6 +104,10 @@ public class MainActivity extends AppCompatActivity implements INameChoosingNavH
         navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
 
         setBottomNavigationListener(navigationView);
+
+        Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(
+                R.drawable.ic_menu
+        );
     }
 
     @Override
@@ -233,18 +240,47 @@ public class MainActivity extends AppCompatActivity implements INameChoosingNavH
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
+    private boolean isUpButton = false;
+
+    @Override
+    public void useUpButton() {
+        Log.i("searchMode", "start useUpButton");
+        Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(
+                androidx.appcompat.R.drawable.abc_ic_ab_back_material
+        );
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        isUpButton = true;
+    }
+
+    private void useHamburgerButton() {
+        Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(
+                R.drawable.ic_menu
+        );
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        isUpButton = false;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (isUpButton && item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            useHamburgerButton();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override
     public void navigateToFindFragment(Fragment current, SearchData searchData) {
-        getSupportFragmentManager().beginTransaction()
+        navHostFragment.getChildFragmentManager().beginTransaction()
                 .hide(current)
                 .add(R.id.nav_host_fragment, LocationNameChoosingFragment.newInstance(current, searchData), "LocationFindFragment")
                 .addToBackStack("LocationFindFragment")
                 .commit();
     }
 
-    @Override
+        @Override
     public void navigateToDefinitionFragment(Fragment current, Fragment target, TypeOfSearchRequester typeOfRequester, MapPoint selectedLocation) {
-        getSupportFragmentManager().beginTransaction()
+        navHostFragment.getChildFragmentManager().beginTransaction()
                 .remove(current)
                 .show(target)
                 .commit();

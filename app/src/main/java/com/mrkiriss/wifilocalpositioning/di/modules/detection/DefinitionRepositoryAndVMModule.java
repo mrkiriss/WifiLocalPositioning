@@ -6,6 +6,7 @@ import com.mrkiriss.wifilocalpositioning.data.sources.api.LocationDataApi;
 import com.mrkiriss.wifilocalpositioning.data.sources.MapImageManager;
 import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.MapPointsDao;
+import com.mrkiriss.wifilocalpositioning.data.sources.db.PreviousMapPointsDao;
 import com.mrkiriss.wifilocalpositioning.data.sources.settings.SettingsManager;
 import com.mrkiriss.wifilocalpositioning.data.repositiries.LocationDetectionRepository;
 import com.mrkiriss.wifilocalpositioning.viewmodel.LocationDetectionViewModel;
@@ -25,7 +26,7 @@ public class DefinitionRepositoryAndVMModule {
 
     @Provides
     @DefinitionScope
-    public LocationDetectionRepository provideRepository(LocationDataApi retrofit, WifiScanner wifiScanner, ConnectionManager connectionManager, Context context, SettingsManager settingsManager, MapPointsDao mpDao){
-        return new LocationDetectionRepository(retrofit, wifiScanner, connectionManager, new MapImageManager(context), settingsManager, mpDao);
+    public LocationDetectionRepository provideRepository(LocationDataApi retrofit, WifiScanner wifiScanner, ConnectionManager connectionManager, Context context, SettingsManager settingsManager, MapPointsDao mpDao, PreviousMapPointsDao pDao){
+        return new LocationDetectionRepository(retrofit, wifiScanner, connectionManager, new MapImageManager(context), settingsManager, mpDao, pDao);
     }
 }

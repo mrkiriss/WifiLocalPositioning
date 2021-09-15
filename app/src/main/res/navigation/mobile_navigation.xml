@@ -6,6 +6,24 @@
     app:startDestination="@+id/nav_definition">
 
     <fragment
+        android:id="@+id/nav_definition"
+        android:name="com.mrkiriss.wifilocalpositioning.view.LocationDetectionFragment"
+        android:label="@string/nav_definition"
+        tools:layout="@layout/fragment_location_detection">
+        <action
+            android:id="@+id/action_definitionFragment_to_searchFragment"
+            app:destination="@id/nav_search" />
+        <argument
+            android:name="upButtonNeeded"
+            android:defaultValue="false"
+            app:argType="boolean" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_search"
+        android:name="com.mrkiriss.wifilocalpositioning.view.LocationNameChoosingFragment"
+        android:label="@string/nav_search" />
+    <fragment
         android:id="@+id/nav_training"
         android:name="com.mrkiriss.wifilocalpositioning.view.TrainingScanFragment"
         android:label="@string/nav_training_scan"
@@ -15,11 +33,6 @@
         android:name="com.mrkiriss.wifilocalpositioning.view.TrainingMapFragment"
         android:label="@string/nav_training_map"
         tools:layout="@layout/fragment_training_map" />
-    <fragment
-        android:id="@+id/nav_definition"
-        android:name="com.mrkiriss.wifilocalpositioning.view.LocationDetectionFragment"
-        android:label="@string/nav_definition"
-        tools:layout="@layout/fragment_location_detection" />
     <fragment
         android:id="@+id/nav_settings"
         android:name="com.mrkiriss.wifilocalpositioning.view.SettingsFragment"
