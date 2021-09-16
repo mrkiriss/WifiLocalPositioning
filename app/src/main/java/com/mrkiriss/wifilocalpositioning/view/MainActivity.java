@@ -24,7 +24,6 @@ import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 import com.mrkiriss.wifilocalpositioning.di.App;
 import com.mrkiriss.wifilocalpositioning.viewmodel.MainViewModel;
 
-import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -41,7 +40,7 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
-public class MainActivity extends AppCompatActivity implements INameChoosingNavHost {
+public class MainActivity extends AppCompatActivity implements ISearchNavHost {
 
     @Inject
     protected MainViewModel viewModel;
@@ -244,7 +243,6 @@ public class MainActivity extends AppCompatActivity implements INameChoosingNavH
 
     @Override
     public void useUpButton() {
-        Log.i("searchMode", "start useUpButton");
         Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(
                 androidx.appcompat.R.drawable.abc_ic_ab_back_material
         );
@@ -273,7 +271,7 @@ public class MainActivity extends AppCompatActivity implements INameChoosingNavH
     public void navigateToFindFragment(Fragment current, SearchData searchData) {
         navHostFragment.getChildFragmentManager().beginTransaction()
                 .hide(current)
-                .add(R.id.nav_host_fragment, LocationNameChoosingFragment.newInstance(current, searchData), "LocationFindFragment")
+                .add(R.id.nav_host_fragment, SearchFragment.newInstance(current, searchData), "LocationFindFragment")
                 .addToBackStack("LocationFindFragment")
                 .commit();
     }

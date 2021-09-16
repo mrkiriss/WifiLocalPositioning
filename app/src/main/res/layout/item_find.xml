@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
         <variable
-            name="mapPoint"
-            type="com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint" />
+            name="viewModel"
+            type="com.mrkiriss.wifilocalpositioning.data.models.search.SearchItem" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -18,12 +18,12 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/imageView2"
+                android:id="@+id/mapPointIcon"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_gravity="center"
                 android:layout_margin="2dp"
-                app:srcCompat="@drawable/ic_past" />
+                app:imageResource="@{viewModel.icon}" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -37,7 +37,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="7"
-                    android:text="@{mapPoint.roomName}"
+                    android:text="@{viewModel.name}"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
@@ -46,9 +46,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="3"
-                    android:text="@{mapPoint.floorIdIntWithFloorText}"
                     android:textSize="18sp"
-                    android:textStyle="italic" />
+                    android:textStyle="italic"
+                    android:text="@{viewModel.description}"/>
 
             </LinearLayout>
         </LinearLayout>

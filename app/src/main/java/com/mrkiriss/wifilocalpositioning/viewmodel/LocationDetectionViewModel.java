@@ -130,7 +130,6 @@ public class LocationDetectionViewModel {
 */
     // запускает сборку данных SearchData репозиторием и отправку запроса на запуск фрагмента
     public void startLocationSearchProcess(TypeOfSearchRequester type) {
-        Log.i("searchMode", "got onCLick from fragment");
         repository.createActuallySearchDataAndRequestToLaunchSearchMode(type);
     }
     public void arrowInc(){

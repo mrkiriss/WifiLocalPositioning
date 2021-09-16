@@ -21,7 +21,7 @@
 
     <fragment
         android:id="@+id/nav_search"
-        android:name="com.mrkiriss.wifilocalpositioning.view.LocationNameChoosingFragment"
+        android:name="com.mrkiriss.wifilocalpositioning.view.SearchFragment"
         android:label="@string/nav_search" />
     <fragment
         android:id="@+id/nav_training"

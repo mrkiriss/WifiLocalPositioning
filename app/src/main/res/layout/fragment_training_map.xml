@@ -400,9 +400,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:entries="@array/floorIds"
-                        android:gravity="center|right"
                         android:selectedItemPosition="@={viewModel.selectedFloorId}"
-                        android:textAlignment="textEnd" />
+                        android:textAlignment="viewEnd" />
 
                 </LinearLayout>
 

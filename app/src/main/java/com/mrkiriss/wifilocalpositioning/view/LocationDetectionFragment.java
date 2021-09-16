@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.mrkiriss.wifilocalpositioning.R;
-import com.mrkiriss.wifilocalpositioning.adapters.AutoCompleteAdapter;
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchData;
 import com.mrkiriss.wifilocalpositioning.data.models.search.TypeOfSearchRequester;
 import com.mrkiriss.wifilocalpositioning.databinding.FragmentLocationDetectionBindingImpl;
@@ -151,8 +150,7 @@ public class LocationDetectionFragment extends Fragment implements Serializable,
     }
 
     private void launchSearchModeFragment(SearchData data) {
-        Log.i("searchMode", "start launchSearchModeFragment");
-        ((INameChoosingNavHost) requireActivity()).navigateToFindFragment(this, data);
+        ((ISearchNavHost) requireActivity()).navigateToFindFragment(this, data);
     }
     @Override
     public void processSelectedByFindLocation(TypeOfSearchRequester typeOfRequester, MapPoint selectedLocation) {

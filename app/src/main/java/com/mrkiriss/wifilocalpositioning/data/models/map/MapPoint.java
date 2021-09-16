@@ -21,6 +21,22 @@ public class MapPoint{
     }
     public MapPoint(){}
 
+    public boolean equals(MapPoint mapPoint){
+        return (mapPoint.getRoomName().equals(roomName) &&
+                mapPoint.getX()==x &&
+                mapPoint.getY()==y);
+    }
+
+    // возвращает название локации в зависимости от ситуации (текущее местоположение, простая локация)
+    public String getFullRoomName() {
+        return roomName;
+    }
+
+    // возвращает описание локации в зависимости от ситуации (этаж...)
+    public String getDescription() {
+        return "Этаж: " + floorIdInt;
+    }
+
     public String toStringAllObject(){
         return "x="+x+" "+
                 " y="+y+"\n"+
@@ -32,16 +48,8 @@ public class MapPoint{
             " y="+y+" isRoom="+isRoom+
                     " roomName="+ roomName;
     }
-    public boolean equals(MapPoint mapPoint){
-        return (mapPoint.getRoomName().equals(roomName) &&
-                mapPoint.getX()==x &&
-                mapPoint.getY()==y);
-    }
-    public String getFloorIdIntWithFloorText(){
-        return "Этаж: "+floorIdInt;
-    }
 
-    private final String currentLocationText = "Текущее местоположение: ";
+    /*private final String currentLocationText = "Текущее местоположение: ";
     private final String currentLocationSmallText = "Текущее местоположение";
     @Override
     public String toString(){
@@ -60,11 +68,10 @@ public class MapPoint{
         result.setFloorWithPointer(floorWithPointer);
         return result;
     }
-
     public MapPoint copy(){
         MapPoint result = new MapPoint(x, y, roomName, isRoom);
         result.setFloorIdInt(floorIdInt);
         result.setFloorWithPointer(floorWithPointer);
         return result;
-    }
+    }*/
 }

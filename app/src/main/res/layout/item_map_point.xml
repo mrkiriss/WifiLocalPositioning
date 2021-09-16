@@ -26,7 +26,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="5"
                 android:gravity="center"
-                android:text="@{viewModel.mapPoint.toOneString()}" />
+                android:text="@{viewModel.mapPoint.toString()}" />
 
             <ImageButton
                 android:id="@+id/imageButton4"

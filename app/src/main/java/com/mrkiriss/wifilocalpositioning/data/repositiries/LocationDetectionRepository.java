@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.mrkiriss.wifilocalpositioning.data.models.search.PreviousNameInput;
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchData;
+import com.mrkiriss.wifilocalpositioning.data.models.search.SearchItem;
 import com.mrkiriss.wifilocalpositioning.data.models.search.TypeOfSearchRequester;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.data.models.server.ListOfAllMapPoints;
@@ -204,14 +205,30 @@ public class LocationDetectionRepository implements Serializable {
                     hint = "Название локации";
             }
 
-            SearchData data = new SearchData(getListOfPreviousInputs(),
-                    mapImageManager.getDataOnPointsOnAllFloors(),
-                    resultOfDefinition, hint, typeOfRequester);
+            SearchData data = new SearchData(getListOfPreviousMapPoints(),
+                    convertMapPointsMapToListOfSearchItems(mapImageManager.getDataOnPointsOnAllFloors()),
+                    convertCurrentLocationSearchItem(),
+                    hint,
+                    typeOfRequester);
 
-            Log.i("searchMode", "start post searchSata to liveData container from rep");
             requestToLaunchSearchMode.postValue(data);
         };
         new Thread(task).start();
+    }
+    private List<SearchItem> convertMapPointsMapToListOfSearchItems(Map<FloorId, List<MapPoint>> data) {
+        List<SearchItem> result = new ArrayList<>();
+        for (List<MapPoint> listOfMapPoints: data.values()) {
+            for (MapPoint point: listOfMapPoints) {
+                // только комнаты
+                if (point.isRoom()) result.add(new SearchItem(point.getFullRoomName(), point.getDescription()));
+            }
+        }
+
+        return result;
+    }
+    private SearchItem convertCurrentLocationSearchItem(){
+        if (resultOfDefinition == null) return null;
+        return new SearchItem(resultOfDefinition.getFullRoomName(), resultOfDefinition.getDescription());
     }
     /*public void findRoom(String name){
         Map<FloorId, List<MapPoint>> data = mapImageManager.getDataOnPointsOnAllFloors();
@@ -253,11 +270,11 @@ public class LocationDetectionRepository implements Serializable {
         };
         new Thread(task).start();
     }
-    // возвращает список введённых ранее названий [возможно придёться реализовать сортировку]
-    private List<String> getListOfPreviousInputs() {
-        List<String> mapPointNames = new ArrayList<>();
+    // возвращает список введённых ранее MapPoint (содержат только названия) [возможно придёться реализовать сортировку]
+    private List<SearchItem> getListOfPreviousMapPoints() {
+        List<SearchItem> mapPointNames = new ArrayList<>();
         for (PreviousNameInput i : previousInputDao.findAll()) {
-            mapPointNames.add(i.getInputName());
+            mapPointNames.add(new SearchItem(i.getInputName(), ""));
         }
         return mapPointNames;
     }
@@ -308,7 +325,7 @@ public class LocationDetectionRepository implements Serializable {
                     resultOfDefinition = convertToMapPoint(response.body());
 
                     Log.println(Log.INFO, "convert result= ",
-                            resultOfDefinition.toStringAllObject());
+                            resultOfDefinition.toString());
 
                     // уведомление о имени через тост
                     // + обновление текущего местоположения в автодополняющемся поиске

@@ -17,4 +17,5 @@ public interface AppComponent {
     MainActivitySubcomponent.Builder mainActivitySubcomponentBuilder();
     TrainingMapSubcomponent.Builder trainingMapSubcomponent();
     SettingsSubcomponent.Builder settingsSubcomponent();
+    SearchSubcomponent.Builder searchSubcomponent();
 }

@@ -89,7 +89,7 @@ public class AutoCompleteAdapter
                     Log.i("AutoCompleteAdapter", "currentLocation"+currentLocation);
                     if (currentLocation!=null && !currentLocation.getRoomName().isEmpty()) {
                         // если не комната, имя не пишем
-                        searchResult.add(0, currentLocation.copyForCurrentLocation());
+  //!!!!!!                      searchResult.add(0, currentLocation.copyForCurrentLocation());
                     }
                     filterResults.values=searchResult;
                     Log.i("AutoCompleteAdapter", "filtering result list="+ searchResult);
