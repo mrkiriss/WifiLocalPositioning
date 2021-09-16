@@ -228,7 +228,8 @@ public class LocationDetectionRepository implements Serializable {
     }
     private SearchItem convertCurrentLocationSearchItem(){
         if (resultOfDefinition == null) return null;
-        return new SearchItem(resultOfDefinition.getFullRoomName(), resultOfDefinition.getDescription());
+
+        return new SearchItem("Текущее местоположение: " + resultOfDefinition.getFullRoomName(), resultOfDefinition.getDescription());
     }
     /*public void findRoom(String name){
         Map<FloorId, List<MapPoint>> data = mapImageManager.getDataOnPointsOnAllFloors();

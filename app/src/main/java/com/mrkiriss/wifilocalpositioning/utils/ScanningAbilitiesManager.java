@@ -2,6 +2,7 @@ package com.mrkiriss.wifilocalpositioning.utils;
 
 import android.content.Context;
 import android.os.Build;
+import android.util.Log;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
@@ -22,7 +23,7 @@ public class ScanningAbilitiesManager {
     private final AbilitiesDao abilitiesDao;
     private final LocationDataApi instructionApi;
 
-    private boolean needShowInformationAboutAbilities=true;
+    private boolean needShowInformationAboutAbilities = true;
 
     public MutableLiveData<String> getRequestToOpenInstructionObYouTube() {
         return requestToOpenInstructionObYouTube;
@@ -57,8 +58,16 @@ public class ScanningAbilitiesManager {
             if (dataFromBD!=null){
                 needShowInformationAboutAbilities=dataFromBD.isNeedShowInformationAboutAbilities();
             }
+            Log.i("scanningAbilities", "got result from db: isNeedShowInformationAboutAbilities = " + needShowInformationAboutAbilities);
         };
-        new Thread(task).start();
+        Thread thread = new Thread(task);
+        thread.start();
+        try {
+            thread.join(500);
+        } catch (InterruptedException e) {
+            Log.i("scanningAbilities", "join timeout");
+            e.printStackTrace();
+        }
     }
     private void updateDataAboutNeedToShowDialog(){
         Runnable task = ()->{
@@ -72,6 +81,7 @@ public class ScanningAbilitiesManager {
 
     public void checkAndroidVersionForShowingScanningAbilities(Context context){
         if (!needShowInformationAboutAbilities) return;
+        Log.i("scanningAbilities", "start show dialog about scanning abilities ");
 
         // только 4 на 2 минуты, без возможности изменить
         if (Build.VERSION.SDK_INT==Build.VERSION_CODES.P){
