@@ -12,6 +12,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.mrkiriss.wifilocalpositioning.data.models.map.FloorId;
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchData;
+import com.mrkiriss.wifilocalpositioning.data.models.search.SearchItem;
 import com.mrkiriss.wifilocalpositioning.data.models.search.TypeOfSearchRequester;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
@@ -31,27 +32,26 @@ public class LocationDetectionViewModel {
     private final LiveData<CompleteKitsContainer> completeKitsOfScansResult;
     private final LiveData<MapPoint> requestToChangeFloorByMapPoint; // изменяет этаж и камеру напрявляет на местоположение
     private final LiveData<Floor> requestToChangeFloor; // изменяет этаж
-    private final LiveData<Map<FloorId, List<MapPoint>>> requestToAddAllPointsDataInAutoFinders;
     private final LiveData<Boolean> wifiEnabledState;
     private final LiveData<String> requestToHideKeyboard;
     private final LiveData<Boolean> requestToUpdateProgressStatusBuildingRoute;
     private final LiveData<Integer> requestToUpdateAccessLevel;
-    private final LiveData<MapPoint> requestToUpdateCurrentLocationOnAutoComplete;
     private final LiveData<String> requestToChangeDepartureInput;
     private final LiveData<String> requestToChangeDestinationInput;
     private final LiveData<SearchData> requestToLaunchSearchMode;
+    private final LiveData<MapPoint> requestToUpdateSearchResultContainerData;
 
     private final MutableLiveData<String> requestToRefreshFloor;
     private final MutableLiveData<String> toastContent;
 
     private final ObservableInt floorNumber;
-    private final ObservableField<String> findInput;
-    private final ObservableField<String> departureInput;
-    private final ObservableField<String> destinationInput;
-    //private final ObservableBoolean showRoute;
-    //private final ObservableBoolean showFind;
+    //private final ObservableField<String> findInput;
+    //private final ObservableField<String> departureInput;
+    //private final ObservableField<String> destinationInput;
     private final ObservableBoolean progressOfBuildingRouteStatus;
     private final ObservableBoolean searchLineIsDisplayed; // true - показывается строка поиска, false - показывается панель построения маршрута
+    private final ObservableBoolean searchResultContainerIsDisplayed;
+    private final ObservableField<MapPoint> searchResultContainer;
 
     public LocationDetectionViewModel(LocationDetectionRepository locationDetectionRepository){
 
@@ -61,24 +61,20 @@ public class LocationDetectionViewModel {
         requestToChangeFloorByMapPoint = repository.getRequestToChangeFloorByMapPoint();
         requestToChangeFloor = repository.getRequestToChangeFloor();
         toastContent=repository.getToastContent();
-        requestToAddAllPointsDataInAutoFinders=repository.getRequestToAddAllPointsDataInAutoFinders();
         wifiEnabledState=repository.getWifiEnabledState();
         requestToHideKeyboard=repository.getRequestToHideKeyboard();
         requestToUpdateProgressStatusBuildingRoute=repository.getRequestToUpdateProgressStatusBuildingRoute();
         requestToUpdateAccessLevel=repository.getRequestToUpdateAccessLevel();
-        requestToUpdateCurrentLocationOnAutoComplete=repository.getRequestToUpdateCurrentLocationOnAutoComplete();
         requestToChangeDepartureInput=repository.getRequestToChangeDepartureInput();
         requestToChangeDestinationInput=repository.getRequestToChangeDestinationInput();
         requestToLaunchSearchMode = repository.getRequestToLaunchSearchMode();
+        requestToUpdateSearchResultContainerData = repository.getRequestToUpdateSearchResultContainerData();
 
         floorNumber = new ObservableInt();
-        findInput = new ObservableField<>("");
-        departureInput = new ObservableField<>("");
-        destinationInput = new ObservableField<>("");
-        //showRoute=new ObservableBoolean(false);
-        //showFind = new ObservableBoolean(false);
         searchLineIsDisplayed = new ObservableBoolean(true);
         progressOfBuildingRouteStatus=new ObservableBoolean(false);
+        searchResultContainerIsDisplayed = new ObservableBoolean(false);
+        searchResultContainer = new ObservableField<>(new MapPoint());
 
         requestToRefreshFloor=repository.getRequestToRefreshFloor();
 
@@ -108,7 +104,8 @@ public class LocationDetectionViewModel {
     public void startProcessingCompleteKitsOfScansResult(CompleteKitsContainer scanResults){
         repository.startProcessingCompleteKitsOfScansResult(scanResults);
     }
-/*
+
+    /*
     // show\hide route views
     public void onShowRoute(){
         showRoute.set(true);
@@ -128,10 +125,32 @@ public class LocationDetectionViewModel {
         requestToRefreshFloor.setValue("Меню поиска скрыто");
     }
 */
-    // запускает сборку данных SearchData репозиторием и отправку запроса на запуск фрагмента
+
+    // Методы для взаимодействия со строкой поиска
     public void startLocationSearchProcess(TypeOfSearchRequester type) {
         repository.createActuallySearchDataAndRequestToLaunchSearchMode(type);
     }
+    public void processSelectedLocation(TypeOfSearchRequester typeOfRequester, SearchItem searchItem) {
+        repository.processSelectedLocation(typeOfRequester, searchItem);
+    }
+
+    // Методы для взаимодействия с контейнером результата поиска
+    public void showCurrentSearchedLocation() {
+        if (searchResultContainer.get() != null)
+            repository.showLocationOnMap((searchResultContainer.get().getFullRoomName()));
+    }
+    public void showBuildingMenuWithCurrentSearchedLocationData() {
+
+    }
+    public void updateSearchResultContainerData(MapPoint data) {
+        searchResultContainer.set(data);
+        // отображает контейнер с данными
+        searchResultContainerIsDisplayed.set(true);
+        // переводит камеру на местоположение
+        showCurrentSearchedLocation();
+    }
+
+    // Методы для смены картинки этажа / местоположения
     public void arrowInc(){
         if (floorNumber.get()<4){
             floorNumber.set(floorNumber.get()+1);
@@ -152,13 +171,13 @@ public class LocationDetectionViewModel {
         repository.changeFloorWithMapPoint();
     }
 
-    public void startBuildRoute(){
+    /*public void startBuildRoute(){
         if (departureInput.get().isEmpty() || destinationInput.get().isEmpty()){
             requestToRefreshFloor.setValue("Не все поля заполены!");
             return;
         }
         repository.requestRoute(departureInput.get(), destinationInput.get());
-    }
+    }*/
     /*public void startFindRoom(){
         if (findInput.get().isEmpty()){
             requestToRefreshFloor.setValue("Поле поиска не заполнено!");

@@ -109,6 +109,8 @@ public class LocationDetectionFragment extends Fragment implements Serializable,
         //viewModel.getRequestToUpdateAccessLevel().observe(getViewLifecycleOwner(), al->autoCompleteAdapter.setAccessLevel(al));
         // прослушываем запрос на запуск фрагмента поиска локации
         viewModel.getRequestToLaunchSearchMode().observe(getViewLifecycleOwner(), this::launchSearchModeFragment);
+        // прослушываем запрос на обнавление данных в контейнере результатов поиска
+        viewModel.getRequestToUpdateSearchResultContainerData().observe(getViewLifecycleOwner(), data -> viewModel.updateSearchResultContainerData(data));
     }
 
     private void showToastContent(String content){
@@ -157,6 +159,6 @@ public class LocationDetectionFragment extends Fragment implements Serializable,
     public void processSelectedByFindLocation(TypeOfSearchRequester typeOfRequester, SearchItem selectedSearchItem) {
         Log.i("searchMode", "start processing selectedSearchItem= "+selectedSearchItem.toString()+" in LocDefFragment");
 
-        viewModel.
+        viewModel.processSelectedLocation(typeOfRequester, selectedSearchItem);
     }
 }

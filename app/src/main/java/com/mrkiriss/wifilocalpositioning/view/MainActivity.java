@@ -238,8 +238,7 @@ public class MainActivity extends AppCompatActivity implements IUpButtonNavHost 
 
     private boolean isUpButton = false;
 
-    @Override
-    public void useUpButton() {
+    private void useUpButton() {
         Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(
                 androidx.appcompat.R.drawable.abc_ic_ab_back_material
         );
@@ -253,6 +252,8 @@ public class MainActivity extends AppCompatActivity implements IUpButtonNavHost 
         );
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         isUpButton = false;
+
+        hideKeyboard(this);
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -266,6 +267,8 @@ public class MainActivity extends AppCompatActivity implements IUpButtonNavHost 
 
     @Override
     public void navigateTo(Fragment current, Fragment target, String fragmentName) {
+        useUpButton();
+
         navHostFragment.getChildFragmentManager().beginTransaction()
                 .hide(current)
                 .add(R.id.nav_host_fragment, target, fragmentName)
@@ -275,7 +278,7 @@ public class MainActivity extends AppCompatActivity implements IUpButtonNavHost 
 
     @Override
     public void navigateBack(Fragment current, Fragment target) {
-        hideKeyboard(this);
+        useHamburgerButton();
 
         navHostFragment.getChildFragmentManager().beginTransaction()
                 .remove(current)

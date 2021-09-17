@@ -8,7 +8,6 @@ import com.mrkiriss.wifilocalpositioning.data.models.search.SearchItem;
 import com.mrkiriss.wifilocalpositioning.data.models.search.TypeOfSearchRequester;
 
 public interface IUpButtonNavHost {
-    void useUpButton();
     void navigateTo(Fragment current, Fragment target, String fragmentName);
     void navigateBack(Fragment current, Fragment target);
 }

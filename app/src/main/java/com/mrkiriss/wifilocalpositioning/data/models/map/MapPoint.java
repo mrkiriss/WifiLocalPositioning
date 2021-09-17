@@ -13,13 +13,19 @@ public class MapPoint{
     private String roomName;
     private boolean isRoom;
 
+    public static final String CURRENT_LOCATION_ADDING = "Текущее местоположение: ";
+    public static final String FLOOR_ADDING = "Этаж: ";
+
+
     public MapPoint(int x, int y, String roomName, boolean isRoom){
         this.x=x;
         this.y=y;
         this.roomName = roomName;
         this.isRoom=isRoom;
     }
-    public MapPoint(){}
+    public MapPoint(){
+        roomName = "";
+    }
 
     public boolean equals(MapPoint mapPoint){
         return (mapPoint.getRoomName().equals(roomName) &&
@@ -49,6 +55,12 @@ public class MapPoint{
                     " roomName="+ roomName;
     }
 
+    public MapPoint copy(){
+        MapPoint result = new MapPoint(x, y, roomName, isRoom);
+        result.setFloorIdInt(floorIdInt);
+        result.setFloorWithPointer(floorWithPointer);
+        return result;
+    }
     /*private final String currentLocationText = "Текущее местоположение: ";
     private final String currentLocationSmallText = "Текущее местоположение";
     @Override
@@ -67,11 +79,6 @@ public class MapPoint{
         result.setFloorIdInt(floorIdInt);
         result.setFloorWithPointer(floorWithPointer);
         return result;
-    }
-    public MapPoint copy(){
-        MapPoint result = new MapPoint(x, y, roomName, isRoom);
-        result.setFloorIdInt(floorIdInt);
-        result.setFloorWithPointer(floorWithPointer);
-        return result;
     }*/
+
 }

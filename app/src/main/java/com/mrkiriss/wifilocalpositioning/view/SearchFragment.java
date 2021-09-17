@@ -53,9 +53,6 @@ public class SearchFragment extends Fragment{
         App.getInstance().getComponentManager().getSearchSubcomponent().inject(this);
         binding.setViewModel(viewModel);
 
-        // добавляем кнопку возврата на пред. фрагмент
-        ((IUpButtonNavHost) requireActivity()).useUpButton();
-
         initSearchAdapter();
         initObservers();
 

@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import lombok.Data;
 import retrofit2.Call;
@@ -58,19 +59,18 @@ public class LocationDetectionRepository implements Serializable {
     private final MutableLiveData<Floor> requestToChangeFloor;
     private final MutableLiveData<String> toastContent;
     private final MutableLiveData<String> requestToRefreshFloor;
-    private final MutableLiveData<Map<FloorId, List<MapPoint>>> requestToAddAllPointsDataInAutoFinders;
     private final MutableLiveData<Boolean> wifiEnabledState; // для отправки состояния включение wifi
     private final MutableLiveData<String> requestToHideKeyboard;
     private final MutableLiveData<Boolean> requestToUpdateProgressStatusBuildingRoute;
-    private final MutableLiveData<MapPoint> requestToUpdateCurrentLocationOnAutoComplete;
     private final MutableLiveData<String> requestToChangeDepartureInput;
     private final MutableLiveData<String> requestToChangeDestinationInput;
     private final MutableLiveData<SearchData> requestToLaunchSearchMode;
+    private final MutableLiveData<MapPoint> requestToUpdateSearchResultContainerData;
 
 
     private List<LocationPointInfo> listOfSearchableLocations;
 
-    private MapPoint resultOfDefinition; // актуальное местоположение
+    private MapPoint resultOfDefinition; // актуальное местоположение пользователя
     private boolean showRoute; // VM изменяет, отвечает за идикацию необходимости рисовать маршрут
     private int currentFloorIdInt; // VM изменяет, текущий номер этажа
 
@@ -93,13 +93,12 @@ public class LocationDetectionRepository implements Serializable {
         requestToChangeFloorByMapPoint =new MutableLiveData<>();
         requestToChangeFloor =new MutableLiveData<>();
         toastContent=new MutableLiveData<>();
-        requestToAddAllPointsDataInAutoFinders=new MutableLiveData<>();
         requestToHideKeyboard=new MutableLiveData<>();
         requestToUpdateProgressStatusBuildingRoute=new MutableLiveData<>();
-        requestToUpdateCurrentLocationOnAutoComplete=new MutableLiveData<>();
         requestToChangeDepartureInput=new MutableLiveData<>();
         requestToChangeDestinationInput=new MutableLiveData<>();
         requestToLaunchSearchMode = new MutableLiveData<>();
+        requestToUpdateSearchResultContainerData = new MutableLiveData<>();
 
         wifiEnabledState=wifiScanner.getWifiEnabledState();
 
@@ -233,7 +232,7 @@ public class LocationDetectionRepository implements Serializable {
     private SearchItem convertCurrentLocationSearchItem(){
         if (resultOfDefinition == null) return null;
 
-        return new SearchItem("Текущее местоположение: " + resultOfDefinition.getFullRoomName(), resultOfDefinition.getDescription());
+        return new SearchItem(MapPoint.CURRENT_LOCATION_ADDING + resultOfDefinition.getFullRoomName(), resultOfDefinition.getDescription());
     }
     private List<SearchItem> filterLegacySelectedSearchItemsAndStartDeletingLegacy( List<SearchItem> filterableItems, List<SearchItem> availableItems) {
         List<String> availableNames = new ArrayList<>();
@@ -256,30 +255,54 @@ public class LocationDetectionRepository implements Serializable {
         return actuallyItems;
 
     }
-    /*public void findRoom(String name){
+
+    public void processSelectedLocation(TypeOfSearchRequester typeOfRequester, SearchItem selectedLocation) {
+        String finalName = selectedLocation.getName().replace(MapPoint.CURRENT_LOCATION_ADDING, "");
+
+        switch (typeOfRequester) {
+            case FIND:
+                MapPoint availableMapPointByName = findMapPointByName(finalName);
+                if (availableMapPointByName != null) requestToUpdateSearchResultContainerData.setValue(availableMapPointByName);
+                break;
+            case DEPARTURE:
+                requestToChangeDepartureInput.setValue(finalName);
+                break;
+            case DESTINATION:
+                requestToChangeDestinationInput.setValue(finalName);
+                break;
+        }
+    }
+    private MapPoint findMapPointByName(String name) {
         Map<FloorId, List<MapPoint>> data = mapImageManager.getDataOnPointsOnAllFloors();
-        for (FloorId floorId:data.keySet()){
-            for (MapPoint mapPoint: Objects.requireNonNull(data.get(floorId))){
-                if (mapPoint.getRoomName().equals(name) && (mapPoint.isRoom() || settingsManager.isModerator())){
+        for (List<MapPoint> mapPoints: data.values()) {
+            for (MapPoint mapPoint: mapPoints) {
+                if (name.equals(mapPoint.getRoomName())) return mapPoint;
+            }
+        }
+
+        return null;
+    }
+    public void showLocationOnMap(String name){
+        for (List<MapPoint> mapPoints: mapImageManager.getDataOnPointsOnAllFloors().values()){
+            for (MapPoint mapPoint: mapPoints){
+                if (mapPoint.getRoomName().equals(name)){
                     // получает базовый этаж и вставялет его в объект точки, чтобы получить внутри фрагмента и прорисовать этаж
+
                     MapPoint result = mapPoint.copy();
                     // изменяем номер этажа для успешного определения необходимого объекта Floor с помощью defineNecessaryFloor()
                     currentFloorIdInt=result.getFloorIdInt();
-                    // определяем этаж и вставляем его в обхект для отправки
+                    // определяем этаж и вставляем его в объект для отправки
                     result.setFloorWithPointer(defineNecessaryFloor());
-                    // изменяем строку ввода конца маршрута в меню построения маршрута
-                    requestToChangeDestinationInput.setValue(result.getRoomName());
-
                     // прорисовываем
                     requestToChangeFloorByMapPoint.setValue(result);
-                    toastContent.setValue("Локация найдена");
 
                     return;
                 }
             }
         }
+
         toastContent.setValue("Локация не найдена");
-    }*/
+    }
 
     // db
         // for previousSearchInput
@@ -362,11 +385,9 @@ public class LocationDetectionRepository implements Serializable {
                             resultOfDefinition.toString());
 
                     // уведомление о имени через тост
-                    // + обновление текущего местоположения в автодополняющемся поиске
                     // + обновление строки ввода начала маршруту в меню построения маршрута
                     if (resultOfDefinition.isRoom() || settingsManager.isModerator()) {
                         toastContent.setValue("Местоположение: " + resultOfDefinition.getRoomName());
-                        requestToUpdateCurrentLocationOnAutoComplete.setValue(resultOfDefinition);
                         requestToChangeDepartureInput.setValue(resultOfDefinition.getRoomName());
                     }
                     // требует изменение картинки этажа в соответсвии со всеми параметрами
@@ -486,7 +507,5 @@ public class LocationDetectionRepository implements Serializable {
 
         Map<FloorId, List<MapPoint>> converted = data.convertToMap();
         mapImageManager.setDataOnPointsOnAllFloors(converted);
-        // отправляем данны во все поисковые строки с автодополнением
-        requestToAddAllPointsDataInAutoFinders.postValue(converted);
     }
 }
