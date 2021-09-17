@@ -2,28 +2,23 @@ package com.mrkiriss.wifilocalpositioning.view;
 
 import android.os.Bundle;
 
-import androidx.appcompat.widget.SearchView;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.adapters.SearchRVAdapter;
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchData;
+import com.mrkiriss.wifilocalpositioning.data.models.search.SearchItem;
+import com.mrkiriss.wifilocalpositioning.data.models.search.TypeOfSearchRequester;
 import com.mrkiriss.wifilocalpositioning.databinding.FragmentSearchBinding;
 import com.mrkiriss.wifilocalpositioning.di.App;
 import com.mrkiriss.wifilocalpositioning.viewmodel.SearchViewModel;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 
@@ -38,6 +33,7 @@ public class SearchFragment extends Fragment{
     private SearchRVAdapter searchRVAdapter;
 
     private Fragment startFragment;
+    private TypeOfSearchRequester typeOfRequester;
 
     public static SearchFragment newInstance(Fragment startFragment, SearchData searchData) {
         SearchFragment fragment = new SearchFragment();
@@ -58,16 +54,18 @@ public class SearchFragment extends Fragment{
         binding.setViewModel(viewModel);
 
         // добавляем кнопку возврата на пред. фрагмент
-        ((ISearchNavHost) requireActivity()).useUpButton();
+        ((IUpButtonNavHost) requireActivity()).useUpButton();
 
         initSearchAdapter();
         initObservers();
 
         if (getArguments() != null) {
             // актуализируем данные для поиска
-            viewModel.saveSearchData((SearchData) getArguments().getSerializable("searchData"));
-            // запоминаем пред.фрагмент
+            SearchData data = (SearchData) getArguments().getSerializable("searchData");
+            viewModel.saveSearchData(data);
+            // запоминаем пред.фрагмент и тип источника
             startFragment = (Fragment) getArguments().getSerializable("startFragment");
+            typeOfRequester = data.getTypeOfRequester();
         }
 
         return binding.getRoot();
@@ -75,7 +73,7 @@ public class SearchFragment extends Fragment{
 
     private void initObservers() {
         viewModel.getRequestToUpdateSearchContent().observe(getViewLifecycleOwner(), content -> searchRVAdapter.replaceContent(content));
-        searchRVAdapter.getRequestToProcessSelectedLocation().observe(getViewLifecycleOwner(), selectedItem -> viewModel.processSelectedItem(selectedItem));
+        searchRVAdapter.getRequestToProcessSelectedLocation().observe(getViewLifecycleOwner(), this::processSelectedItem);
     }
     private void initSearchAdapter() {
         searchRVAdapter = new SearchRVAdapter();
@@ -83,4 +81,9 @@ public class SearchFragment extends Fragment{
         binding.findResultsRecyclerView.setAdapter(searchRVAdapter);
     }
 
+    private void processSelectedItem(SearchItem selectedSearchItem) {
+        ((IProcessingSelectedByFindLocation) startFragment).processSelectedByFindLocation(typeOfRequester, selectedSearchItem);
+
+        ((IUpButtonNavHost) requireActivity()).navigateBack(this, startFragment);
+    }
 }

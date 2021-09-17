@@ -4,10 +4,11 @@ import androidx.fragment.app.Fragment;
 
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchData;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
+import com.mrkiriss.wifilocalpositioning.data.models.search.SearchItem;
 import com.mrkiriss.wifilocalpositioning.data.models.search.TypeOfSearchRequester;
 
-public interface ISearchNavHost {
+public interface IUpButtonNavHost {
     void useUpButton();
-    void navigateToFindFragment(Fragment current, SearchData searchData);
-    void navigateToDefinitionFragment(Fragment current, Fragment target, TypeOfSearchRequester typeOfRequester, MapPoint selectedLocation);
+    void navigateTo(Fragment current, Fragment target, String fragmentName);
+    void navigateBack(Fragment current, Fragment target);
 }

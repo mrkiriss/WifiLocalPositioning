@@ -17,9 +17,6 @@ import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.mrkiriss.wifilocalpositioning.R;
-import com.mrkiriss.wifilocalpositioning.data.models.search.SearchData;
-import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
-import com.mrkiriss.wifilocalpositioning.data.models.search.TypeOfSearchRequester;
 import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 import com.mrkiriss.wifilocalpositioning.di.App;
 import com.mrkiriss.wifilocalpositioning.viewmodel.MainViewModel;
@@ -40,7 +37,7 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
-public class MainActivity extends AppCompatActivity implements ISearchNavHost {
+public class MainActivity extends AppCompatActivity implements IUpButtonNavHost {
 
     @Inject
     protected MainViewModel viewModel;
@@ -268,20 +265,21 @@ public class MainActivity extends AppCompatActivity implements ISearchNavHost {
     }
 
     @Override
-    public void navigateToFindFragment(Fragment current, SearchData searchData) {
+    public void navigateTo(Fragment current, Fragment target, String fragmentName) {
         navHostFragment.getChildFragmentManager().beginTransaction()
                 .hide(current)
-                .add(R.id.nav_host_fragment, SearchFragment.newInstance(current, searchData), "LocationFindFragment")
-                .addToBackStack("LocationFindFragment")
+                .add(R.id.nav_host_fragment, target, fragmentName)
+                .addToBackStack(fragmentName)
                 .commit();
     }
 
-        @Override
-    public void navigateToDefinitionFragment(Fragment current, Fragment target, TypeOfSearchRequester typeOfRequester, MapPoint selectedLocation) {
+    @Override
+    public void navigateBack(Fragment current, Fragment target) {
+        hideKeyboard(this);
+
         navHostFragment.getChildFragmentManager().beginTransaction()
                 .remove(current)
                 .show(target)
                 .commit();
-        ((IProcessingSelectedByFindLocation) target).processSelectedByFindLocation(typeOfRequester, selectedLocation);
     }
 }

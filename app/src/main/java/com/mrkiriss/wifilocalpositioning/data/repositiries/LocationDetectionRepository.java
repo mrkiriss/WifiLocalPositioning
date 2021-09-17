@@ -281,7 +281,8 @@ public class LocationDetectionRepository implements Serializable {
         toastContent.setValue("Локация не найдена");
     }*/
 
-    // db for previousSearchInput
+    // db
+        // for previousSearchInput
     public void addSelectedSearchInputInDB(SearchItem searchItem) {
         PreviousNameInput previousNameInput = new PreviousNameInput();
         previousNameInput.setInputDate(System.currentTimeMillis());

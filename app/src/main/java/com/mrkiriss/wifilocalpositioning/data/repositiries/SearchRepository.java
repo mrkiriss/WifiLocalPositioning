@@ -21,7 +21,6 @@ public class SearchRepository {
     private List<SearchItem> prevViewedMapPoints;
     private List<SearchItem> availableForSearchMapPoints;
     private SearchItem currentLocation;
-    private TypeOfSearchRequester typeOfRequester;
 
     private final MutableLiveData<List<SearchItem>> requestToUpdateSearchContent;
 
@@ -33,7 +32,6 @@ public class SearchRepository {
         prevViewedMapPoints = data.getPrevViewedSearchItems();
         availableForSearchMapPoints = data.getAvailableForSearchItems();
         currentLocation = data.getCurrentLocation();
-        typeOfRequester = data.getTypeOfRequester();
 
         Log.i("searchMode", "availableForSearchMapPoints in saveSearchDate: "+ availableForSearchMapPoints.toString());
     }
@@ -59,10 +57,6 @@ public class SearchRepository {
         Log.i("searchMode", "result of filtering after responseToSearchInput: "+ result.toString());
 
         requestToUpdateSearchContent.setValue(result);
-    }
-
-    public void processSelectedItem(SearchItem selectedItem) {
-
     }
 
 }
