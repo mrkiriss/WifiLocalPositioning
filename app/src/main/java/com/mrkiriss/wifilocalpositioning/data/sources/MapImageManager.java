@@ -127,7 +127,7 @@ public class MapImageManager {
                 requiredStrokes.get(floorId).add(segment);
             }else{ // не совпадает этаж - требовать рисовать лестницы на двух этажах
                 FloorId floorId1 = Floor.convertFloorIdToEnum(info.get(i).getFloorId());
-                FloorId floorId2 = Floor.convertFloorIdToEnum(info.get(i+1).getFloorId());
+                FloorId floorId2 = Floor.convertFloorIdToEnum(info.get(i + 1).getFloorId());
 
                 // проверка на наличие требования в карте
                 if (!requiredStrokes.containsKey(floorId1)) requiredStrokes.put(floorId1, new ArrayList<>());

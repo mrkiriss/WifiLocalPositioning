@@ -35,9 +35,11 @@ public class LocationDetectionViewModel {
     private final LiveData<Boolean> wifiEnabledState;
     private final LiveData<String> requestToHideKeyboard;
     private final LiveData<Boolean> requestToUpdateProgressStatusBuildingRoute;
-    private final LiveData<Integer> requestToUpdateAccessLevel;
-    private final LiveData<String> requestToChangeDepartureInput;
     private final LiveData<String> requestToChangeDestinationInput;
+    private final LiveData<String> requestToChangeDepartureInput;
+    private final LiveData<String> requestToChangeFindInput;
+    private final LiveData<Integer> requestToChangeDepartureIcon;
+    private final LiveData<Integer> requestToChangeDestinationIcon;
     private final LiveData<SearchData> requestToLaunchSearchMode;
     private final LiveData<MapPoint> requestToUpdateSearchResultContainerData;
 
@@ -45,9 +47,9 @@ public class LocationDetectionViewModel {
     private final MutableLiveData<String> toastContent;
 
     private final ObservableInt floorNumber;
-    //private final ObservableField<String> findInput;
-    //private final ObservableField<String> departureInput;
-    //private final ObservableField<String> destinationInput;
+    private final ObservableField<String> findInput;
+    private final ObservableField<String> departureInput;
+    private final ObservableField<String> destinationInput;
     private final ObservableBoolean progressOfBuildingRouteStatus;
     private final ObservableBoolean searchLineIsDisplayed; // true - показывается строка поиска, false - показывается панель построения маршрута
     private final ObservableBoolean searchResultContainerIsDisplayed;
@@ -64,13 +66,18 @@ public class LocationDetectionViewModel {
         wifiEnabledState=repository.getWifiEnabledState();
         requestToHideKeyboard=repository.getRequestToHideKeyboard();
         requestToUpdateProgressStatusBuildingRoute=repository.getRequestToUpdateProgressStatusBuildingRoute();
-        requestToUpdateAccessLevel=repository.getRequestToUpdateAccessLevel();
         requestToChangeDepartureInput=repository.getRequestToChangeDepartureInput();
         requestToChangeDestinationInput=repository.getRequestToChangeDestinationInput();
+        requestToChangeFindInput = repository.getRequestToChangeFindInput();
+        requestToChangeDepartureIcon = repository.getRequestToChangeDepartureIcon();
+        requestToChangeDestinationIcon = repository.getRequestToChangeDestinationIcon();
         requestToLaunchSearchMode = repository.getRequestToLaunchSearchMode();
         requestToUpdateSearchResultContainerData = repository.getRequestToUpdateSearchResultContainerData();
 
         floorNumber = new ObservableInt();
+        findInput = new ObservableField<>("");
+        departureInput = new ObservableField<>("");
+        destinationInput = new ObservableField<>("");
         searchLineIsDisplayed = new ObservableBoolean(true);
         progressOfBuildingRouteStatus=new ObservableBoolean(false);
         searchResultContainerIsDisplayed = new ObservableBoolean(false);
@@ -140,7 +147,9 @@ public class LocationDetectionViewModel {
             repository.showLocationOnMap((searchResultContainer.get().getFullRoomName()));
     }
     public void showBuildingMenuWithCurrentSearchedLocationData() {
-
+        if (searchResultContainer.get() != null)
+            repository.updateRouteData(searchResultContainer.get().getRoomName());
+        searchLineIsDisplayed.set(false);
     }
     public void updateSearchResultContainerData(MapPoint data) {
         searchResultContainer.set(data);
@@ -171,20 +180,14 @@ public class LocationDetectionViewModel {
         repository.changeFloorWithMapPoint();
     }
 
-    /*public void startBuildRoute(){
+    public void startBuildRoute(){
         if (departureInput.get().isEmpty() || destinationInput.get().isEmpty()){
-            requestToRefreshFloor.setValue("Не все поля заполены!");
+            requestToRefreshFloor.setValue("Не все поля заполены");
             return;
         }
         repository.requestRoute(departureInput.get(), destinationInput.get());
-    }*/
-    /*public void startFindRoom(){
-        if (findInput.get().isEmpty()){
-            requestToRefreshFloor.setValue("Поле поиска не заполнено!");
-            return;
-        }
-        repository.findRoom(findInput.get());
-    }*/
+        repository.setShowRoute(true);
+    }
 
     // получение информации для фильтрации при поиске
     public void showWifiOffering(Context context){

@@ -74,29 +74,25 @@ public class LocationDetectionFragment extends Fragment implements Serializable,
         viewModel.getRequestToChangeFloor().observe(getViewLifecycleOwner(), this::drawCurrentFloor);
         // прослышиваем запрос на изменение экрана с показом местоположения
         viewModel.getRequestToChangeFloorByMapPoint().observe(getViewLifecycleOwner(), this::showCurrentLocation);
-        // прослушываем запрос на обновление местоположения для строки автодополнения и ...
-            // в меню маршрутизации при условии его скрытия в данный момент
-        /*viewModel.getRequestToUpdateCurrentLocationOnAutoComplete().observe(getViewLifecycleOwner(), mapPoint -> {
-            // обновляем в адаптере для новой строки в поиске
-            autoCompleteAdapter.setCurrentLocation(mapPoint);
-        });*/
         // прослушиваем обновление строки точки старта в меню построения маршрута
-        /*viewModel.getRequestToChangeDepartureInput().observe(getViewLifecycleOwner(), departureInput->{
-            if (!viewModel.getShowRoute().get())viewModel.getDepartureInput().set(departureInput);
-        });*/
+        viewModel.getRequestToChangeFindInput().observe(getViewLifecycleOwner(), input->{
+            viewModel.getFindInput().set(input);
+        });
+        // прослушиваем обновление строки точки старта в меню построения маршрута
+        viewModel.getRequestToChangeDepartureInput().observe(getViewLifecycleOwner(), departureInput->{
+            viewModel.getDepartureInput().set(departureInput);
+        });
         // прослушиваем обновление строки точки конца в меню построения маршрута
-        /*viewModel.getRequestToChangeDestinationInput().observe(getViewLifecycleOwner(), destinationInput->{
-            if (!viewModel.getShowRoute().get())viewModel.getDestinationInput().set(destinationInput);
-        });*/
-        // прослушиваем увеломления через Toast
+        viewModel.getRequestToChangeDestinationInput().observe(getViewLifecycleOwner(), destinationInput->{
+            viewModel.getDestinationInput().set(destinationInput);
+        });
+        // прослушиваем запрос на уведомления через Toast
         viewModel.getToastContent().observe(getViewLifecycleOwner(), this::showToastContent);
         // прослушиваем запрос на обновление текущего этажа
         viewModel.getRequestToRefreshFloor().observe(getViewLifecycleOwner(), s -> {
             showToastContent(s);
             viewModel.startFloorChanging();
         });
-        // прослушиваем запрос на добавление данных в строки поиска
-        //viewModel.getRequestToAddAllPointsDataInAutoFinders().observe(getViewLifecycleOwner(), data -> autoCompleteAdapter.setDataForFilter(data));
         // прослушиваем состояние включения wifi
         viewModel.getWifiEnabledState().observe(getViewLifecycleOwner(), state->{
             if (!state) viewModel.showWifiOffering(getContext());
@@ -105,8 +101,6 @@ public class LocationDetectionFragment extends Fragment implements Serializable,
         viewModel.getRequestToHideKeyboard().observe(getViewLifecycleOwner(), s->hideKeyboard(requireActivity()));
         // прослушиваем запрос на изменение состояние прогресса по построению маршрута
         viewModel.getRequestToUpdateProgressStatusBuildingRoute().observe(getViewLifecycleOwner(), progress->viewModel.getProgressOfBuildingRouteStatus().set(progress));
-        // прослушиваем изменением уровня доступа
-        //viewModel.getRequestToUpdateAccessLevel().observe(getViewLifecycleOwner(), al->autoCompleteAdapter.setAccessLevel(al));
         // прослушываем запрос на запуск фрагмента поиска локации
         viewModel.getRequestToLaunchSearchMode().observe(getViewLifecycleOwner(), this::launchSearchModeFragment);
         // прослушываем запрос на обнавление данных в контейнере результатов поиска

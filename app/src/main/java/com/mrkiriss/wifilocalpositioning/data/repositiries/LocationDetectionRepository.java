@@ -7,6 +7,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.data.models.search.PreviousNameInput;
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchData;
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchItem;
@@ -54,7 +55,6 @@ public class LocationDetectionRepository implements Serializable {
     private final PreviousMapPointsDao previousInputDao;
 
     private final LiveData<CompleteKitsContainer> completeKitsOfScansResult;
-    private final LiveData<Integer> requestToUpdateAccessLevel;
     private final MutableLiveData<MapPoint> requestToChangeFloorByMapPoint;
     private final MutableLiveData<Floor> requestToChangeFloor;
     private final MutableLiveData<String> toastContent;
@@ -64,6 +64,9 @@ public class LocationDetectionRepository implements Serializable {
     private final MutableLiveData<Boolean> requestToUpdateProgressStatusBuildingRoute;
     private final MutableLiveData<String> requestToChangeDepartureInput;
     private final MutableLiveData<String> requestToChangeDestinationInput;
+    private final MutableLiveData<String> requestToChangeFindInput;
+    private final MutableLiveData<Integer> requestToChangeDepartureIcon;
+    private final MutableLiveData<Integer> requestToChangeDestinationIcon;
     private final MutableLiveData<SearchData> requestToLaunchSearchMode;
     private final MutableLiveData<MapPoint> requestToUpdateSearchResultContainerData;
 
@@ -88,7 +91,6 @@ public class LocationDetectionRepository implements Serializable {
 
         completeKitsOfScansResult=wifiScanner.getCompleteScanResults();
         requestToRefreshFloor=mapImageManager.getRequestToRefreshFloor();
-        requestToUpdateAccessLevel=settingsManager.getRequestToUpdateAccessLevel();
 
         requestToChangeFloorByMapPoint =new MutableLiveData<>();
         requestToChangeFloor =new MutableLiveData<>();
@@ -97,8 +99,11 @@ public class LocationDetectionRepository implements Serializable {
         requestToUpdateProgressStatusBuildingRoute=new MutableLiveData<>();
         requestToChangeDepartureInput=new MutableLiveData<>();
         requestToChangeDestinationInput=new MutableLiveData<>();
+        requestToChangeFindInput = new MutableLiveData<>();
         requestToLaunchSearchMode = new MutableLiveData<>();
         requestToUpdateSearchResultContainerData = new MutableLiveData<>();
+        requestToChangeDepartureIcon = new MutableLiveData<>();
+        requestToChangeDestinationIcon = new MutableLiveData<>();
 
         wifiEnabledState=wifiScanner.getWifiEnabledState();
 
@@ -185,8 +190,8 @@ public class LocationDetectionRepository implements Serializable {
         mapImageManager.getRouteFloors().clear();
     }
 
-    // find
-    // создаёт пакет данных для поиска и подаёт запрос на запуск фрагмента
+    // search
+        // создаёт пакет данных для поиска и подаёт запрос на запуск фрагмента
     public void createActuallySearchDataAndRequestToLaunchSearchMode(TypeOfSearchRequester typeOfRequester) {
 
         Runnable task = () -> {
@@ -256,18 +261,23 @@ public class LocationDetectionRepository implements Serializable {
 
     }
 
+        // минипулирует данными поиска в зависимости от типа запросившего
     public void processSelectedLocation(TypeOfSearchRequester typeOfRequester, SearchItem selectedLocation) {
+        Boolean isCurrentLocation = selectedLocation.getName().contains(MapPoint.CURRENT_LOCATION_ADDING);
         String finalName = selectedLocation.getName().replace(MapPoint.CURRENT_LOCATION_ADDING, "");
 
         switch (typeOfRequester) {
             case FIND:
                 MapPoint availableMapPointByName = findMapPointByName(finalName);
                 if (availableMapPointByName != null) requestToUpdateSearchResultContainerData.setValue(availableMapPointByName);
+                requestToChangeFindInput.setValue(finalName);
                 break;
             case DEPARTURE:
+                requestToChangeDepartureIcon.setValue(isCurrentLocation ? R.drawable.ic_cursor : R.drawable.ic_circle);
                 requestToChangeDepartureInput.setValue(finalName);
                 break;
             case DESTINATION:
+                requestToChangeDestinationIcon.setValue(isCurrentLocation ? R.drawable.ic_cursor : R.drawable.ic_circle);
                 requestToChangeDestinationInput.setValue(finalName);
                 break;
         }
@@ -282,26 +292,36 @@ public class LocationDetectionRepository implements Serializable {
 
         return null;
     }
+        // показывает локацию на карте, предварительно проводя поиск по названию в карте доступных локаций
     public void showLocationOnMap(String name){
-        for (List<MapPoint> mapPoints: mapImageManager.getDataOnPointsOnAllFloors().values()){
-            for (MapPoint mapPoint: mapPoints){
-                if (mapPoint.getRoomName().equals(name)){
-                    // получает базовый этаж и вставялет его в объект точки, чтобы получить внутри фрагмента и прорисовать этаж
+            // получает базовый этаж и вставялет его в объект точки, чтобы получить внутри фрагмента и прорисовать этаж
 
-                    MapPoint result = mapPoint.copy();
-                    // изменяем номер этажа для успешного определения необходимого объекта Floor с помощью defineNecessaryFloor()
-                    currentFloorIdInt=result.getFloorIdInt();
-                    // определяем этаж и вставляем его в объект для отправки
-                    result.setFloorWithPointer(defineNecessaryFloor());
-                    // прорисовываем
-                    requestToChangeFloorByMapPoint.setValue(result);
-
-                    return;
-                }
+            MapPoint result = findMapPointByName(name);
+            if (result == null) {
+                toastContent.setValue("Локация не найдена");
+                return;
             }
+
+            result = result.copy();
+            // изменяем номер этажа для успешного определения необходимого объекта Floor с помощью defineNecessaryFloor()
+            currentFloorIdInt=result.getFloorIdInt();
+            // определяем этаж и вставляем его в объект для отправки
+            result.setFloorWithPointer(defineNecessaryFloor());
+            // прорисовываем
+            requestToChangeFloorByMapPoint.setValue(result);
+    }
+        // заполняем данные в меню построения маршрута
+    public void updateRouteData(String destinationName) {
+        if (resultOfDefinition == null) {
+            requestToChangeDepartureInput.setValue("");
+            requestToChangeDepartureIcon.setValue(android.R.drawable.ic_menu_help);
+        }else {
+            requestToChangeDepartureInput.setValue(resultOfDefinition.getRoomName());
+            requestToChangeDepartureIcon.setValue(R.drawable.ic_cursor);
         }
 
-        toastContent.setValue("Локация не найдена");
+        requestToChangeDestinationIcon.setValue(R.drawable.ic_circle);
+        requestToChangeDestinationInput.setValue(destinationName);
     }
 
     // db
@@ -387,7 +407,7 @@ public class LocationDetectionRepository implements Serializable {
                     // уведомление о имени через тост
                     // + обновление строки ввода начала маршруту в меню построения маршрута
                     if (resultOfDefinition.isRoom() || settingsManager.isModerator()) {
-                        toastContent.setValue("Местоположение: " + resultOfDefinition.getRoomName());
+                        // toastContent.setValue("Местоположение: " + resultOfDefinition.getRoomName());
                         requestToChangeDepartureInput.setValue(resultOfDefinition.getRoomName());
                     }
                     // требует изменение картинки этажа в соответсвии со всеми параметрами
@@ -433,7 +453,7 @@ public class LocationDetectionRepository implements Serializable {
                 mapImageManager.startCreatingFloorsWithRout(response.body());
                 // скрываем клавиатуру (текст роли не играет)
                 requestToHideKeyboard.setValue("successful building route");
-                // обновляем состяоние процесса построения маршурат (кнопка включается, прогрессбар скрывается)
+                // обновляем состояние процесса построения маршрута (кнопка включается, прогрессбар скрывается)
                 requestToUpdateProgressStatusBuildingRoute.setValue(false);
             }
 

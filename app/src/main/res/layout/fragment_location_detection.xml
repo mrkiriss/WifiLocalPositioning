@@ -16,6 +16,12 @@
         tools:context=".view.LocationDetectionFragment"
         android:clipChildren="false">
 
+        <com.ortiz.touchview.TouchImageView
+            android:id="@+id/zoomImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center" />
+
         <LinearLayout
             android:id="@+id/routeContainer"
             android:layout_width="match_parent"
@@ -43,13 +49,15 @@
                     android:scaleType="fitCenter"
                     app:srcCompat="@drawable/ic_circle" />
 
-                <TextView
+                <Button
                     android:id="@+id/departureName"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="16"
                     android:hint="@string/hindTextEditStart"
-                    android:onClick="@{() -> viewModel.startLocationSearchProcess(TypeOfSearchRequester.DEPARTURE)}"/>
+                    android:onClick="@{() -> viewModel.startLocationSearchProcess(TypeOfSearchRequester.DEPARTURE)}"
+                    android:text="@{viewModel.departureInput}"
+                    android:textAllCaps="false" />
             </LinearLayout>
 
             <LinearLayout
@@ -68,13 +76,15 @@
                     android:scaleType="fitCenter"
                     app:srcCompat="@drawable/ic_circle" />
 
-                <TextView
+                <Button
                     android:id="@+id/destinationName"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="16"
                     android:hint="@string/hindTextEditEnd"
-                    android:onClick="@{() -> viewModel.startLocationSearchProcess(TypeOfSearchRequester.DESTINATION)}"/>
+                    android:onClick="@{() -> viewModel.startLocationSearchProcess(TypeOfSearchRequester.DESTINATION)}"
+                    android:text="@{viewModel.destinationInput}"
+                    android:textAllCaps="false" />
             </LinearLayout>
 
             <Button
@@ -87,7 +97,8 @@
                 android:layout_marginBottom="2dp"
                 android:layout_weight="1"
                 android:padding="2dp"
-                android:text="@string/buildRouteButtonText" />
+                android:text="@string/buildRouteButtonText"
+                android:onClick="@{() -> viewModel.startBuildRoute()}"/>
 
         </LinearLayout>
 
@@ -102,17 +113,12 @@
             android:background="@drawable/round_border"
             android:gravity="center_vertical"
             android:hint="@string/hintFindLine"
-            android:paddingLeft="8dp"
-            android:textSize="16sp"
             android:onClick="@{() -> viewModel.startLocationSearchProcess(TypeOfSearchRequester.FIND)}"
+            android:paddingLeft="8dp"
+            android:text="@{viewModel.findInput}"
+            android:textAllCaps="false"
+            android:textSize="16sp"
             android:visibility="@{viewModel.searchLineIsDisplayed ? View.VISIBLE : View.GONE}" />
-
-        <com.ortiz.touchview.TouchImageView
-            android:id="@+id/zoomImageView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center" />
-
 
         <LinearLayout
             android:id="@+id/changeFloorContainer"
