@@ -51,4 +51,8 @@ public class SearchViewModel extends ViewModel {
         rep.saveSearchData(data);
         searchLineHint.set(data.getHintInSearchLine());
     }
+
+    public void processSelectedItem(SearchItem item){
+        rep.processSelectedItem(item);
+    }
 }

@@ -39,13 +39,13 @@ public class SearchRepository {
     }
 
     public void responseToSearchInput(String input) {
-        List<SearchItem> result;
+        List<SearchItem> result = new ArrayList<>();
+
+        if (currentLocation != null) result.add(currentLocation);
 
         if (input.isEmpty()) {
             result = new ArrayList<>(prevViewedMapPoints);
         }else {
-            result = new ArrayList<>();
-
             if (availableForSearchMapPoints != null) {
                 for (SearchItem item : availableForSearchMapPoints) {
                     if (item.getName().toLowerCase().contains(input.toLowerCase())
@@ -56,11 +56,13 @@ public class SearchRepository {
             }
         }
 
-        if (currentLocation != null) result.add(currentLocation);
-
         Log.i("searchMode", "result of filtering after responseToSearchInput: "+ result.toString());
 
         requestToUpdateSearchContent.setValue(result);
+    }
+
+    public void processSelectedItem(SearchItem selectedItem) {
+
     }
 
 }

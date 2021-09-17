@@ -27,4 +27,6 @@ public interface PreviousMapPointsDao {
     @Delete
     void delete(PreviousNameInput previousNameInput);
 
+    @Query("DELETE FROM previousnameinput WHERE inputName = :inputName")
+    void deleteByInputName(String inputName);
 }

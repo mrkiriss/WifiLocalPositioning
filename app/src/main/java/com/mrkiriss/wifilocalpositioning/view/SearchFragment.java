@@ -75,6 +75,7 @@ public class SearchFragment extends Fragment{
 
     private void initObservers() {
         viewModel.getRequestToUpdateSearchContent().observe(getViewLifecycleOwner(), content -> searchRVAdapter.replaceContent(content));
+        searchRVAdapter.getRequestToProcessSelectedLocation().observe(getViewLifecycleOwner(), selectedItem -> viewModel.processSelectedItem(selectedItem));
     }
     private void initSearchAdapter() {
         searchRVAdapter = new SearchRVAdapter();

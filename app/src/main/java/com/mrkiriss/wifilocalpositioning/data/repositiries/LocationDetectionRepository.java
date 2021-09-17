@@ -31,12 +31,10 @@ import com.mrkiriss.wifilocalpositioning.utils.ConnectionManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import lombok.Data;
 import retrofit2.Call;
@@ -189,6 +187,7 @@ public class LocationDetectionRepository implements Serializable {
     }
 
     // find
+    // создаёт пакет данных для поиска и подаёт запрос на запуск фрагмента
     public void createActuallySearchDataAndRequestToLaunchSearchMode(TypeOfSearchRequester typeOfRequester) {
 
         Runnable task = () -> {
@@ -205,8 +204,13 @@ public class LocationDetectionRepository implements Serializable {
                     hint = "Название локации";
             }
 
-            SearchData data = new SearchData(getListOfPreviousMapPoints(),
-                    convertMapPointsMapToListOfSearchItems(mapImageManager.getDataOnPointsOnAllFloors()),
+            List<SearchItem> prevItems = getListOfPreviousSelectedSearchItems();
+            List<SearchItem> availableItems = convertMapPointsMapToListOfSearchItems(mapImageManager.getDataOnPointsOnAllFloors());
+
+            List<SearchItem> actuallyPrevItems = filterLegacySelectedSearchItemsAndStartDeletingLegacy(prevItems, availableItems);
+
+            SearchData data = new SearchData(actuallyPrevItems,
+                    availableItems,
                     convertCurrentLocationSearchItem(),
                     hint,
                     typeOfRequester);
@@ -230,6 +234,27 @@ public class LocationDetectionRepository implements Serializable {
         if (resultOfDefinition == null) return null;
 
         return new SearchItem("Текущее местоположение: " + resultOfDefinition.getFullRoomName(), resultOfDefinition.getDescription());
+    }
+    private List<SearchItem> filterLegacySelectedSearchItemsAndStartDeletingLegacy( List<SearchItem> filterableItems, List<SearchItem> availableItems) {
+        List<String> availableNames = new ArrayList<>();
+        for (SearchItem availableItem: availableItems) {
+            availableNames.add(availableItem.getName());
+        }
+
+        List<SearchItem> legacyItems = new ArrayList<>();
+        List<SearchItem> actuallyItems = new ArrayList<>();
+        for (SearchItem filterableItem: filterableItems) {
+            if (availableNames.contains(filterableItem.getName())) {
+                actuallyItems.add(filterableItem);
+            }else {
+                legacyItems.add(filterableItem);
+            }
+        }
+
+        deleteLegacySelectedSearchItems(legacyItems);
+
+        return actuallyItems;
+
     }
     /*public void findRoom(String name){
         Map<FloorId, List<MapPoint>> data = mapImageManager.getDataOnPointsOnAllFloors();
@@ -257,8 +282,8 @@ public class LocationDetectionRepository implements Serializable {
     }*/
 
     // db for previousSearchInput
-    // добавляет входной объект в базу данных, если такой уже пресутсвует - удаляет и добавляет в конец бд
-    public void addPrevInputInDB(PreviousNameInput previousNameInput) {
+    public void addSelectedSearchInputInDB(SearchItem searchItem) {
+        PreviousNameInput previousNameInput = new PreviousNameInput();
         previousNameInput.setInputDate(System.currentTimeMillis());
 
         Runnable task = () -> {
@@ -271,13 +296,20 @@ public class LocationDetectionRepository implements Serializable {
         };
         new Thread(task).start();
     }
-    // возвращает список введённых ранее MapPoint (содержат только названия) [возможно придёться реализовать сортировку]
-    private List<SearchItem> getListOfPreviousMapPoints() {
+    private List<SearchItem> getListOfPreviousSelectedSearchItems() {
         List<SearchItem> mapPointNames = new ArrayList<>();
         for (PreviousNameInput i : previousInputDao.findAll()) {
             mapPointNames.add(new SearchItem(i.getInputName(), ""));
         }
         return mapPointNames;
+    }
+    private void deleteLegacySelectedSearchItems(List<SearchItem> legacySearchItems) {
+        Runnable task = () -> {
+            for (SearchItem item: legacySearchItems) {
+                previousInputDao.deleteByInputName(item.getName());
+            }
+        };
+        new Thread(task).start();
     }
 
 

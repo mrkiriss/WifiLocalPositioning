@@ -10,7 +10,8 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="48dp">
+        android:layout_height="48dp"
+        android:onClick="@{() -> viewModel.onItemClick()}">
 
         <LinearLayout
             android:layout_width="match_parent"

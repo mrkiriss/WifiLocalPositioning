@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mrkiriss.wifilocalpositioning.R;
@@ -23,8 +25,15 @@ public class SearchRVAdapter extends RecyclerView.Adapter<SearchRVAdapter.Search
 
     private List<SearchItem> content;
 
+    private final MutableLiveData<SearchItem> requestToProcessSelectedLocation;
+    public LiveData<SearchItem> getRequestToProcessSelectedLocation() {
+        return requestToProcessSelectedLocation;
+    }
+
     public SearchRVAdapter() {
         content = new ArrayList<>();
+
+        requestToProcessSelectedLocation = new MutableLiveData<>();
     }
 
     public void replaceContent(List<SearchItem> newContent) {
@@ -43,7 +52,9 @@ public class SearchRVAdapter extends RecyclerView.Adapter<SearchRVAdapter.Search
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull SearchViewHolder holder, int position) {
-        holder.bind(content.get(position));
+        SearchItem item = content.get(position);
+        item.setRequestToProcessSelectedLocation(requestToProcessSelectedLocation);
+        holder.bind(item);
     }
 
     @Override
