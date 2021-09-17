@@ -11,6 +11,7 @@ import com.mrkiriss.wifilocalpositioning.data.models.search.SearchItem;
 import com.mrkiriss.wifilocalpositioning.data.models.search.TypeOfSearchRequester;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import lombok.Data;
@@ -25,6 +26,9 @@ public class SearchRepository {
     private final MutableLiveData<List<SearchItem>> requestToUpdateSearchContent;
 
     public SearchRepository() {
+        prevViewedMapPoints = new ArrayList<>();
+        availableForSearchMapPoints = new ArrayList<>();
+
         requestToUpdateSearchContent = new MutableLiveData<>();
     }
 
@@ -32,6 +36,9 @@ public class SearchRepository {
         prevViewedMapPoints = data.getPrevViewedSearchItems();
         availableForSearchMapPoints = data.getAvailableForSearchItems();
         currentLocation = data.getCurrentLocation();
+
+        // переворачиваем, чтобы последний введённый был первым
+        Collections.reverse(prevViewedMapPoints);
 
         Log.i("searchMode", "availableForSearchMapPoints in saveSearchDate: "+ availableForSearchMapPoints.toString());
     }
@@ -42,7 +49,7 @@ public class SearchRepository {
         if (currentLocation != null) result.add(currentLocation);
 
         if (input.isEmpty()) {
-            result = new ArrayList<>(prevViewedMapPoints);
+            result.addAll(prevViewedMapPoints);
         }else {
             if (availableForSearchMapPoints != null) {
                 for (SearchItem item : availableForSearchMapPoints) {

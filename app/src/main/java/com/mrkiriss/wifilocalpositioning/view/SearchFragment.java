@@ -65,6 +65,8 @@ public class SearchFragment extends Fragment{
             typeOfRequester = data.getTypeOfRequester();
         }
 
+        viewModel.initEmptyInput();
+
         return binding.getRoot();
     }
 

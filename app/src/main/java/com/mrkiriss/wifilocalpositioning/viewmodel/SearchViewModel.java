@@ -52,4 +52,8 @@ public class SearchViewModel extends ViewModel {
         searchLineHint.set(data.getHintInSearchLine());
     }
 
+    public void initEmptyInput(){
+        rep.responseToSearchInput("");
+    }
+
 }

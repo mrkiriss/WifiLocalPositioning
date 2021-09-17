@@ -281,6 +281,8 @@ public class LocationDetectionRepository implements Serializable {
                 requestToChangeDestinationInput.setValue(finalName);
                 break;
         }
+
+        addSelectedSearchInputInDB(selectedLocation);
     }
     private MapPoint findMapPointByName(String name) {
         Map<FloorId, List<MapPoint>> data = mapImageManager.getDataOnPointsOnAllFloors();
@@ -328,6 +330,7 @@ public class LocationDetectionRepository implements Serializable {
         // for previousSearchInput
     public void addSelectedSearchInputInDB(SearchItem searchItem) {
         PreviousNameInput previousNameInput = new PreviousNameInput();
+        previousNameInput.setInputName(searchItem.getName());
         previousNameInput.setInputDate(System.currentTimeMillis());
 
         Runnable task = () -> {
