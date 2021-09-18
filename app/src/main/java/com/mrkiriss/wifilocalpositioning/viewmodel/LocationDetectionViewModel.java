@@ -150,6 +150,7 @@ public class LocationDetectionViewModel {
         if (searchResultContainer.get() != null)
             repository.updateRouteData(searchResultContainer.get().getRoomName());
         searchLineIsDisplayed.set(false);
+        closeSearchContainer();
     }
     public void updateSearchResultContainerData(MapPoint data) {
         searchResultContainer.set(data);
@@ -157,6 +158,12 @@ public class LocationDetectionViewModel {
         searchResultContainerIsDisplayed.set(true);
         // переводит камеру на местоположение
         showCurrentSearchedLocation();
+    }
+    public void closeSearchContainer() {
+        // скрываем контейнер
+        searchResultContainerIsDisplayed.set(false);
+        // очищаем контент строки поиска
+        findInput.set("");
     }
 
     // Методы для смены картинки этажа / местоположения
@@ -180,6 +187,7 @@ public class LocationDetectionViewModel {
         repository.changeFloorWithMapPoint();
     }
 
+    // Методы для взаимодействия с контейнером построения маршрутов
     public void startBuildRoute(){
         if (departureInput.get().isEmpty() || destinationInput.get().isEmpty()){
             requestToRefreshFloor.setValue("Не все поля заполены");
@@ -187,6 +195,17 @@ public class LocationDetectionViewModel {
         }
         repository.requestRoute(departureInput.get(), destinationInput.get());
         repository.setShowRoute(true);
+    }
+    public void closeRouteContainer() {
+        // очищаем введённые данные
+        departureInput.set("");
+        destinationInput.set("");
+        // скрываем контейнер маршрутов / показываем строку поиска
+        searchLineIsDisplayed.set(true);
+        // очищаем данные о построенном маршруте
+        repository.clearRouteFloors();
+        // даём репозиторию понять, что не нужно отрисовывать маршруты на картах
+        repository.setShowRoute(false);
     }
 
     // получение информации для фильтрации при поиске
