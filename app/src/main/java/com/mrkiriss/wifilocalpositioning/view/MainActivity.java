@@ -62,8 +62,7 @@ public class MainActivity extends AppCompatActivity implements IUpButtonNavHost 
 
         App.getInstance().getComponentManager().getMainActivitySubcomponent().inject(this);
 
-        // подписываемсян на запрос открытия инструкции
-        viewModel.getRequestToOpenInstructionObYouTube().observe(this, this::watchYoutubeVideo);
+        initObservers();
 
         // проверка разрешений для сканирования
         checkPermissions();
@@ -105,6 +104,24 @@ public class MainActivity extends AppCompatActivity implements IUpButtonNavHost 
                 R.drawable.ic_menu
         );
     }
+    private void createFragments(){
+        Fragment startFragment = navHostFragment.getChildFragmentManager().getPrimaryNavigationFragment();
+        if (startFragment!=null){
+            navHostFragment.getChildFragmentManager().beginTransaction().remove(startFragment).commit();
+        }
+
+        fragments = viewModel.createFragments();
+        fragmentTAGS = viewModel.createFragmentTags();
+        typesOfRequestSources = viewModel.createTypesOfRequestSources();
+    }
+    private void initObservers(){
+        // подписываемсян на запрос открытия видео-инструкции
+        viewModel.getRequestToOpenInstructionObYouTube().observe(this, id -> viewModel.watchYoutubeVideo(id));
+        // подписываемся на данные Toast
+        viewModel.getToastContent().observe(this, this::showToastContent);
+        // подписываемся на вызов Intent
+        viewModel.getRequestToStartIntent().observe(this, intent -> startActivity(intent));
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -118,16 +135,6 @@ public class MainActivity extends AppCompatActivity implements IUpButtonNavHost 
                 || super.onSupportNavigateUp();
     }
 
-    private void createFragments(){
-
-        Fragment startFragment = navHostFragment.getChildFragmentManager().getPrimaryNavigationFragment();
-        if (startFragment!=null){
-            navHostFragment.getChildFragmentManager().beginTransaction().remove(startFragment).commit();
-        }
-        fragments=new Fragment[]{new LocationDetectionFragment(), new TrainingScanFragment(), new TrainingMapFragment(), new SettingsFragment()};
-        fragmentTAGS=new String[]{"Определение", "Тренировка сканированием", "Тренировка картой", "Настройки"};
-        typesOfRequestSources = new String[]{WifiScanner.TYPE_DEFINITION, WifiScanner.TYPE_TRAINING, WifiScanner.TYPE_TRAINING, WifiScanner.TYPE_NO_SCAN};
-    }
     private int defineFragmentIndex(MenuItem item) {
         switch (item.getItemId()){
             case R.id.nav_training_map:
@@ -147,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements IUpButtonNavHost 
 
             // проверка наличия доступа
             if (!viewModel.isPresentAccessPermission(typesOfRequestSources[fragmentIndex])) {
-                notifyAboutLackOfAccess();
+                viewModel.notifyAboutLackOfAccess();
                 drawer.close();
                 return false;
             }
@@ -175,56 +182,27 @@ public class MainActivity extends AppCompatActivity implements IUpButtonNavHost 
 
         if (fm.findFragmentByTag(fragmentTAGS[position]) == null) {
             fragmentTransaction.add(R.id.nav_host_fragment, fragments[position], fragmentTAGS[position]);
-            Log.i("MainActivityInfo","ADD "+fragments[position].getTag());
         }
         for (int i = 0; i < fragments.length; i++) {
             if (i == position) {
                 fragmentTransaction.show(fragments[i]);
                 // изменяем тип сканирования
                 viewModel.setCurrentTypeOfRequestSource(typesOfRequestSources[i]);
-
-                Log.i("MainActivityInfo","SHOW "+fragments[position].getTag());
             } else {
                 if (fm.findFragmentByTag(fragmentTAGS[i]) != null) {
-                    Log.i("MainActivityInfo","HIDE "+fragments[i].getTag());
                     fragmentTransaction.hide(fragments[i]);
                 }
             }
         }
-        fragmentTransaction.commit();
-        Log.i("MainActivityInfo","commit");
-    }
+        fragmentTransaction.commit(); }
 
     private void checkPermissions(){
         requestPermissions(new String[] {Manifest.permission.CHANGE_WIFI_STATE, Manifest.permission.ACCESS_WIFI_STATE,
                 Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-        if (checkSelfPermission(Manifest.permission.CHANGE_WIFI_STATE) == PackageManager.PERMISSION_GRANTED &&
-                checkSelfPermission(Manifest.permission.ACCESS_WIFI_STATE) == PackageManager.PERMISSION_GRANTED &&
-                checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            Log.i("Permissions","GRANTED");
-        }else{
-            Log.i("Permissions","NOT GRANTED");
-        }
     }
 
-    private void notifyAboutLackOfAccess(){
-        Toast.makeText(this, "Доступ запрещён.\n" +
-                "За подробной информацией обратитесь к владельцу приложения",
-                    Toast.LENGTH_LONG).show();
-    }
-
-    public void watchYoutubeVideo(String id) {
-        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + id));
-        Intent webIntent = new Intent(Intent.ACTION_VIEW,
-                Uri.parse("http://www.youtube.com/watch?v=" + id));
-        try {
-            startActivity(appIntent);
-        } catch (ActivityNotFoundException ex) {
-            startActivity(webIntent);
-        }catch (Exception e){
-            Toast.makeText(this, "Извините, пока здесь ничего нет", Toast.LENGTH_SHORT).show();
-        }
+    private void showToastContent(String content){
+        Toast.makeText(this, content, Toast.LENGTH_LONG).show();
     }
 
     public static void hideKeyboard(Activity activity) {
@@ -236,17 +214,18 @@ public class MainActivity extends AppCompatActivity implements IUpButtonNavHost 
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
+    // Методы, отвечающие за функционал по созданию фрагмента с upArrow
     private boolean isUpButton = false;
-
-    private void useUpButton() {
+    @Override
+    public void useUpButton() {
         Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(
                 androidx.appcompat.R.drawable.abc_ic_ab_back_material
         );
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         isUpButton = true;
     }
-
-    private void useHamburgerButton() {
+    @Override
+    public void useHamburgerButton() {
         Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(
                 R.drawable.ic_menu
         );
@@ -264,24 +243,18 @@ public class MainActivity extends AppCompatActivity implements IUpButtonNavHost 
         }
         return super.onOptionsItemSelected(item);
     }
-
     @Override
     public void navigateTo(Fragment current, Fragment target, String fragmentName) {
-        useUpButton();
-
         navHostFragment.getChildFragmentManager().beginTransaction()
                 .hide(current)
                 .add(R.id.nav_host_fragment, target, fragmentName)
                 .addToBackStack(fragmentName)
                 .commit();
     }
-
     @Override
     public void navigateBack(Fragment current, Fragment target) {
-        useHamburgerButton();
-
+        onBackPressed();
         navHostFragment.getChildFragmentManager().beginTransaction()
-                .remove(current)
                 .show(target)
                 .commit();
     }

@@ -53,6 +53,8 @@ public class SearchFragment extends Fragment{
         App.getInstance().getComponentManager().getSearchSubcomponent().inject(this);
         binding.setViewModel(viewModel);
 
+        ((IUpButtonNavHost) requireActivity()).useUpButton();
+
         initSearchAdapter();
         initObservers();
 
@@ -84,5 +86,11 @@ public class SearchFragment extends Fragment{
         ((IProcessingSelectedByFindLocation) startFragment).processSelectedByFindLocation(typeOfRequester, selectedSearchItem);
 
         ((IUpButtonNavHost) requireActivity()).navigateBack(this, startFragment);
+    }
+
+    @Override
+    public void onDestroy() {
+        ((IUpButtonNavHost) requireActivity()).useHamburgerButton();
+        super.onDestroy();
     }
 }

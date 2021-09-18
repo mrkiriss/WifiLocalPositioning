@@ -1,5 +1,6 @@
 package com.mrkiriss.wifilocalpositioning.di.modules.main;
 
+import com.mrkiriss.wifilocalpositioning.data.sources.FragmentsFactory;
 import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 import com.mrkiriss.wifilocalpositioning.data.sources.settings.SettingsManager;
 import com.mrkiriss.wifilocalpositioning.data.repositiries.MainRepository;
@@ -14,8 +15,9 @@ public class MainRepositoryAndViewModelModule {
 
     @Provides
     @MainScope
-    public MainRepository provideMainRepository(WifiScanner wifiScanner, SettingsManager settingsManager, ScanningAbilitiesManager abilitiesManager){
-        return new MainRepository(wifiScanner, settingsManager, abilitiesManager);
+    public MainRepository provideMainRepository(WifiScanner wifiScanner, SettingsManager settingsManager,
+                                                ScanningAbilitiesManager abilitiesManager, FragmentsFactory factory){
+        return new MainRepository(wifiScanner, settingsManager, abilitiesManager, factory);
     }
 
     @Provides

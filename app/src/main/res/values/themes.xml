@@ -22,7 +22,7 @@
         <item name="android:gravity">center_vertical</item>
     </style>
     
-    <style name="Theme.WifiLocalPositioning.NonTransparentContainer" parent="Widget.MaterialComponents.Button">
+    <style name="Theme.WifiLocalPositioning.NonTransparentContainer">
         <item name="android:background">@drawable/round_border</item>
     </style>
 

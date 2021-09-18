@@ -12,6 +12,7 @@ import com.mrkiriss.wifilocalpositioning.di.components.TrainingMapSubcomponent;
 import com.mrkiriss.wifilocalpositioning.di.components.TrainingScanSubcomponent;
 import com.mrkiriss.wifilocalpositioning.di.modules.AppContextModule;
 import com.mrkiriss.wifilocalpositioning.di.modules.detection.DefinitionRepositoryAndVMModule;
+import com.mrkiriss.wifilocalpositioning.di.modules.detection.FragmentsFactoryModule;
 import com.mrkiriss.wifilocalpositioning.di.modules.main.MainRepositoryAndViewModelModule;
 import com.mrkiriss.wifilocalpositioning.di.modules.search.SearchRepositoryAndVM;
 import com.mrkiriss.wifilocalpositioning.di.modules.settings.SettingsRepAndVMModule;
@@ -38,6 +39,7 @@ public class ComponentManager {
         if (mainActivitySubcomponent == null) {
             mainActivitySubcomponent = appComponent.mainActivitySubcomponentBuilder()
                     .repAndVMModule(new MainRepositoryAndViewModelModule())
+                    .fragmentsBuilderModule(new FragmentsFactoryModule())
                     .build();
         }
         return mainActivitySubcomponent;
