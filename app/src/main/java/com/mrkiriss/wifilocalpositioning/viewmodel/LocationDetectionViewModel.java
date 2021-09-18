@@ -10,6 +10,7 @@ import androidx.databinding.ObservableInt;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.data.models.map.FloorId;
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchData;
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchItem;
@@ -50,6 +51,8 @@ public class LocationDetectionViewModel {
     private final ObservableField<String> findInput;
     private final ObservableField<String> departureInput;
     private final ObservableField<String> destinationInput;
+    private final ObservableInt departureIcon;
+    private final ObservableInt destinationIcon;
     private final ObservableBoolean progressOfBuildingRouteStatus;
     private final ObservableBoolean searchLineIsDisplayed; // true - показывается строка поиска, false - показывается панель построения маршрута
     private final ObservableBoolean searchResultContainerIsDisplayed;
@@ -78,6 +81,8 @@ public class LocationDetectionViewModel {
         findInput = new ObservableField<>("");
         departureInput = new ObservableField<>("");
         destinationInput = new ObservableField<>("");
+        departureIcon = new ObservableInt(R.drawable.ic_circle);
+        destinationIcon = new ObservableInt(R.drawable.ic_circle);
         searchLineIsDisplayed = new ObservableBoolean(true);
         progressOfBuildingRouteStatus=new ObservableBoolean(false);
         searchResultContainerIsDisplayed = new ObservableBoolean(false);

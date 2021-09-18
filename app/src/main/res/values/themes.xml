@@ -2,15 +2,34 @@
     <!-- Base application theme. -->
     <style name="Theme.WifiLocalPositioning" parent="Theme.MaterialComponents.DayNight">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryDark">@color/purple_700</item>
+        <item name="colorPrimary">#445963</item>
+        <item name="colorPrimaryDark">#1b3039</item>
         <item name="colorAccent">@color/teal_200</item>
+        <item name="colorSecondary">#fb8c00</item>
+        <item name="colorSecondaryVariant">#c25e00</item>
         <!-- Customize your theme here. -->
     </style>
 
     <style name="Theme.WifiLocalPositioning.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.WifiLocalPositioning.SearchLine">
+        <item name="backgroundTint">@color/blu_gray_200</item>
+        <item name="hintTextColor">?attr/colorPrimary</item>
+        <item name="android:textColor">?attr/colorPrimaryDark</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+    
+    <style name="Theme.WifiLocalPositioning.NonTransparentContainer" parent="Widget.MaterialComponents.Button">
+        <item name="android:background">@drawable/round_border</item>
+    </style>
+
+    <style name="Theme.WifiLocalPositioning.ImageButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:background">@drawable/image_button_border</item>
+        <item name="backgroundTintMode">screen</item>
+        <item name="android:padding">10dp</item>
     </style>
 
     <style name="Theme.WifiLocalPositioning.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

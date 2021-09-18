@@ -75,17 +75,15 @@ public class LocationDetectionFragment extends Fragment implements Serializable,
         // прослышиваем запрос на изменение экрана с показом местоположения
         viewModel.getRequestToChangeFloorByMapPoint().observe(getViewLifecycleOwner(), this::showCurrentLocation);
         // прослушиваем обновление строки точки старта в меню построения маршрута
-        viewModel.getRequestToChangeFindInput().observe(getViewLifecycleOwner(), input->{
-            viewModel.getFindInput().set(input);
-        });
+        viewModel.getRequestToChangeFindInput().observe(getViewLifecycleOwner(), input-> viewModel.getFindInput().set(input));
         // прослушиваем обновление строки точки старта в меню построения маршрута
-        viewModel.getRequestToChangeDepartureInput().observe(getViewLifecycleOwner(), departureInput->{
-            viewModel.getDepartureInput().set(departureInput);
-        });
+        viewModel.getRequestToChangeDepartureInput().observe(getViewLifecycleOwner(), departureInput-> viewModel.getDepartureInput().set(departureInput));
         // прослушиваем обновление строки точки конца в меню построения маршрута
-        viewModel.getRequestToChangeDestinationInput().observe(getViewLifecycleOwner(), destinationInput->{
-            viewModel.getDestinationInput().set(destinationInput);
-        });
+        viewModel.getRequestToChangeDestinationInput().observe(getViewLifecycleOwner(), destinationInput-> viewModel.getDestinationInput().set(destinationInput));
+        // прослушиваем обновление иконки точки старта в меню построения маршрута
+        viewModel.getRequestToChangeDepartureIcon().observe(getViewLifecycleOwner(), icon-> viewModel.getDepartureIcon().set(icon));
+        // прослушиваем обновление иконки точки конца в меню построения маршрута
+        viewModel.getRequestToChangeDestinationIcon().observe(getViewLifecycleOwner(), icon-> viewModel.getDestinationIcon().set(icon));
         // прослушиваем запрос на уведомления через Toast
         viewModel.getToastContent().observe(getViewLifecycleOwner(), this::showToastContent);
         // прослушиваем запрос на обновление текущего этажа

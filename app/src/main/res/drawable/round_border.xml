@@ -3,7 +3,9 @@
     android:shape="rectangle">
     <stroke
         android:width="2dp"
-        android:color="#485151"/>
+        android:color="?attr/colorPrimaryDark" />
+    <solid
+        android:color="@color/blu_gray_50"/>
     <padding
         android:bottom="5dp"
         android:left="5dp"

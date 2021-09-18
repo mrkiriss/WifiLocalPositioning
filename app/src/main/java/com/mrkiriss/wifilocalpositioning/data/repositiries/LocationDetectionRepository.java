@@ -240,6 +240,10 @@ public class LocationDetectionRepository implements Serializable {
         return new SearchItem(MapPoint.CURRENT_LOCATION_ADDING + resultOfDefinition.getFullRoomName(), resultOfDefinition.getDescription());
     }
     private List<SearchItem> filterLegacySelectedSearchItemsAndStartDeletingLegacy( List<SearchItem> filterableItems, List<SearchItem> availableItems) {
+
+        // возвращает все предыдущей без фильтрации, так как данные о доступных точках ещё не подгружены из бд
+        if (availableItems == null || availableItems.isEmpty()) return filterableItems;
+
         List<String> availableNames = new ArrayList<>();
         for (SearchItem availableItem: availableItems) {
             availableNames.add(availableItem.getName());
@@ -269,8 +273,12 @@ public class LocationDetectionRepository implements Serializable {
         switch (typeOfRequester) {
             case FIND:
                 MapPoint availableMapPointByName = findMapPointByName(finalName);
-                if (availableMapPointByName != null) requestToUpdateSearchResultContainerData.setValue(availableMapPointByName);
-                requestToChangeFindInput.setValue(finalName);
+                if (availableMapPointByName != null) {
+                    requestToUpdateSearchResultContainerData.setValue(availableMapPointByName);
+                    requestToChangeFindInput.setValue(finalName);
+                } else {
+                    toastContent.setValue("Данные о локации отсутствуют");
+                }
                 break;
             case DEPARTURE:
                 requestToChangeDepartureIcon.setValue(isCurrentLocation ? R.drawable.ic_cursor : R.drawable.ic_circle);
@@ -316,7 +324,7 @@ public class LocationDetectionRepository implements Serializable {
     public void updateRouteData(String destinationName) {
         if (resultOfDefinition == null) {
             requestToChangeDepartureInput.setValue("");
-            requestToChangeDepartureIcon.setValue(android.R.drawable.ic_menu_help);
+            requestToChangeDepartureIcon.setValue(R.drawable.ic_question);
         }else {
             requestToChangeDepartureInput.setValue(resultOfDefinition.getRoomName());
             requestToChangeDepartureIcon.setValue(R.drawable.ic_cursor);
