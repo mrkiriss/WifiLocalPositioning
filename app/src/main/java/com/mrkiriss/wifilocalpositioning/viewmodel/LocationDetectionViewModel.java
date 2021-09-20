@@ -89,20 +89,6 @@ public class LocationDetectionViewModel {
         searchResultContainer = new ObservableField<>(new MapPoint());
 
         requestToRefreshFloor=repository.getRequestToRefreshFloor();
-
-        /*
-        // обозреваем изменение режима навагиции для установки текущего местоположения  в строку начала
-        // + изменяем требования в репозитории, чтобы выбирать изображении для отрисовки местоположения
-        showRoute.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
-            @Override
-            public void onPropertyChanged(Observable sender, int propertyId) {
-                //(requestToChangeFloorByMapPoint.getValue()!=null)
-                  //  departureInput.set(Objects.requireNonNull(requestToChangeFloorByMapPoint.getValue()).getRoomName());
-
-                repository.clearRouteFloors();
-                repository.setShowRoute(showRoute.get());
-            }
-        });*/
         // изменяет номер этажа в репозитории
         floorNumber.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
             @Override
@@ -116,27 +102,6 @@ public class LocationDetectionViewModel {
     public void startProcessingCompleteKitsOfScansResult(CompleteKitsContainer scanResults){
         repository.startProcessingCompleteKitsOfScansResult(scanResults);
     }
-
-    /*
-    // show\hide route views
-    public void onShowRoute(){
-        showRoute.set(true);
-        requestToRefreshFloor.setValue("Маршрутизация показывается");
-    }
-    public void onHideRoute(){
-        showRoute.set(false);
-        requestToRefreshFloor.setValue("Маршрутизация скрыта");
-    }
-    // show\hide find views
-    public void onShowFind(){
-        showFind.set(true);
-        requestToRefreshFloor.setValue("Меню поиска показывается");
-    }
-    public void onHideFind(){
-        showFind.set(false);
-        requestToRefreshFloor.setValue("Меню поиска скрыто");
-    }
-*/
 
     // Методы для взаимодействия со строкой поиска
     public void startLocationSearchProcess(TypeOfSearchRequester type) {
@@ -211,6 +176,8 @@ public class LocationDetectionViewModel {
         repository.clearRouteFloors();
         // даём репозиторию понять, что не нужно отрисовывать маршруты на картах
         repository.setShowRoute(false);
+        // запрашиваем обновление карты, чтобы убрать линию маршрута
+        repository.changeFloor();
     }
 
     // получение информации для фильтрации при поиске

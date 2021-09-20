@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements IUpButtonNavHost 
         navigationView.setCheckedItem(navigationView.getMenu().getItem(currentFragmentIndex));
 
         // установка режима клавиатуры
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
     }
 

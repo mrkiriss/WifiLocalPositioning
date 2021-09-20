@@ -129,10 +129,20 @@
                     android:id="@+id/buildRoute"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     android:layout_marginLeft="2dp"
+                    android:layout_toLeftOf="@id/progressBar"
+                    android:enabled="@{!viewModel.progressOfBuildingRouteStatus}"
                     android:onClick="@{() -> viewModel.startBuildRoute()}"
                     android:text="@string/buildRouteButtonText" />
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:visibility="@{viewModel.progressOfBuildingRouteStatus ? View.VISIBLE : View.GONE}" />
             </RelativeLayout>
 
         </LinearLayout>

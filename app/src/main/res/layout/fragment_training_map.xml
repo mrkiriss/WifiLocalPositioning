@@ -9,15 +9,12 @@
             type="com.mrkiriss.wifilocalpositioning.viewmodel.TrainingMapViewModel" />
     </data>
 
-<ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:weightSum="23">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:weightSum="23">
 
 
             <LinearLayout
@@ -26,500 +23,499 @@
                 android:orientation="vertical" />
 
 
-        <LinearLayout
-            android:id="@+id/mapUpdateContainer"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="2"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/updateMapPointsButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:onClick="@{()->viewModel.startUpdatingMapPointLists()}"
-                android:text="@string/updateMapButton" />
-
-            <ToggleButton
-                android:id="@+id/showMapPointsButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="@={viewModel.showMapPoints}"
-                android:textOff="@string/showAllPointsOff"
-                android:textOn="@string/showAllPointsOn" />
-        </LinearLayout>
-
-        <Spinner
-            android:id="@+id/selectModsSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:entries="@array/mapMods"
-            android:selectedItemPosition="@={viewModel.selectedMod}" />
-
-        <FrameLayout
-            android:id="@+id/mapContainer"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="10"
-            android:background="@drawable/round_border"
-            android:clipChildren="false"
-            tools:context=".view.LocationDetectionFragment">
-
-            <com.github.chrisbanes.photoview.PhotoView
-                android:id="@+id/photoViewTraining"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center" />
-
             <LinearLayout
-                android:layout_width="30dp"
-                android:layout_height="100dp"
-                android:layout_gravity="bottom|right"
-                android:layout_margin="20dp"
+                android:id="@+id/mapUpdateContainer"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/updateMapPointsButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="@{()->viewModel.startUpdatingMapPointLists()}"
+                    android:text="@string/updateMapButton" />
+
+                <ToggleButton
+                    android:id="@+id/showMapPointsButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:checked="@={viewModel.showMapPoints}"
+                    android:textOff="@string/showAllPointsOff"
+                    android:textOn="@string/showAllPointsOn" />
+            </LinearLayout>
+
+            <Spinner
+                android:id="@+id/selectModsSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:entries="@array/mapMods"
+                android:selectedItemPosition="@={viewModel.selectedMod}" />
+
+            <FrameLayout
+                android:id="@+id/mapContainer"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="10"
                 android:background="@drawable/round_border"
-                android:orientation="vertical"
-                android:weightSum="3">
+                android:clipChildren="false"
+                tools:context=".view.LocationDetectionFragment">
 
-                <ImageButton
-                    android:id="@+id/imageButton"
+                <com.github.chrisbanes.photoview.PhotoView
+                    android:id="@+id/photoViewTraining"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:onClick="@{()->viewModel.arrowInc()}"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_arrow_up" />
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center" />
 
-                <TextView
-                    android:id="@+id/textView"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="@{String.valueOf(viewModel.floorNumber)}"
-                    android:textAlignment="center"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+                <LinearLayout
+                    android:layout_width="30dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="bottom|right"
+                    android:layout_margin="20dp"
+                    android:background="@drawable/round_border"
+                    android:orientation="vertical"
+                    android:weightSum="3">
 
-                <ImageButton
-                    android:id="@+id/imageButton2"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:onClick="@{()->viewModel.arrowDec()}"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_arrow_down" />
-            </LinearLayout>
+                    <ImageButton
+                        android:id="@+id/imageButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:onClick="@{()->viewModel.arrowInc()}"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_arrow_up" />
 
-        </FrameLayout>
+                    <TextView
+                        android:id="@+id/textView"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@{String.valueOf(viewModel.floorNumber)}"
+                        android:textAlignment="center"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
 
-        <LinearLayout
-            android:id="@+id/modScanningContainer"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_margin="2dp"
-            android:layout_weight="8"
-            android:orientation="vertical"
-            android:visibility="@{viewModel.selectedMod==1?View.VISIBLE:View.GONE}"
-            android:weightSum="12">
+                    <ImageButton
+                        android:id="@+id/imageButton2"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:onClick="@{()->viewModel.arrowDec()}"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_arrow_down" />
+                </LinearLayout>
+
+            </FrameLayout>
 
             <LinearLayout
+                android:id="@+id/modScanningContainer"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="2"
-                android:orientation="horizontal"
-                android:weightSum="14">
+                android:layout_margin="2dp"
+                android:layout_weight="8"
+                android:orientation="vertical"
+                android:visibility="@{viewModel.selectedMod==1?View.VISIBLE:View.GONE}"
+                android:weightSum="12">
 
-                <TextView
-                    android:id="@+id/textView8"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="2"
+                    android:orientation="horizontal"
+                    android:weightSum="14">
+
+                    <TextView
+                        android:id="@+id/textView8"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:gravity="center"
+                        android:text="@string/selectedMapPoint"
+                        app:autoSizeTextType="uniform" />
+
+                    <TextView
+                        android:id="@+id/mapPointTextInfo"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="7"
+                        android:gravity="center"
+                        android:text="@{viewModel.selectedMapPoint.toStringAllObject()}"
+                        app:autoSizeTextType="uniform" />
+
+                    <Button
+                        android:id="@+id/button8"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:onClick="@{()->viewModel.getScanInfoAboutLocation()}"
+                        android:text="@string/moreDetailed"
+                        app:autoSizeTextType="uniform" />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/scanInfoRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="5" />
+
+                <LinearLayout
+                    android:id="@+id/numberOfScanningContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="2"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/remainingNumberOfScanningText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/numberOfSuccessfulScans"
+                        app:autoSizeTextType="uniform" />
+
+                    <TextView
+                        android:id="@+id/remainingNumberOfScanning"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@{String.valueOf(viewModel.remainingNumberOfScanKits)}"
+                        app:autoSizeTextType="uniform" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
                     android:layout_weight="3"
                     android:gravity="center"
-                    android:text="@string/selectedMapPoint"
-                    app:autoSizeTextType="uniform" />
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/mapPointTextInfo"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="7"
-                    android:gravity="center"
-                    android:text="@{viewModel.selectedMapPoint.toStringAllObject()}"
-                    app:autoSizeTextType="uniform" />
+                    <EditText
+                        android:id="@+id/inputNumberOfKits"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:hint="@string/hintRequiredQuantity"
+                        android:inputType="numberDecimal"
+                        android:text="@={viewModel.inputNumberOfScanKits}"
+                        app:autoSizeTextType="uniform" />
 
-                <Button
-                    android:id="@+id/button8"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="4"
-                    android:onClick="@{()->viewModel.getScanInfoAboutLocation()}"
-                    android:text="@string/moreDetailed"
-                    app:autoSizeTextType="uniform" />
-            </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/scanInfoRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="5" />
-
-            <LinearLayout
-                android:id="@+id/numberOfScanningContainer"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="2"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/remainingNumberOfScanningText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/numberOfSuccessfulScans"
-                    app:autoSizeTextType="uniform" />
-
-                <TextView
-                    android:id="@+id/remainingNumberOfScanning"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="@{String.valueOf(viewModel.remainingNumberOfScanKits)}"
-                    app:autoSizeTextType="uniform" />
+                    <Button
+                        android:id="@+id/startScaning"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:onClick="@{()->viewModel.startScanning()}"
+                        android:text="@string/startScanning"
+                        app:autoSizeTextType="uniform" />
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/modNeighborsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="3"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <EditText
-                    android:id="@+id/inputNumberOfKits"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:hint="@string/hintRequiredQuantity"
-                    android:inputType="numberDecimal"
-                    android:text="@={viewModel.inputNumberOfScanKits}"
-                    app:autoSizeTextType="uniform" />
-
-                <Button
-                    android:id="@+id/startScaning"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:onClick="@{()->viewModel.startScanning()}"
-                    android:text="@string/startScanning"
-                    app:autoSizeTextType="uniform" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/modNeighborsContainer"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_margin="2dp"
-            android:layout_weight="8"
-            android:orientation="vertical"
-            android:visibility="@{viewModel.selectedMod==2?View.VISIBLE:View.GONE}"
-            android:weightSum="10">
-
-            <LinearLayout
-                android:id="@+id/currentChosenPointContainer"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="2"
-                android:orientation="horizontal"
-                android:weightSum="9">
-
-                <TextView
-                    android:id="@+id/currentChosenPointInfo"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:gravity="center"
-                    android:text="@string/selectedMapPoint"
-                    app:autoSizeTextType="uniform" />
-
-                <TextView
-                    android:id="@+id/currentChosenPointContent"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="4"
-                    android:gravity="center"
-                    android:text="@{viewModel.selectedMapPoint.toStringAllObject()}"
-                    app:autoSizeTextType="uniform" />
-
-                <Button
-                    android:id="@+id/actionWithPointButton"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="3"
-                    android:onClick="@{()->viewModel.selectActionForChangingNeighbors()}"
-                    android:text="@{viewModel.contentOnActionsButtonChangesNeighbors}"
-                    app:autoSizeTextType="uniform" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/acceptedForEditPointInfoContainer"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="horizontal"
-                android:weightSum="7">
-
-                <TextView
-                    android:id="@+id/textView10"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:text="@string/neighbors"
-                    app:autoSizeTextType="uniform" />
-
-                <TextView
-                    android:id="@+id/textView9"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="5"
-                    android:text="@{viewModel.selectedToChangMapPoint.toOneString()}"
-                    app:autoSizeTextType="uniform" />
-
-            </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/mapPointsRV"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="5">
-
-            </androidx.recyclerview.widget.RecyclerView>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="2"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button2"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:enabled="@{viewModel.selectedToChangMapPoint!=null &amp;&amp; viewModel.currentChangeableConnections!=null}"
-                    android:onClick="@{()->viewModel.cancelPointChangingNeighbors()}"
-                    android:text="@string/cancel"
-                    app:autoSizeTextType="uniform" />
-
-                <Button
-                    android:id="@+id/button6"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:enabled="@{viewModel.selectedToChangMapPoint!=null &amp;&amp; viewModel.currentChangeableConnections!=null}"
-                    android:onClick="@{()->viewModel.acceptPointChangingNeighbors()}"
-                    android:text="@string/accept"
-                    app:autoSizeTextType="uniform" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/modCoordinatesContainer"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_margin="2dp"
-            android:layout_weight="8"
-            android:orientation="vertical"
-            android:visibility="@{viewModel.selectedMod==0?View.VISIBLE:View.GONE}"
-            android:weightSum="5">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="3"
-                android:gravity="center"
+                android:layout_margin="2dp"
+                android:layout_weight="8"
                 android:orientation="vertical"
-                android:weightSum="2">
+                android:visibility="@{viewModel.selectedMod==2?View.VISIBLE:View.GONE}"
+                android:weightSum="10">
+
+                <LinearLayout
+                    android:id="@+id/currentChosenPointContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="2"
+                    android:orientation="horizontal"
+                    android:weightSum="9">
+
+                    <TextView
+                        android:id="@+id/currentChosenPointInfo"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:gravity="center"
+                        android:text="@string/selectedMapPoint"
+                        app:autoSizeTextType="uniform" />
+
+                    <TextView
+                        android:id="@+id/currentChosenPointContent"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:gravity="center"
+                        android:text="@{viewModel.selectedMapPoint.toStringAllObject()}"
+                        app:autoSizeTextType="uniform" />
+
+                    <Button
+                        android:id="@+id/actionWithPointButton"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:onClick="@{()->viewModel.selectActionForChangingNeighbors()}"
+                        android:text="@{viewModel.contentOnActionsButtonChangesNeighbors}"
+                        app:autoSizeTextType="uniform" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/acceptedForEditPointInfoContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:weightSum="7">
+
+                    <TextView
+                        android:id="@+id/textView10"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:text="@string/neighbors"
+                        app:autoSizeTextType="uniform" />
+
+                    <TextView
+                        android:id="@+id/textView9"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="5"
+                        android:text="@{viewModel.selectedToChangMapPoint.toOneString()}"
+                        app:autoSizeTextType="uniform" />
+
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/mapPointsRV"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="5">
+
+                </androidx.recyclerview.widget.RecyclerView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="2"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/button2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:enabled="@{viewModel.selectedToChangMapPoint!=null &amp;&amp; viewModel.currentChangeableConnections!=null}"
+                        android:onClick="@{()->viewModel.cancelPointChangingNeighbors()}"
+                        android:text="@string/cancel"
+                        app:autoSizeTextType="uniform" />
+
+                    <Button
+                        android:id="@+id/button6"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:enabled="@{viewModel.selectedToChangMapPoint!=null &amp;&amp; viewModel.currentChangeableConnections!=null}"
+                        android:onClick="@{()->viewModel.acceptPointChangingNeighbors()}"
+                        android:text="@string/accept"
+                        app:autoSizeTextType="uniform" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/modCoordinatesContainer"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_margin="2dp"
+                android:layout_weight="8"
+                android:orientation="vertical"
+                android:visibility="@{viewModel.selectedMod==0?View.VISIBLE:View.GONE}"
+                android:weightSum="5">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="3"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:weightSum="2">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:weightSum="4">
+
+                        <EditText
+                            android:id="@+id/editY"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ems="10"
+                            android:hint="@string/hintY"
+                            android:inputType="numberDecimal"
+                            android:text="@={viewModel.inputY}"
+                            app:autoSizeTextType="uniform" />
+
+                        <EditText
+                            android:id="@+id/editX"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ems="10"
+                            android:hint="@string/hintX"
+                            android:inputType="numberDecimal"
+                            android:text="@={viewModel.inputX}"
+                            app:autoSizeTextType="uniform" />
+
+                        <EditText
+                            android:id="@+id/editRoomName"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:ems="10"
+                            android:hint="@string/pointName"
+                            android:inputType="textPersonName"
+                            android:text="@={viewModel.inputCabId}"
+                            app:autoSizeTextType="uniform" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:weightSum="4">
+
+                        <Spinner
+                            android:id="@+id/isRoomSpinner"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3"
+                            android:entries="@array/isRoomSpinner"
+                            android:selectedItemPosition="@={viewModel.selectedRoomType}" />
+
+                        <Spinner
+                            android:id="@+id/floorId"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:entries="@array/floorIds"
+                            android:selectedItemPosition="@={viewModel.selectedFloorId}"
+                            android:textAlignment="viewEnd" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/button5"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:onClick="@{()->viewModel.processShowSelectedMapPoint(true)}"
+                    android:text="@string/showPointOnMap"
+                    app:autoSizeTextType="uniform" />
+
+                <Button
+                    android:id="@+id/button4"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:onClick="@{()->viewModel.postPointInformationToServer()}"
+                    android:text="@string/postToServer"
+                    app:autoSizeTextType="uniform" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/modRemovePointsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="8"
+                android:orientation="vertical"
+                android:visibility="@{viewModel.selectedMod==3?View.VISIBLE:View.GONE}"
+                android:weightSum="4">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:weightSum="4">
+                    android:orientation="horizontal">
 
-                    <EditText
-                        android:id="@+id/editY"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:ems="10"
-                        android:hint="@string/hintY"
-                        android:inputType="numberDecimal"
-                        android:text="@={viewModel.inputY}"
-                        app:autoSizeTextType="uniform" />
-
-                    <EditText
-                        android:id="@+id/editX"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:ems="10"
-                        android:hint="@string/hintX"
-                        android:inputType="numberDecimal"
-                        android:text="@={viewModel.inputX}"
-                        app:autoSizeTextType="uniform" />
-
-                    <EditText
-                        android:id="@+id/editRoomName"
+                    <TextView
+                        android:id="@+id/textView6"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
-                        android:ems="10"
-                        android:hint="@string/pointName"
-                        android:inputType="textPersonName"
-                        android:text="@={viewModel.inputCabId}"
+                        android:text="@string/selectedMapPoint"
+                        app:autoSizeTextType="uniform" />
+
+                    <TextView
+                        android:id="@+id/textView5"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5"
+                        android:text="@{viewModel.selectedMapPoint.toStringAllObject()}"
                         app:autoSizeTextType="uniform" />
                 </LinearLayout>
 
-                <LinearLayout
+                <EditText
+                    android:id="@+id/editTextTextPersonName"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:weightSum="4">
+                    android:ems="10"
+                    android:hint="@string/pointName"
+                    android:inputType="textPersonName"
+                    android:text="@={viewModel.inputCabId}"
+                    app:autoSizeTextType="uniform" />
 
-                    <Spinner
-                        android:id="@+id/isRoomSpinner"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="3"
-                        android:entries="@array/isRoomSpinner"
-                        android:selectedItemPosition="@={viewModel.selectedRoomType}" />
+                <Button
+                    android:id="@+id/deleteLPButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:onClick="@{()->viewModel.startDeletingLP()}"
+                    android:text="@string/deleteLPButtonText"
+                    app:autoSizeTextType="uniform" />
 
-                    <Spinner
-                        android:id="@+id/floorId"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:entries="@array/floorIds"
-                        android:selectedItemPosition="@={viewModel.selectedFloorId}"
-                        android:textAlignment="viewEnd" />
-
-                </LinearLayout>
+                <Button
+                    android:id="@+id/deleteLPINfoButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:onClick="@{()->viewModel.startDeletingLPINfo()}"
+                    android:text="@string/deleteLPInfoButtonText"
+                    app:autoSizeTextType="uniform" />
 
             </LinearLayout>
 
-            <Button
-                android:id="@+id/button5"
+            <ScrollView
+                android:id="@+id/serverResponseContainer"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
-                android:onClick="@{()->viewModel.processShowSelectedMapPoint(true)}"
-                android:text="@string/showPointOnMap"
-                app:autoSizeTextType="uniform" />
+                android:layout_weight="2">
 
-            <Button
-                android:id="@+id/button4"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:onClick="@{()->viewModel.postPointInformationToServer()}"
-                android:text="@string/postToServer"
-                app:autoSizeTextType="uniform" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/modRemovePointsContainer"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="8"
-            android:orientation="vertical"
-            android:visibility="@{viewModel.selectedMod==3?View.VISIBLE:View.GONE}"
-            android:weightSum="4">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/textView6"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:text="@string/selectedMapPoint"
-                    app:autoSizeTextType="uniform" />
-
-                <TextView
-                    android:id="@+id/textView5"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="5"
-                    android:text="@{viewModel.selectedMapPoint.toStringAllObject()}"
-                    app:autoSizeTextType="uniform" />
-            </LinearLayout>
-
-            <EditText
-                android:id="@+id/editTextTextPersonName"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:ems="10"
-                android:hint="@string/pointName"
-                android:inputType="textPersonName"
-                android:text="@={viewModel.inputCabId}"
-                app:autoSizeTextType="uniform" />
-
-            <Button
-                android:id="@+id/deleteLPButton"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:onClick="@{()->viewModel.startDeletingLP()}"
-                android:text="@string/deleteLPButtonText"
-                app:autoSizeTextType="uniform" />
-
-            <Button
-                android:id="@+id/deleteLPINfoButton"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:onClick="@{()->viewModel.startDeletingLPINfo()}"
-                android:text="@string/deleteLPInfoButtonText"
-                app:autoSizeTextType="uniform" />
-
-        </LinearLayout>
-
-        <ScrollView
-            android:id="@+id/serverResponseContainer"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="2">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/serverResponseText"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{viewModel.serverResponse}" />
-            </LinearLayout>
-        </ScrollView>
+                    android:orientation="vertical">
 
-    </LinearLayout>
-</ScrollView>
+                    <TextView
+                        android:id="@+id/serverResponseText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.serverResponse}" />
+                </LinearLayout>
+            </ScrollView>
+
+        </LinearLayout>
 </layout>

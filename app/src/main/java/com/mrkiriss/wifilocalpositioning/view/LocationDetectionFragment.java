@@ -106,7 +106,7 @@ public class LocationDetectionFragment extends Fragment implements Serializable,
     }
 
     private void showToastContent(String content){
-        Toast.makeText(getContext(), content, Toast.LENGTH_SHORT).show();
+        if (content != null && !content.isEmpty()) Toast.makeText(getContext(), content, Toast.LENGTH_SHORT).show();
     }
 
     private void drawCurrentLocation(MapPoint mapPoint){
