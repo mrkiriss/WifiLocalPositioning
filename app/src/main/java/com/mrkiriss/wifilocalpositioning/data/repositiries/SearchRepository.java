@@ -3,6 +3,7 @@ package com.mrkiriss.wifilocalpositioning.data.repositiries;
 import android.app.Activity;
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
@@ -24,12 +25,14 @@ public class SearchRepository {
     private SearchItem currentLocation;
 
     private final MutableLiveData<List<SearchItem>> requestToUpdateSearchContent;
+    private final MutableLiveData<String> requestToUpdateSearchInformation;
 
     public SearchRepository() {
         prevViewedMapPoints = new ArrayList<>();
         availableForSearchMapPoints = new ArrayList<>();
 
         requestToUpdateSearchContent = new MutableLiveData<>();
+        requestToUpdateSearchInformation = new MutableLiveData<>();
     }
 
     public void saveSearchData(SearchData data) {
@@ -50,6 +53,12 @@ public class SearchRepository {
 
         if (input.isEmpty()) {
             result.addAll(prevViewedMapPoints);
+
+            // обновление информации о поиске при отсутсвии предыдущих выборов
+            if (prevViewedMapPoints == null || prevViewedMapPoints.isEmpty()) {
+                requestToUpdateSearchInformation.setValue("История поиска пуста");
+            }
+
         }else {
             if (availableForSearchMapPoints != null) {
                 for (SearchItem item : availableForSearchMapPoints) {
@@ -59,6 +68,15 @@ public class SearchRepository {
                     }
                 }
             }
+
+            // обновление информации о поиске при отсутсвии каких-либо результатов поиска
+            if (availableForSearchMapPoints == null || result.isEmpty()) {
+                requestToUpdateSearchInformation.setValue("По запросу ничего не найдено");
+            }
+        }
+
+        if (!result.isEmpty()) {
+            requestToUpdateSearchInformation.setValue("");
         }
 
         Log.i("searchMode", "result of filtering after responseToSearchInput: "+ result.toString());

@@ -1,11 +1,11 @@
 package com.mrkiriss.wifilocalpositioning.viewmodel;
 
-import android.app.Activity;
 import android.util.Log;
 
 import androidx.databinding.Observable;
 import androidx.databinding.ObservableField;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchData;
@@ -23,16 +23,20 @@ public class SearchViewModel extends ViewModel {
 
     private final ObservableField<String> searchLineHint;
     private final ObservableField<String> searchLineInput;
+    private final ObservableField<String> searchInformation;
 
     private final LiveData<List<SearchItem>> requestToUpdateSearchContent;
+    private final LiveData<String> requestToUpdateSearchInformation;
 
     public SearchViewModel(SearchRepository repository) {
         this.rep = repository;
 
         requestToUpdateSearchContent = rep.getRequestToUpdateSearchContent();
+        requestToUpdateSearchInformation = rep.getRequestToUpdateSearchInformation();
 
         searchLineHint = new ObservableField<>("");
         searchLineInput = new ObservableField<>("");
+        searchInformation = new ObservableField<>("");
 
         initSearchInputCallback();
     }

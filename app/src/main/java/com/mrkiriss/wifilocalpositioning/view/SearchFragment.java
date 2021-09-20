@@ -73,8 +73,12 @@ public class SearchFragment extends Fragment{
     }
 
     private void initObservers() {
+        // подписываемся на обновление контента в строке поиска
         viewModel.getRequestToUpdateSearchContent().observe(getViewLifecycleOwner(), content -> searchRVAdapter.replaceContent(content));
+        // подписываемся на обработку выбора пользователя
         searchRVAdapter.getRequestToProcessSelectedLocation().observe(getViewLifecycleOwner(), this::processSelectedItem);
+        // подписываемся на запрос на обновление информации о состоянии поиска
+        viewModel.getRequestToUpdateSearchInformation().observe(getViewLifecycleOwner(), content -> viewModel.getSearchInformation().set(content));
     }
     private void initSearchAdapter() {
         searchRVAdapter = new SearchRVAdapter();
