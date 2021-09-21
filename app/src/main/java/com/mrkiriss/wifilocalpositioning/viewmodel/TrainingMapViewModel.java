@@ -47,8 +47,8 @@ public class TrainingMapViewModel extends ViewModel {
 
     private final ObservableField<MapPoint> selectedToChangMapPoint;
     private final ObservableField<String> contentOnActionsButtonChangesNeighbors;
-    public final String MODE_SELECT_MAIN="Редактировать связи";
-    public final String MODE_ADD_SECONDLY="Добавить связь";
+    public final String MODE_SELECT_MAIN="Редактировать связи выбранной точки";
+    public final String MODE_ADD_SECONDLY="Добавить выбранную точку как связь";
     private List<MapPoint> currentChangeableConnections;
 
     private final LiveData<Floor> changeFloor;
@@ -306,14 +306,14 @@ public class TrainingMapViewModel extends ViewModel {
 
     // DELETE MODE
     public void startDeletingLPINfo(){
-        if (inputCabId.get().isEmpty()){
+        if (selectedMapPoint.get() == null || selectedMapPoint.get().getRoomName() == null || selectedMapPoint.get().getRoomName().isEmpty()){
             toastContent.setValue("Неккоректное название точки");
             return;
         }
         repository.deleteLocationPointInfoOnServer(inputCabId.get());
     }
     public void startDeletingLP(){
-        if (inputCabId.get().isEmpty()){
+        if (selectedMapPoint.get() == null || selectedMapPoint.get().getRoomName() == null || selectedMapPoint.get().getRoomName().isEmpty()){
             toastContent.setValue("Неккоректное название точки");
             return;
         }

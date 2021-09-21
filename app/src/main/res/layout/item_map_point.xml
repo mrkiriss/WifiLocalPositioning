@@ -17,7 +17,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:padding="4dp">
 
             <TextView
                 android:id="@+id/textView12"
@@ -26,7 +27,8 @@
                 android:layout_gravity="center"
                 android:layout_weight="5"
                 android:gravity="center"
-                android:text="@{viewModel.mapPoint.toString()}" />
+                android:text="@{viewModel.mapPoint.getRoomName()}"
+                android:textSize="18sp" />
 
             <ImageButton
                 android:id="@+id/imageButton4"

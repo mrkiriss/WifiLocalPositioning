@@ -337,54 +337,11 @@ public class TrainingMapRepository implements Serializable {
         return result;
     }
 
-    // удаление информации о точки, самой точки с её информацией о APs
-    public void deleteLocationPointInfoOnServer(String roomName){
-        serverResponse.setValue("Запрос отправлен на сервер. Ждёмс");
-
-        retrofit.deleteLPInfo(roomName).enqueue(new Callback<StringResponse>() {
-            @Override
-            public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
-                Log.println(Log.INFO, "TrainingMapRepository",
-                        String.format("Server response after delete lpInfo=%s", response.body()));
-                if (response.body()==null){
-                    serverResponse.setValue("Response body is null");
-                    return;
-                }
-                serverResponse.setValue(response.body().getResponse());
-            }
-
-            @Override
-            public void onFailure(Call<StringResponse> call, Throwable t) {
-                serverResponse.setValue(call.toString()+"\n"+t.getMessage());
-                Log.e("SERVER_ERROR", t.getMessage());
-            }
-        });
-    }
-    public void deleteLocationPointOnServer(String roomName){
-        serverResponse.setValue("Запрос отправлен на сервер. Ждёмс");
-
-        retrofit.deleteLPAps(roomName).enqueue(new Callback<StringResponse>() {
-            @Override
-            public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
-                Log.println(Log.INFO, "TrainingMapRepository",
-                        String.format("Server response after delete lpAPs=%s", response.body()));
-                if (response.body()==null){
-                    serverResponse.setValue("Response body is null");
-                    return;
-                }
-                serverResponse.setValue(response.body().getResponse());
-            }
-
-            @Override
-            public void onFailure(Call<StringResponse> call, Throwable t) {
-                serverResponse.setValue(call.toString()+"\n"+t.getMessage());
-                Log.e("SERVER_ERROR", t.getMessage());
-            }
-        });
-    }
-
     // получение связей по имени для добавления на экран в RecyclerView
     public void startDownloadingConnections(String mainName){
+        // обновление информации о запросе к серверу
+        requestToUpdateInteractionWithServerIsCarriedOut.setValue(true);
+        requestToUpdateDescriptionOfInteractionWithServer.setValue("Запрос получение связей точки " + mainName + " обрабатывается");
         serverResponse.setValue("Запрос отправлен на сервер. Ждёмс");
 
         retrofit.getConnectionsByName(mainName).enqueue(new Callback<Connections>() {
@@ -392,11 +349,17 @@ public class TrainingMapRepository implements Serializable {
             public void onResponse(Call<Connections> call, Response<Connections> response) {
                 Log.println(Log.INFO, "TrainingMapRepository",
                         String.format("Server response after downloading connections=%s", response.body()));
+
+                // обновление информации о запросе к серверу
+                requestToUpdateInteractionWithServerIsCarriedOut.setValue(false);
+
                 if (response.body()==null){
                     serverResponse.setValue("Response body is null");
                     return;
                 }
+
                 serverResponse.setValue(response.body().toString());
+
                 if (response.body().getMainRoomName()!= null) {
                     serverConnectionsResponse.setValue(response.body().convertToListOfMapPoints());
                 }else{
@@ -405,13 +368,19 @@ public class TrainingMapRepository implements Serializable {
             }
             @Override
             public void onFailure(Call<Connections> call, Throwable t) {
+                // обновление информации о запросе к серверу
+                requestToUpdateInteractionWithServerIsCarriedOut.setValue(false);
                 serverResponse.setValue(call.toString()+"\n"+t.getMessage());
+
                 Log.e("SERVER_ERROR", t.getMessage());
             }
         });
     }
     // отправка на сервер изменённых пользователем связей
     public void postChangedConnections(List<MapPoint> mapPoints, String mainName){
+        // обновление информации о запросе к серверу
+        requestToUpdateInteractionWithServerIsCarriedOut.setValue(true);
+        requestToUpdateDescriptionOfInteractionWithServer.setValue("Запрос на обновление связей точки " + mainName + "обрабатывается");
         serverResponse.setValue("Запрос отправлен на сервер. Ждёмс");
 
         retrofit.postConnections(Connections.convertToOnlyNameConnections(mainName, mapPoints)).enqueue(new Callback<StringResponse>() {
@@ -419,16 +388,92 @@ public class TrainingMapRepository implements Serializable {
             public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
                 Log.println(Log.INFO, "TrainingMapRepository",
                         String.format("Server response after postChangedConnections=%s", response.body()));
+
+                // обновление информации о запросе к серверу
+                requestToUpdateInteractionWithServerIsCarriedOut.setValue(false);
+
                 if (response.body()==null){
                     serverResponse.setValue("Response body is null");
                     return;
                 }
+
                 serverResponse.setValue(response.body().getResponse());
             }
 
             @Override
             public void onFailure(Call<StringResponse> call, Throwable t) {
+                // обновление информации о запросе к серверу
+                requestToUpdateInteractionWithServerIsCarriedOut.setValue(false);
                 serverResponse.setValue(call.toString()+"\n"+t.getMessage());
+
+                Log.e("SERVER_ERROR", t.getMessage());
+            }
+        });
+    }
+
+    // удаление информации о точки, самой точки с её информацией о APs
+    public void deleteLocationPointInfoOnServer(String roomName){
+        // обновление информации о запросе к серверу
+        requestToUpdateInteractionWithServerIsCarriedOut.setValue(true);
+        requestToUpdateDescriptionOfInteractionWithServer.setValue("Запрос на удаление сканирований точки " + roomName + "обрабатывается");
+        serverResponse.setValue("Запрос отправлен на сервер. Ждёмс");
+
+        retrofit.deleteLPInfo(roomName).enqueue(new Callback<StringResponse>() {
+            @Override
+            public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
+                Log.println(Log.INFO, "TrainingMapRepository",
+                        String.format("Server response after delete lpInfo=%s", response.body()));
+
+                // обновление информации о запросе к серверу
+                requestToUpdateInteractionWithServerIsCarriedOut.setValue(false);
+
+                if (response.body()==null){
+                    serverResponse.setValue("Response body is null");
+                    return;
+                }
+
+                serverResponse.setValue(response.body().getResponse());
+            }
+
+            @Override
+            public void onFailure(Call<StringResponse> call, Throwable t) {
+                // обновление информации о запросе к серверу
+                requestToUpdateInteractionWithServerIsCarriedOut.setValue(false);
+                serverResponse.setValue(call.toString()+"\n"+t.getMessage());
+
+                Log.e("SERVER_ERROR", t.getMessage());
+            }
+        });
+    }
+    public void deleteLocationPointOnServer(String roomName){
+        // обновление информации о запросе к серверу
+        requestToUpdateInteractionWithServerIsCarriedOut.setValue(true);
+        requestToUpdateDescriptionOfInteractionWithServer.setValue("Запрос на удаление точки " + roomName + "обрабатывается");
+        serverResponse.setValue("Запрос отправлен на сервер. Ждёмс");
+
+        retrofit.deleteLPAps(roomName).enqueue(new Callback<StringResponse>() {
+            @Override
+            public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
+                Log.println(Log.INFO, "TrainingMapRepository",
+                        String.format("Server response after delete lpAPs=%s", response.body()));
+
+                // обновление информации о запросе к серверу
+                requestToUpdateInteractionWithServerIsCarriedOut.setValue(false);
+
+                if (response.body()==null){
+                    serverResponse.setValue("Response body is null");
+                    return;
+                }
+
+                serverResponse.setValue(response.body().getResponse());
+            }
+
+            @Override
+            public void onFailure(Call<StringResponse> call, Throwable t) {
+                // обновление информации о запросе к серверу
+                requestToUpdateInteractionWithServerIsCarriedOut.setValue(false);
+                serverResponse.setValue(call.toString()+"\n"+t.getMessage());
+
                 Log.e("SERVER_ERROR", t.getMessage());
             }
         });

@@ -78,6 +78,9 @@ public class TrainingMapFragment extends Fragment {
         selectedMapPointViewModel.setMapPointWithOtherMoves(viewModel.getSelectedMapPoint());
 
         binding.includeScanningMode.includeSeelctedMapPoint.setViewModel(selectedMapPointViewModel);
+        binding.includeNeighboursMode.includeSeelctedMapPoint.setViewModel(selectedMapPointViewModel);
+        binding.includeDeletingMode.includeSeelctedMapPoint.setViewModel(selectedMapPointViewModel);
+
     }
     private void initPhotoView(){
         photoView=binding.photoViewTraining;

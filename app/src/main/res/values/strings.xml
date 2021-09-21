@@ -30,10 +30,10 @@
     <string name="updateMapButton">Обновить карту</string>
     <string name="showPointOnMap">Отобразить точку на карте</string>
     <string-array name="mapMods">
-        <item>Выбор координат точки</item>
-        <item>Сканирование точки</item>
-        <item>Выбор соседей точки</item>
-        <item>Удаление точки</item>
+        <item>Добавление точек</item>
+        <item>Сканирование точек</item>
+        <item>Выбор соседей точек</item>
+        <item>Удаление точек</item>
     </string-array>
     <string name="inputDescription">Данные создаваемой локации</string>
     <string name="inputNameDescription">Название локации</string>
@@ -61,7 +61,8 @@
     <string name="descriptionAboutStartScanFromSelectedPoint">Запуск сканирований для выбранной точки</string>
     <string name="selectedNumberOfScanning">Количество сканирований: </string>
 
-    <string name="add">Добавить</string>
+    <string name="editSelectedPointNeighbours">Редактировать связи выбранной точки</string>
+    <string name="addSelectedPointAsNeighbour">Добавить выбранную точку как связь</string>
     <string name="accept">Подтвердить</string>
     <string name="cancel">Отмена</string>
     <string name="neighbors">Соседи для точки </string>
