@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|end"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="16dp"
             android:enabled="@{!viewModel.interactionWithServerIsCarriedOut &amp;&amp; viewModel.contentOnActionsButtonChangesNeighbors.equals(viewModel.MODE_SELECT_MAIN) || viewModel.contentOnActionsButtonChangesNeighbors.equals(viewModel.MODE_ADD_SECONDLY)}"
             android:onClick="@{()->viewModel.selectActionForChangingNeighbors()}"
             android:text="@{viewModel.contentOnActionsButtonChangesNeighbors}" />

@@ -26,9 +26,10 @@
             android:id="@+id/deleteLPButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:enabled="@{!viewModel.interactionWithServerIsCarriedOut}"
             android:onClick="@{()->viewModel.startDeletingLP()}"
-            android:text="@string/deleteLPButtonText"
-            android:enabled="@{!viewModel.interactionWithServerIsCarriedOut}"/>
+            android:text="@string/deleteLPButtonText" />
 
         <Button
             android:id="@+id/deleteLPINfoButton"

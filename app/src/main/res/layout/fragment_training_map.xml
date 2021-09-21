@@ -125,7 +125,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="7"
                 android:gravity="clip_vertical"
-                android:text="@{viewModel.descriptionOfInteractionWithServer}" />
+                android:text="@{viewModel.descriptionOfInteractionWithServer}"
+                app:autoSizeTextType="uniform" />
 
             <ProgressBar
                 android:id="@+id/progressBar2"

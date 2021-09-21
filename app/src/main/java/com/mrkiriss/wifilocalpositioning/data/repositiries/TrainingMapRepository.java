@@ -273,10 +273,13 @@ public class TrainingMapRepository implements Serializable {
 
                 if (response.body()==null){
                     serverResponse.setValue("Response body is null");
+                    toastContent.setValue("Обработка сканирований провалилась");
                     return;
                 }
 
                 serverResponse.setValue(response.body().getResponse());
+                toastContent.setValue("Сканирования успешно обработаны");
+
             }
             @Override
             public void onFailure(Call<StringResponse> call, Throwable t) {
@@ -284,6 +287,8 @@ public class TrainingMapRepository implements Serializable {
                 // обновление информации о запросе к серверу
                 requestToUpdateInteractionWithServerIsCarriedOut.setValue(false);
                 serverResponse.setValue(call.toString()+"\n"+t.getMessage());
+
+                toastContent.setValue("Обработка сканирований провалилась");
 
                 Log.e("SERVER_ERROR", t.getMessage());
             }
@@ -394,10 +399,12 @@ public class TrainingMapRepository implements Serializable {
 
                 if (response.body()==null){
                     serverResponse.setValue("Response body is null");
+                    toastContent.setValue("Данные о точке изменить не удалось");
                     return;
                 }
 
                 serverResponse.setValue(response.body().getResponse());
+                toastContent.setValue("Данные обновлены");
             }
 
             @Override
@@ -407,6 +414,7 @@ public class TrainingMapRepository implements Serializable {
                 serverResponse.setValue(call.toString()+"\n"+t.getMessage());
 
                 Log.e("SERVER_ERROR", t.getMessage());
+                toastContent.setValue("Данные о точке изменить не удалось");
             }
         });
     }
@@ -429,10 +437,12 @@ public class TrainingMapRepository implements Serializable {
 
                 if (response.body()==null){
                     serverResponse.setValue("Response body is null");
+                    toastContent.setValue("Удалить сканирования не удалось");
                     return;
                 }
 
                 serverResponse.setValue(response.body().getResponse());
+                toastContent.setValue("Сканирования удалены");
             }
 
             @Override
@@ -442,6 +452,8 @@ public class TrainingMapRepository implements Serializable {
                 serverResponse.setValue(call.toString()+"\n"+t.getMessage());
 
                 Log.e("SERVER_ERROR", t.getMessage());
+
+                toastContent.setValue("Удалить сканирования не удалось");
             }
         });
     }
@@ -462,10 +474,13 @@ public class TrainingMapRepository implements Serializable {
 
                 if (response.body()==null){
                     serverResponse.setValue("Response body is null");
+                    toastContent.setValue("Удалить точку не удалось");
                     return;
                 }
 
                 serverResponse.setValue(response.body().getResponse());
+
+                toastContent.setValue("Точка удалена");
             }
 
             @Override
@@ -475,6 +490,8 @@ public class TrainingMapRepository implements Serializable {
                 serverResponse.setValue(call.toString()+"\n"+t.getMessage());
 
                 Log.e("SERVER_ERROR", t.getMessage());
+
+                toastContent.setValue("Удалить точку не удалось");
             }
         });
     }
