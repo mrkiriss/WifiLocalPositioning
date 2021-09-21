@@ -13,7 +13,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="4dp">
 
         <LinearLayout
             android:id="@+id/mapUpdateContainer"
@@ -102,6 +103,10 @@
             android:id="@+id/selectModsSpinner"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="2dp"
+            android:layout_marginBottom="4dp"
             android:layout_weight="1"
             android:entries="@array/mapMods"
             android:selectedItemPosition="@={viewModel.selectedMod}" />
@@ -133,13 +138,16 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="8">
+            android:layout_marginTop="4dp"
+            android:layout_weight="8"
+            android:background="@drawable/round_border">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="2dp">
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp">
 
                 <include
                     android:id="@+id/includeAddingMode"
@@ -168,7 +176,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:viewModel="@{viewModel}" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
 
         </ScrollView>
 

@@ -28,13 +28,19 @@
     <string name="showAllPointsOn">Скрыть точки</string>
     <string name="showAllPointsOff">Отобразить точки</string>
     <string name="updateMapButton">Обновить карту</string>
-    <string name="showPointOnMap">Отобразить точку</string>
+    <string name="showPointOnMap">Отобразить точку на карте</string>
     <string-array name="mapMods">
         <item>Выбор координат точки</item>
         <item>Сканирование точки</item>
         <item>Выбор соседей точки</item>
         <item>Удаление точки</item>
     </string-array>
+    <string name="inputDescription">Данные создаваемой локации</string>
+    <string name="inputNameDescription">Название локации</string>
+    <string name="inputXDescription">Координата по горизонтали</string>
+    <string name="inputYDescription">Координата по вертикали</string>
+    <string name="inputTypeOfLocationDescription">Тип локации</string>
+    <string name="inputFloorNumberDescription">Номер этажа</string>
     <string name="hintY">Y</string>
     <string name="hintX">X</string>
     <string-array name="isRoomSpinner">
@@ -50,6 +56,11 @@
     </string-array>
     <string name="postToServer">Отправить на сервер</string>
     <string name="selectedMapPoint">Выбранная точка</string>
+
+    <string name="descriptionAboutPointsScanningOnServer">Данные точки на сервере</string>
+    <string name="descriptionAboutStartScanFromSelectedPoint">Запуск сканирований для выбранной точки</string>
+    <string name="selectedNumberOfScanning">Количество сканирований: </string>
+
     <string name="add">Добавить</string>
     <string name="accept">Подтвердить</string>
     <string name="cancel">Отмена</string>

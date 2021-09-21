@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.net.wifi.ScanResult;
 import android.util.Log;
 
+import androidx.databinding.ObservableBoolean;
+import androidx.databinding.ObservableField;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -42,6 +44,8 @@ public class TrainingMapRepository implements Serializable {
 
     private final MutableLiveData<String> toastContent;
     private final MutableLiveData<Floor> changeFloor;
+    private final MutableLiveData<Boolean> requestToUpdateInteractionWithServerIsCarriedOut;
+    private final MutableLiveData<String> requestToUpdateDescriptionOfInteractionWithServer;
     private final MutableLiveData<String> serverResponse;
     private final MutableLiveData<List<MapPoint>> serverConnectionsResponse;
     private final MutableLiveData<String> requestToUpdateFloor;
@@ -58,6 +62,8 @@ public class TrainingMapRepository implements Serializable {
 
         toastContent=new MutableLiveData<>();
         changeFloor=new MutableLiveData<>();
+        requestToUpdateInteractionWithServerIsCarriedOut = new MutableLiveData<>();
+        requestToUpdateDescriptionOfInteractionWithServer = new MutableLiveData<>();
         serverResponse=new MutableLiveData<>();
         serverConnectionsResponse=new MutableLiveData<>();
         requestToUpdateFloor=new MutableLiveData<>();
@@ -141,10 +147,8 @@ public class TrainingMapRepository implements Serializable {
 
         if (completeKitsContainer.getRequestSourceType()!=WifiScanner.TYPE_TRAINING) return;
 
-        int numberOfCurrentSuccessfulKits=0;
         for (List<ScanResult> oneScanResults: completeKitsContainer.getCompleteKits()) {
             List<AccessPoint> accessPoints = new ArrayList<>();
-            numberOfCurrentSuccessfulKits++;
             for (ScanResult scanResult : oneScanResults) {
                 accessPoints.add(new AccessPoint(scanResult.BSSID, scanResult.level));
             }
@@ -159,19 +163,30 @@ public class TrainingMapRepository implements Serializable {
     // -----SERVER-----
     // обновление данных о всех точках на всех этажах через сервер
     public void startDownloadingDataOnPointsOnAllFloors(){
+        // обновление информации о запросе к серверу
         serverResponse.setValue("Запрос отправлен на сервер. Ждёмс");
+        requestToUpdateInteractionWithServerIsCarriedOut.setValue(true);
+        requestToUpdateDescriptionOfInteractionWithServer.setValue("Запрос на обновление данных о доступных точках обрабатывается");
+
         retrofit.getListOfAllMapPoints().enqueue(new Callback<ListOfAllMapPoints>() {
             @Override
             public void onResponse(Call<ListOfAllMapPoints> call, Response<ListOfAllMapPoints> response) {
+
+                // обновление информации о запросе к серверу
+                requestToUpdateInteractionWithServerIsCarriedOut.setValue(false);
+
                 if (response.body()==null) {
                     Log.i("TrainingMapRep", "server response: is null");
                     return;
                 }
+
                 Log.i("TrainingMapRep", "server response about allInfo: "+response.body().toString());
                 serverResponse.setValue(response.body().toString());
+
                 Map<FloorId, List<MapPoint>> converted = response.body().convertToMap();
                 mapImageManager.setDataOnPointsOnAllFloors(converted);
                 Log.i("TrainingMapRep", "after convert List of allInfo: "+converted.toString());
+
                 // провоцируем оновление картинки
                 requestToUpdateFloor.setValue("Данные о точках получены");
 
@@ -180,6 +195,9 @@ public class TrainingMapRepository implements Serializable {
             @Override
             public void onFailure(Call<ListOfAllMapPoints> call, Throwable t) {
                 Log.i("TrainingMapRep", "server error: "+ Arrays.toString(t.getStackTrace()));
+
+                // обновление информации о запросе к серверу
+                requestToUpdateInteractionWithServerIsCarriedOut.setValue(false);
                 serverResponse.setValue(Arrays.toString(t.getStackTrace()));
             }
         });
@@ -187,8 +205,16 @@ public class TrainingMapRepository implements Serializable {
     // обучение сервера информации о точке
     public void postFromTrainingWithCoordinates(int intX, int intY, String inputCabId, int floorId, String isRoom){
 
+        // сгладить координаты, чтобы они находились на одной прямой
+        intX-=intX%5;
+        intY-=intY%5;
+
         if (inputCabId.isEmpty()) inputCabId=intX+"_"+intY;
         LocationPointInfo locationPointInfo = new LocationPointInfo(intX, intY, inputCabId, floorId, isRoom);
+
+        // обновление информации о запросе к серверу
+        requestToUpdateInteractionWithServerIsCarriedOut.setValue(true);
+        requestToUpdateDescriptionOfInteractionWithServer.setValue("Запрос на добавление локации обрабатывается");
         serverResponse.setValue("Запрос отправлен на сервер. Ждёмс");
 
         retrofit.postCalibrationLPInfo(locationPointInfo).enqueue(new Callback<StringResponse>() {
@@ -196,16 +222,26 @@ public class TrainingMapRepository implements Serializable {
             public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
                 Log.println(Log.INFO, "GOOD_TRAINING_CORD_ROOM",
                         String.format("Server response=%s", response.body()));
-                if (response.body()==null){
+
+                requestToUpdateInteractionWithServerIsCarriedOut.setValue(false);
+
+                if (response.body() == null){
+                    // обновление информации о запросе к серверу
                     serverResponse.setValue("Response body is null");
+                    toastContent.setValue("Ошибка! Добавление провалилось");
                     return;
                 }
+
+                // обновление информации о запросе к серверу
                 serverResponse.setValue(response.body().toString());
-                //saveNewLPInfoIntoLocaleMap(locationPointInfo);
+                toastContent.setValue("Локация добавлена");
             }
             @Override
             public void onFailure(Call<StringResponse> call, Throwable t) {
+                // обновление информации о запросе к серверу
                 serverResponse.setValue(call.toString()+"\n"+t.getMessage());
+                requestToUpdateInteractionWithServerIsCarriedOut.setValue(false);
+
                 toastContent.setValue("Ошибка! Добавление провалилось");
                 Log.e("SERVER_ERROR", t.getMessage());
             }
@@ -222,21 +258,33 @@ public class TrainingMapRepository implements Serializable {
 
     // отправить точку с её информацией о APs
     private void postFromTrainingWithAPs(){
-        toastContent.setValue("Обучение точкам доступа началось");
+        // обновление информации о запросе к серверу
+        requestToUpdateInteractionWithServerIsCarriedOut.setValue(true);
+        requestToUpdateDescriptionOfInteractionWithServer.setValue("Запрос на обработку результатов сканирования обрабатывается");
+
         retrofit.postCalibrationLPWithAPs(calibrationLocationPoint).enqueue(new Callback<StringResponse>() {
             @Override
             public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
                 Log.println(Log.INFO, "GOOD_TRAINING_APs_ROOM",
                         String.format("Server response=%s", response.body()));
+
+                // обновление информации о запросе к серверу
+                requestToUpdateInteractionWithServerIsCarriedOut.setValue(false);
+
                 if (response.body()==null){
                     serverResponse.setValue("Response body is null");
                     return;
                 }
+
                 serverResponse.setValue(response.body().getResponse());
             }
             @Override
             public void onFailure(Call<StringResponse> call, Throwable t) {
+
+                // обновление информации о запросе к серверу
+                requestToUpdateInteractionWithServerIsCarriedOut.setValue(false);
                 serverResponse.setValue(call.toString()+"\n"+t.getMessage());
+
                 Log.e("SERVER_ERROR", t.getMessage());
             }
         });
@@ -247,23 +295,36 @@ public class TrainingMapRepository implements Serializable {
             toastContent.setValue("Имя некорректно");
             return;
         }
+
+        // обновление информации о запросе к серверу
+        requestToUpdateInteractionWithServerIsCarriedOut.setValue(true);
+        requestToUpdateDescriptionOfInteractionWithServer.setValue("Запрос получение информации о сканированиях точки обрабатывается");
+
         retrofit.getScanningInfoAboutLocation(locationName).enqueue(new Callback<List<ScanInformation>>() {
             @Override
             public void onResponse(Call<List<ScanInformation>> call, Response<List<ScanInformation>> response) {
                 Log.println(Log.INFO, "TrainingMapRepository",
                         String.format("Server response after getScanningInfoAboutLocation=%s", response.body()));
+
+                // обновление информации о запросе к серверу
+                requestToUpdateInteractionWithServerIsCarriedOut.setValue(false);
+
                 if (response.body()==null){
                     serverResponse.setValue("Response body is null");
                     return;
                 }
                 serverResponse.setValue(response.body().toString());
+
                 // отправляем на вставку в RecyclerView предварительно удалив объекты с невалидным именем
                 requestToSetListOfScanInformation.setValue(response.body());
             }
 
             @Override
             public void onFailure(Call<List<ScanInformation>> call, Throwable t) {
+                // обновление информации о запросе к серверу
+                requestToUpdateInteractionWithServerIsCarriedOut.setValue(false);
                 serverResponse.setValue(call.toString()+"\n"+t.getMessage());
+
                 Log.e("SERVER_ERROR", t.getMessage());
             }
         });

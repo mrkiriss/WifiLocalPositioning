@@ -6,6 +6,8 @@ import android.os.Bundle;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
@@ -21,8 +23,12 @@ import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.adapters.ScanInfoRVAdapter;
 import com.mrkiriss.wifilocalpositioning.databinding.FragmentTrainingMapBinding;
 import com.mrkiriss.wifilocalpositioning.adapters.MapPointsRVAdapter;
+import com.mrkiriss.wifilocalpositioning.databinding.TrainingModeSelectedPointContainerBinding;
 import com.mrkiriss.wifilocalpositioning.di.App;
+import com.mrkiriss.wifilocalpositioning.viewmodel.SelectedMapPointViewModel;
 import com.mrkiriss.wifilocalpositioning.viewmodel.TrainingMapViewModel;
+
+import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 
@@ -30,22 +36,27 @@ public class TrainingMapFragment extends Fragment {
 
     @Inject
     protected TrainingMapViewModel viewModel;
+    @Inject
+    protected SelectedMapPointViewModel selectedMapPointViewModel;
+
     private FragmentTrainingMapBinding binding;
+
     private PhotoView photoView;
     private MapPointsRVAdapter mapPointsAdapter;
     private ScanInfoRVAdapter scanInfoAdapter;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         App.getInstance().getComponentManager().getTrainingMapSubcomponent().inject(this);
 
-        binding= DataBindingUtil.inflate(inflater, R.layout.fragment_training_map, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_training_map, container, false);
 
         initScanInfoAdapter();
         initMapPointsAdapter();
         initPhotoView();
+        initSelectedMapPointView();
         initObservers();
 
         binding.setViewModel(viewModel);
@@ -62,6 +73,11 @@ public class TrainingMapFragment extends Fragment {
         mapPointsAdapter=new MapPointsRVAdapter();
         binding.includeNeighboursMode.mapPointsRV.setAdapter(mapPointsAdapter);
         binding.includeNeighboursMode.mapPointsRV.setLayoutManager(new LinearLayoutManager(getContext()));
+    }
+    private void initSelectedMapPointView() {
+        selectedMapPointViewModel.setMapPointWithOtherMoves(viewModel.getSelectedMapPoint());
+
+        binding.includeScanningMode.includeSeelctedMapPoint.setViewModel(selectedMapPointViewModel);
     }
     private void initPhotoView(){
         photoView=binding.photoViewTraining;
@@ -96,36 +112,52 @@ public class TrainingMapFragment extends Fragment {
         });
     }
     private void initObservers(){
-        viewModel.getChangeFloor().observe(getViewLifecycleOwner(), floor -> {
+        LifecycleOwner lifecycleOwner = getViewLifecycleOwner();
+
+        // запрос на изменение номера этажа
+        viewModel.getChangeFloor().observe(lifecycleOwner, floor -> {
             if (floor==null){
                 photoView.setImageBitmap(null);
                 return;
             }
             changeBitmap(floor.getFloorSchema());
         });
-        viewModel.getRequestToUpdateFloor().observe(getViewLifecycleOwner(), content->viewModel.startFloorChanging());
-        viewModel.getToastContent().observe(getViewLifecycleOwner(), this::showToast);
-        viewModel.getMoveCamera().observe(getViewLifecycleOwner(), this::moveCamera);
-        viewModel.getServerResponseRequest().observe(getViewLifecycleOwner(), s -> viewModel.getServerResponse().set(s));
-        viewModel.getCompleteKitsOfScansResult().observe(getViewLifecycleOwner(), data->viewModel.processCompleteKitsOfScanResults(data));
-        viewModel.getRemainingNumberOfScanning().observe(getViewLifecycleOwner(), integer -> viewModel.getRemainingNumberOfScanKits().set(integer));
+        // запрос на обновление картинки этажа
+        viewModel.getRequestToUpdateFloor().observe(lifecycleOwner, content->viewModel.startFloorChanging());
+        // запрос на показ Toast
+        viewModel.getToastContent().observe(lifecycleOwner, this::showToast);
+        // запрос на изменение позиции камеры на карте
+        viewModel.getMoveCamera().observe(lifecycleOwner, this::moveCamera);
+        // запрос на обновления ответа сервера в переменной Observable
+        viewModel.getServerResponseRequest().observe(lifecycleOwner, s -> viewModel.getServerResponse().set(s));
+        // запрос на обработку пакета сканирований
+        viewModel.getCompleteKitsOfScansResult().observe(lifecycleOwner, data->viewModel.processCompleteKitsOfScanResults(data));
+        // запрос на обновления количества оставшихся сканирований
+        viewModel.getRemainingNumberOfScanning().observe(lifecycleOwner, integer -> viewModel.getRemainingNumberOfScanKits().set(integer));
         // обработка событий, связанных с RV для mapPoints при изменении связей
-        viewModel.getServerConnectionsResponse().observe(getViewLifecycleOwner(), mapPoints -> {
+        viewModel.getServerConnectionsResponse().observe(lifecycleOwner, mapPoints -> {
             viewModel.processServerConnectionsResponse(mapPoints);
             mapPointsAdapter.setContent(mapPoints);
         });
-        mapPointsAdapter.getRequestToDeleteMapPoint().observe(getViewLifecycleOwner(), mapPoint -> {
+        mapPointsAdapter.getRequestToDeleteMapPoint().observe(lifecycleOwner, mapPoint -> {
             mapPointsAdapter.deleteMapPoint(mapPoint);
             viewModel.processDeleteSecondly(mapPoint);
         });
-        viewModel.getRequestToAddSecondlyMapPointToRV().observe(getViewLifecycleOwner(), mapPoint -> mapPointsAdapter.addMapPoint(mapPoint));
-        viewModel.getRequestToChangeSecondlyMapPointListInRV().observe(getViewLifecycleOwner(), mapPoints -> mapPointsAdapter.setContent(mapPoints));
+        // запрос на добавление новой точки-соседки в адаптер
+        viewModel.getRequestToAddSecondlyMapPointToRV().observe(lifecycleOwner, mapPoint -> mapPointsAdapter.addMapPoint(mapPoint));
+        // запрос на обновление списока точек-соседей в адаптере
+        viewModel.getRequestToChangeSecondlyMapPointListInRV().observe(lifecycleOwner, mapPoints -> mapPointsAdapter.setContent(mapPoints));
         // вставляем информацию о сканированиях точки в адаптер
-        viewModel.getRequestToSetListOfScanInformation().observe(getViewLifecycleOwner(), content -> scanInfoAdapter.setContent(content));
+        viewModel.getRequestToSetListOfScanInformation().observe(lifecycleOwner, content -> scanInfoAdapter.setContent(content));
+        // запрос на обновление информации о состоянии запроса к серверу
+        viewModel.getRequestToUpdateInteractionWithServerIsCarriedOut().observe(lifecycleOwner, interaction -> viewModel.getInteractionWithServerIsCarriedOut().set(interaction));
+        // запрос на обновление описания запроса к серверу
+        viewModel.getRequestToUpdateDescriptionOfInteractionWithServer().observe(lifecycleOwner, desc -> viewModel.getDescriptionOfInteractionWithServer().set(desc));
 
 
         viewModel.startFloorChanging();
     }
+
     private void changeBitmap(Bitmap bitmap){
         Log.i("TrainingMapFragment","request to change bitmap" );
         Matrix matrix = new Matrix();

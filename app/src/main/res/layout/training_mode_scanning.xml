@@ -17,50 +17,61 @@
         android:orientation="vertical"
         android:visibility="@{viewModel.selectedMod==1?View.VISIBLE:View.GONE}">
 
+        <include
+            android:id="@+id/includeSeelctedMapPoint"
+            layout="@layout/training_mode_selected_point_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="14">
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="4dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/textView8"
-                android:layout_width="0dp"
+                style="@style/Theme.WifiLocalPositioning.SubHeadTextView"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="3"
-                android:gravity="center"
-                android:text="@string/selectedMapPoint"
-                app:autoSizeTextType="uniform" />
-
-            <TextView
-                android:id="@+id/mapPointTextInfo"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="7"
-                android:gravity="center"
-                android:text="@{viewModel.selectedMapPoint.toStringAllObject()}"
-                app:autoSizeTextType="uniform" />
+                android:gravity="start"
+                android:text="@string/descriptionAboutPointsScanningOnServer" />
 
             <Button
                 android:id="@+id/button8"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="4"
+                android:layout_weight="1"
                 android:onClick="@{()->viewModel.getScanInfoAboutLocation()}"
                 android:text="@string/moreDetailed"
-                app:autoSizeTextType="uniform" />
+                android:enabled="@{!viewModel.interactionWithServerIsCarriedOut}"/>
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/scanInfoRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="96dp">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <TextView
+            android:id="@+id/textView30"
+            style="@style/Theme.WifiLocalPositioning.SubHeadTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="4dp"
+            android:text="@string/descriptionAboutStartScanFromSelectedPoint" />
 
         <LinearLayout
             android:id="@+id/numberOfScanningContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="@{viewModel.remainingNumberOfScanKits == 0 ? View.GONE : View.VISIBLE}">
 
             <TextView
                 android:id="@+id/remainingNumberOfScanningText"
@@ -68,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/numberOfSuccessfulScans"
-                app:autoSizeTextType="uniform" />
+                app:autoSizeTextType="none" />
 
             <TextView
                 android:id="@+id/remainingNumberOfScanning"
@@ -77,34 +88,58 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@{String.valueOf(viewModel.remainingNumberOfScanKits)}"
+                android:textStyle="bold"
                 app:autoSizeTextType="uniform" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:layout_weight="7"
+            android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/inputNumberOfKits"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="1"
-                android:ems="10"
-                android:hint="@string/hintRequiredQuantity"
-                android:inputType="numberDecimal"
-                android:text="@={viewModel.inputNumberOfScanKits}"
-                app:autoSizeTextType="uniform" />
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/startScaning"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                <TextView
+                    android:id="@+id/textView31"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/selectedNumberOfScanning" />
+
+                <TextView
+                    android:id="@+id/selectedNumberOfScanningInt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@{String.valueOf(viewModel.inputNumberOfScanKits)}" />
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/selectNumberOfScanning"
+                style="@style/Widget.AppCompat.SeekBar.Discrete"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="1"
-                android:onClick="@{()->viewModel.startScanning()}"
-                android:text="@string/startScanning"
-                app:autoSizeTextType="uniform" />
+                android:max="10"
+                android:progress="@={viewModel.inputNumberOfScanKits}" />
+
         </LinearLayout>
+
+        <Button
+            android:id="@+id/startScanning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:onClick="@{()->viewModel.startScanning()}"
+            android:enabled="@{!viewModel.interactionWithServerIsCarriedOut}"
+            android:text="@string/startScanning" />
+
     </LinearLayout>
 </layout>

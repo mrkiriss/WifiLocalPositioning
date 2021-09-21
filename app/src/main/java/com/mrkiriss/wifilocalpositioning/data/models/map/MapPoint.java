@@ -61,6 +61,10 @@ public class MapPoint{
         result.setFloorWithPointer(floorWithPointer);
         return result;
     }
+
+    public String getMapPointType() {
+        return isRoom ? "Кабинет" : "Коридор";
+    }
     /*private final String currentLocationText = "Текущее местоположение: ";
     private final String currentLocationSmallText = "Текущее местоположение";
     @Override

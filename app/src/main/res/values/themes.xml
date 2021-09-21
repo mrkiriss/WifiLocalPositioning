@@ -32,6 +32,12 @@
         <item name="android:padding">10dp</item>
     </style>
 
+    <style name="Theme.WifiLocalPositioning.SubHeadTextView" parent="Widget.AppCompat.TextView">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">italic</item>
+        <item name="android:textColor">?attr/colorPrimaryDark</item>
+    </style>
+
     <style name="Theme.WifiLocalPositioning.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.WifiLocalPositioning.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />

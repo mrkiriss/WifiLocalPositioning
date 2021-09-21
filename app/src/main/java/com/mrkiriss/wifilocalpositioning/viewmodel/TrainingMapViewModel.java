@@ -43,7 +43,7 @@ public class TrainingMapViewModel extends ViewModel {
     private final ObservableInt selectedFloorId; // изменяется при изменении spinner
 
     private final ObservableInt remainingNumberOfScanKits;
-    private final ObservableField<String> inputNumberOfScanKits;
+    private final ObservableInt inputNumberOfScanKits;
 
     private final ObservableField<MapPoint> selectedToChangMapPoint;
     private final ObservableField<String> contentOnActionsButtonChangesNeighbors;
@@ -52,6 +52,8 @@ public class TrainingMapViewModel extends ViewModel {
     private List<MapPoint> currentChangeableConnections;
 
     private final LiveData<Floor> changeFloor;
+    private final LiveData<Boolean> requestToUpdateInteractionWithServerIsCarriedOut;
+    private final LiveData<String> requestToUpdateDescriptionOfInteractionWithServer;
     private final LiveData<String> serverResponseRequest;
     private final MutableLiveData<String> requestToUpdateFloor;
 
@@ -71,6 +73,8 @@ public class TrainingMapViewModel extends ViewModel {
         this.repository=repository;
 
         changeFloor= repository.getChangeFloor();
+        requestToUpdateInteractionWithServerIsCarriedOut = repository.getRequestToUpdateInteractionWithServerIsCarriedOut();
+        requestToUpdateDescriptionOfInteractionWithServer = repository.getRequestToUpdateDescriptionOfInteractionWithServer();
         requestToUpdateFloor=repository.getRequestToUpdateFloor();
         toastContent=repository.getToastContent();
         moveCamera=new MutableLiveData<>();
@@ -97,7 +101,7 @@ public class TrainingMapViewModel extends ViewModel {
         selectedFloorId=new ObservableInt(2);
 
         remainingNumberOfScanKits = new ObservableInt(0);
-        inputNumberOfScanKits=new ObservableField<>("");
+        inputNumberOfScanKits=new ObservableInt(3);
 
         selectedToChangMapPoint=new ObservableField<>();
         contentOnActionsButtonChangesNeighbors=new ObservableField<>(MODE_SELECT_MAIN);
@@ -197,7 +201,7 @@ public class TrainingMapViewModel extends ViewModel {
         requestToUpdateFloor.setValue(content);
     }
 
-    // POINT INFO MODE
+    // POINT ADDING MODE
     // отправка информации о точке на сервер
     public void postPointInformationToServer(){
         String inputX=this.inputX.get(), inputY=this.inputY.get(), inputCabId=this.inputCabId.get();
@@ -207,9 +211,6 @@ public class TrainingMapViewModel extends ViewModel {
             toastContent.setValue("Коодринаты некорректны");
             return;
         }
-        // сгладить координаты, чтобы они находились на одной прямой
-        intX-=intX%5;
-        intY-=intY%5;
 
         repository.postFromTrainingWithCoordinates(intX, intY, inputCabId, floorId, String.valueOf(selectedRoomType.get()==0));
     }
@@ -221,11 +222,15 @@ public class TrainingMapViewModel extends ViewModel {
             toastContent.setValue("Точка для сканирования не выбрана");
             return;
         }
-        if (inputNumberOfScanKits.get().isEmpty() || !inputNumberOfScanKits.get().matches("\\d+") || Integer.parseInt(inputNumberOfScanKits.get())<=0){
+        if (inputNumberOfScanKits.get() == 0){
             toastContent.setValue("Неккоректное количетсво сканирований");
             return;
         }
-        repository.runScanInManager(Integer.parseInt(inputNumberOfScanKits.get()), selectedMapPoint.get().getRoomName());
+        if (remainingNumberOfScanKits.get() > 0) {
+            toastContent.setValue("Сканирование уже запущено");
+            return;
+        }
+        repository.runScanInManager(inputNumberOfScanKits.get(), selectedMapPoint.get().getRoomName());
     }
     // вызов обработки результатов сканирования
     public void processCompleteKitsOfScanResults(CompleteKitsContainer completeKitsContainer){
