@@ -28,23 +28,25 @@ public class TrainingMapViewModel extends ViewModel {
 
     private final TrainingMapRepository repository;
 
-    private ObservableInt selectedMod;
-    private ObservableBoolean showMapPoints;
-    private ObservableInt floorNumber; // изменяеться через стрелки
-    private ObservableField<MapPoint> selectedMapPoint;
-    private ObservableField<String> serverResponse;
+    private final ObservableInt selectedMod;
+    private final ObservableBoolean showMapPoints;
+    private final ObservableInt floorNumber; // изменяеться через стрелки
+    private final ObservableField<MapPoint> selectedMapPoint;
+    private final ObservableField<String> serverResponse;
+    private final ObservableBoolean interactionWithServerIsCarriedOut;
+    private final ObservableField<String> descriptionOfInteractionWithServer;
 
-    private ObservableField<String> inputY;
-    private ObservableField<String> inputX;
-    private ObservableField<String> inputCabId;
-    private ObservableInt selectedRoomType; // 0=true кабинет, 1=false коридор
-    private ObservableInt selectedFloorId; // изменяется при изменении spinner
+    private final ObservableField<String> inputY;
+    private final ObservableField<String> inputX;
+    private final ObservableField<String> inputCabId;
+    private final ObservableInt selectedRoomType; // 0=true кабинет, 1=false коридор
+    private final ObservableInt selectedFloorId; // изменяется при изменении spinner
 
-    private ObservableInt remainingNumberOfScanKits;
-    private ObservableField<String> inputNumberOfScanKits;
+    private final ObservableInt remainingNumberOfScanKits;
+    private final ObservableField<String> inputNumberOfScanKits;
 
-    private ObservableField<MapPoint> selectedToChangMapPoint;
-    private ObservableField<String> contentOnActionsButtonChangesNeighbors;
+    private final ObservableField<MapPoint> selectedToChangMapPoint;
+    private final ObservableField<String> contentOnActionsButtonChangesNeighbors;
     public final String MODE_SELECT_MAIN="Редактировать связи";
     public final String MODE_ADD_SECONDLY="Добавить связь";
     private List<MapPoint> currentChangeableConnections;
@@ -85,6 +87,8 @@ public class TrainingMapViewModel extends ViewModel {
         floorNumber = new ObservableInt(2);
         selectedMapPoint=new ObservableField<>();
         serverResponse=new ObservableField<>("");
+        interactionWithServerIsCarriedOut = new ObservableBoolean(false);
+        descriptionOfInteractionWithServer = new ObservableField<>("");
 
         inputX=new ObservableField<>("");
         inputY=new ObservableField<>("");

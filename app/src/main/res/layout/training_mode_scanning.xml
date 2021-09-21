@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="viewModel"
+            type="com.mrkiriss.wifilocalpositioning.viewmodel.TrainingMapViewModel" />
+    </data>
+
+    <LinearLayout
+
+        android:id="@+id/modScanningContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="@{viewModel.selectedMod==1?View.VISIBLE:View.GONE}">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="14">
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:gravity="center"
+                android:text="@string/selectedMapPoint"
+                app:autoSizeTextType="uniform" />
+
+            <TextView
+                android:id="@+id/mapPointTextInfo"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="7"
+                android:gravity="center"
+                android:text="@{viewModel.selectedMapPoint.toStringAllObject()}"
+                app:autoSizeTextType="uniform" />
+
+            <Button
+                android:id="@+id/button8"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+                android:onClick="@{()->viewModel.getScanInfoAboutLocation()}"
+                android:text="@string/moreDetailed"
+                app:autoSizeTextType="uniform" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/scanInfoRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:id="@+id/numberOfScanningContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/remainingNumberOfScanningText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/numberOfSuccessfulScans"
+                app:autoSizeTextType="uniform" />
+
+            <TextView
+                android:id="@+id/remainingNumberOfScanning"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@{String.valueOf(viewModel.remainingNumberOfScanKits)}"
+                app:autoSizeTextType="uniform" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/inputNumberOfKits"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="@string/hintRequiredQuantity"
+                android:inputType="numberDecimal"
+                android:text="@={viewModel.inputNumberOfScanKits}"
+                app:autoSizeTextType="uniform" />
+
+            <Button
+                android:id="@+id/startScaning"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="@{()->viewModel.startScanning()}"
+                android:text="@string/startScanning"
+                app:autoSizeTextType="uniform" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>

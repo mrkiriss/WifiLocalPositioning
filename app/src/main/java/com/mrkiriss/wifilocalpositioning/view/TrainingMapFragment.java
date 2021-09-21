@@ -55,13 +55,13 @@ public class TrainingMapFragment extends Fragment {
 
     private void initScanInfoAdapter(){
         scanInfoAdapter=new ScanInfoRVAdapter();
-        binding.scanInfoRecyclerView.setAdapter(scanInfoAdapter);
-        binding.scanInfoRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        binding.includeScanningMode.scanInfoRecyclerView.setAdapter(scanInfoAdapter);
+        binding.includeScanningMode.scanInfoRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
     }
     private void initMapPointsAdapter(){
         mapPointsAdapter=new MapPointsRVAdapter();
-        binding.mapPointsRV.setAdapter(mapPointsAdapter);
-        binding.mapPointsRV.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.includeNeighboursMode.mapPointsRV.setAdapter(mapPointsAdapter);
+        binding.includeNeighboursMode.mapPointsRV.setLayoutManager(new LinearLayoutManager(getContext()));
     }
     private void initPhotoView(){
         photoView=binding.photoViewTraining;

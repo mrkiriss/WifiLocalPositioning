@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="viewModel"
+            type="com.mrkiriss.wifilocalpositioning.viewmodel.TrainingMapViewModel" />
+    </data>
+
+    <LinearLayout
+
+        android:id="@+id/modCoordinatesContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="@{viewModel.selectedMod==0?View.VISIBLE:View.GONE}">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:weightSum="2">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:weightSum="4">
+
+                <EditText
+                    android:id="@+id/editY"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="@string/hintY"
+                    android:inputType="numberDecimal"
+                    android:text="@={viewModel.inputY}"
+                    app:autoSizeTextType="uniform" />
+
+                <EditText
+                    android:id="@+id/editX"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="@string/hintX"
+                    android:inputType="numberDecimal"
+                    android:text="@={viewModel.inputX}"
+                    app:autoSizeTextType="uniform" />
+
+                <EditText
+                    android:id="@+id/editRoomName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:ems="10"
+                    android:hint="@string/pointName"
+                    android:inputType="textPersonName"
+                    android:text="@={viewModel.inputCabId}"
+                    app:autoSizeTextType="uniform" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:weightSum="4">
+
+                <Spinner
+                    android:id="@+id/isRoomSpinner"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:entries="@array/isRoomSpinner"
+                    android:selectedItemPosition="@={viewModel.selectedRoomType}" />
+
+                <Spinner
+                    android:id="@+id/floorId"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:entries="@array/floorIds"
+                    android:selectedItemPosition="@={viewModel.selectedFloorId}"
+                    android:textAlignment="viewEnd" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/button5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->viewModel.processShowSelectedMapPoint(true)}"
+            android:text="@string/showPointOnMap"
+            app:autoSizeTextType="uniform" />
+
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->viewModel.postPointInformationToServer()}"
+            android:text="@string/postToServer"
+            app:autoSizeTextType="uniform" />
+
+    </LinearLayout>
+</layout>
