@@ -5,10 +5,12 @@ import android.graphics.drawable.Drawable;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.mrkiriss.wifilocalpositioning.R;
+
 import lombok.Data;
 
 @Data
-public class SearchItem {
+public class SearchItem implements Comparable<SearchItem> {
     private String name;
     private String description;
     private int icon;
@@ -22,5 +24,14 @@ public class SearchItem {
 
     public void onItemClick() {
         requestToProcessSelectedLocation.setValue(this);
+    }
+
+    @Override
+    public int compareTo(SearchItem o) {
+        if (icon == R.drawable.ic_past) {
+            return 0;
+        } else {
+            return name.compareTo(o.name);
+        }
     }
 }

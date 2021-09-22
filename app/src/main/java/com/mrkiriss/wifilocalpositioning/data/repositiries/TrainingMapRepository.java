@@ -423,7 +423,7 @@ public class TrainingMapRepository implements Serializable {
     public void deleteLocationPointInfoOnServer(String roomName){
         // обновление информации о запросе к серверу
         requestToUpdateInteractionWithServerIsCarriedOut.setValue(true);
-        requestToUpdateDescriptionOfInteractionWithServer.setValue("Запрос на удаление сканирований точки " + roomName + "обрабатывается");
+        requestToUpdateDescriptionOfInteractionWithServer.setValue("Запрос на удаление точки " + roomName + "обрабатывается");
         serverResponse.setValue("Запрос отправлен на сервер. Ждёмс");
 
         retrofit.deleteLPInfo(roomName).enqueue(new Callback<StringResponse>() {
@@ -437,12 +437,12 @@ public class TrainingMapRepository implements Serializable {
 
                 if (response.body()==null){
                     serverResponse.setValue("Response body is null");
-                    toastContent.setValue("Удалить сканирования не удалось");
+                    toastContent.setValue("Удалить точку не удалось");
                     return;
                 }
 
                 serverResponse.setValue(response.body().getResponse());
-                toastContent.setValue("Сканирования удалены");
+                toastContent.setValue("Тока удалена");
             }
 
             @Override
@@ -453,14 +453,14 @@ public class TrainingMapRepository implements Serializable {
 
                 Log.e("SERVER_ERROR", t.getMessage());
 
-                toastContent.setValue("Удалить сканирования не удалось");
+                toastContent.setValue("Удалить точку не удалось");
             }
         });
     }
     public void deleteLocationPointOnServer(String roomName){
         // обновление информации о запросе к серверу
         requestToUpdateInteractionWithServerIsCarriedOut.setValue(true);
-        requestToUpdateDescriptionOfInteractionWithServer.setValue("Запрос на удаление точки " + roomName + "обрабатывается");
+        requestToUpdateDescriptionOfInteractionWithServer.setValue("Запрос на удаление сканирований точки " + roomName + "обрабатывается");
         serverResponse.setValue("Запрос отправлен на сервер. Ждёмс");
 
         retrofit.deleteLPAps(roomName).enqueue(new Callback<StringResponse>() {
@@ -474,13 +474,13 @@ public class TrainingMapRepository implements Serializable {
 
                 if (response.body()==null){
                     serverResponse.setValue("Response body is null");
-                    toastContent.setValue("Удалить точку не удалось");
+                    toastContent.setValue("Сканирования не удалены");
                     return;
                 }
 
                 serverResponse.setValue(response.body().getResponse());
 
-                toastContent.setValue("Точка удалена");
+                toastContent.setValue("Сканирования удалены");
             }
 
             @Override
@@ -491,7 +491,7 @@ public class TrainingMapRepository implements Serializable {
 
                 Log.e("SERVER_ERROR", t.getMessage());
 
-                toastContent.setValue("Удалить точку не удалось");
+                toastContent.setValue("Сканирования не удалены");
             }
         });
     }

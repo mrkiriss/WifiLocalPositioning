@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import lombok.Data;
 import retrofit2.Call;
@@ -486,7 +485,7 @@ public class LocationDetectionRepository implements Serializable {
                     Log.i("LocationDetectionRep", "server response about listOfLPIs: is null");
 
                     // повторный запрос на точки из локальной бд
-                    getListOfLocationPointsInfoFromDB();
+                    requestListOfLocationPointsInfoFromDB();
 
                     return;
                 }
@@ -500,14 +499,14 @@ public class LocationDetectionRepository implements Serializable {
             @Override
             public void onFailure(Call<ListOfAllMapPoints> call, Throwable t) {
                 // повторный запрос на точки из локальной бд
-                getListOfLocationPointsInfoFromDB();
+                requestListOfLocationPointsInfoFromDB();
 
                 Log.i("LocationDetectionRep", "server error: "+ Arrays.toString(t.getStackTrace()));
             }
         });
     }
     // получает данные из бд и запускает их обработки
-    private void getListOfLocationPointsInfoFromDB(){
+    private void requestListOfLocationPointsInfoFromDB(){
         Runnable task = () -> {
             List<LocationPointInfo> currentDbData = mapPointsDao.findAll();
             ListOfAllMapPoints container = new ListOfAllMapPoints();
