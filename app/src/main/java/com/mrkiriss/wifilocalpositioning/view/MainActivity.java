@@ -47,16 +47,9 @@ public class MainActivity extends AppCompatActivity implements IUpButtonNavHost 
 
     private MainViewModel viewModel;
 
-    private NavigationView navigationView;
     private AppBarConfiguration mAppBarConfiguration;
-    private Toolbar toolbar;
     private DrawerLayout drawer;
-    private NavController navController;
     private NavHostFragment navHostFragment;
-
-    private Fragment[] fragments;
-    private String[] fragmentTAGS;
-    private String[] typesOfRequestSources;
 
     private int currentFragmentIndex;
 
@@ -68,6 +61,8 @@ public class MainActivity extends AppCompatActivity implements IUpButtonNavHost 
         App.getInstance().getComponentManager().getViewModelSubcomponent().inject(this);
         viewModel = new ViewModelProvider(this, viewModelFactory).get(MainViewModel.class);
 
+        createNavigationView();
+
         initObservers();
 
         // проверка разрешений для сканирования
@@ -75,58 +70,40 @@ public class MainActivity extends AppCompatActivity implements IUpButtonNavHost 
         // проверка ограничений сканирования
         viewModel.checkAndroidVersionForShowingScanningAbilities(this);
 
-        createNavigationView();
-        createFragments();
-
-        // установка начального местопоолжения
-        changeFragment(currentFragmentIndex);
-        navigationView.setCheckedItem(navigationView.getMenu().getItem(currentFragmentIndex));
-
         // установка режима клавиатуры
         //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
     }
 
     private void createNavigationView(){
-        toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         drawer = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_training, R.id.nav_definition, R.id.nav_settings, R.id.nav_training2)
+                R.id.nav_definition, R.id.nav_training, R.id.nav_training2, R.id.nav_settings)
                 .setDrawerLayout(drawer)
                 .build();
-        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
         navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
 
-        setBottomNavigationListener(navigationView);
-
         Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(
                 R.drawable.ic_menu
         );
     }
-    private void createFragments(){
-        Fragment startFragment = navHostFragment.getChildFragmentManager().getPrimaryNavigationFragment();
-        if (startFragment!=null){
-            navHostFragment.getChildFragmentManager().beginTransaction().remove(startFragment).commit();
-        }
 
-        fragments = viewModel.createFragments();
-        fragmentTAGS = viewModel.createFragmentTags();
-        typesOfRequestSources = viewModel.createTypesOfRequestSources();
-    }
     private void initObservers(){
         // подписываемсян на запрос открытия видео-инструкции
         viewModel.getRequestToOpenInstructionObYouTube().observe(this, id -> viewModel.watchYoutubeVideo(id));
         // подписываемся на данные Toast
         viewModel.getToastContent().observe(this, this::showToastContent);
         // подписываемся на вызов Intent
-        viewModel.getRequestToStartIntent().observe(this, intent -> startActivity(intent));
+        viewModel.getRequestToStartIntent().observe(this, this::startActivity);
     }
 
     @Override
@@ -140,67 +117,6 @@ public class MainActivity extends AppCompatActivity implements IUpButtonNavHost 
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
-
-    private int defineFragmentIndex(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.nav_training_map:
-                return 2;
-            case R.id.nav_settings:
-                return 3;
-            case R.id.nav_training:
-                return 1;
-            case R.id.nav_definition:
-                return 0;
-        }
-        return -1;
-    }
-    private void setBottomNavigationListener(NavigationView navigationView){
-        navigationView.setNavigationItemSelectedListener(item -> {
-            int fragmentIndex = defineFragmentIndex(item);
-
-            // проверка наличия доступа
-            if (!viewModel.isPresentAccessPermission(typesOfRequestSources[fragmentIndex])) {
-                viewModel.notifyAboutLackOfAccess();
-                drawer.close();
-                return false;
-            }
-
-            item.setChecked(true);
-            changeFragment(fragmentIndex);
-            currentFragmentIndex=fragmentIndex;
-
-            drawer.close();
-
-            return true;
-        });
-    }
-    public void changeFragment(int position) {
-        // change top title
-        toolbar.setTitle(fragmentTAGS[position]);
-        // hide keyboard
-        hideKeyboard(this);
-
-        Log.i("MainActivityInfo","POS "+position);
-        FragmentManager fm = navHostFragment.getChildFragmentManager();
-
-        FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-
-        if (fm.findFragmentByTag(fragmentTAGS[position]) == null) {
-            fragmentTransaction.add(R.id.nav_host_fragment, fragments[position], fragmentTAGS[position]);
-        }
-        for (int i = 0; i < fragments.length; i++) {
-            if (i == position) {
-                fragmentTransaction.show(fragments[i]);
-                // изменяем тип сканирования
-                viewModel.setCurrentTypeOfRequestSource(typesOfRequestSources[i]);
-            } else {
-                if (fm.findFragmentByTag(fragmentTAGS[i]) != null) {
-                    fragmentTransaction.hide(fragments[i]);
-                }
-            }
-        }
-        fragmentTransaction.commit(); }
 
     private void checkPermissions(){
         requestPermissions(new String[] {Manifest.permission.CHANGE_WIFI_STATE, Manifest.permission.ACCESS_WIFI_STATE,

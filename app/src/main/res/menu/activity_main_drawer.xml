@@ -13,7 +13,7 @@
             android:icon="@drawable/ic_training"
             android:title="@string/nav_training_scan" />
         <item
-            android:id="@+id/nav_training_map"
+            android:id="@+id/nav_training2"
             android:icon="@drawable/ic_training2"
             android:title="@string/nav_training_map" />
         <item
