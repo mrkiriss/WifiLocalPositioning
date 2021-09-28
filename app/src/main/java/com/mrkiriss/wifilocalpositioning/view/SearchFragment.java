@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
@@ -16,8 +17,10 @@ import com.mrkiriss.wifilocalpositioning.adapters.SearchRVAdapter;
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchData;
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchItem;
 import com.mrkiriss.wifilocalpositioning.data.models.search.TypeOfSearchRequester;
+import com.mrkiriss.wifilocalpositioning.data.sources.ViewModelFactory;
 import com.mrkiriss.wifilocalpositioning.databinding.FragmentSearchBinding;
 import com.mrkiriss.wifilocalpositioning.di.App;
+import com.mrkiriss.wifilocalpositioning.viewmodel.LocationDetectionViewModel;
 import com.mrkiriss.wifilocalpositioning.viewmodel.SearchViewModel;
 
 import java.io.Serializable;
@@ -27,7 +30,9 @@ import javax.inject.Inject;
 public class SearchFragment extends Fragment{
 
     @Inject
-    protected SearchViewModel viewModel;
+    protected ViewModelFactory viewModelFactory;
+
+    private SearchViewModel viewModel;
 
     private FragmentSearchBinding binding;
     private SearchRVAdapter searchRVAdapter;
@@ -47,10 +52,11 @@ public class SearchFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.i("searchMode", "start onCreateView SearchFragment this args: " + getArguments());
+
+        App.getInstance().getComponentManager().getViewModelSubcomponent().inject(this);
+        viewModel = new ViewModelProvider(this, viewModelFactory).get(SearchViewModel.class);
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search, container, false);
-        App.getInstance().getComponentManager().getSearchSubcomponent().inject(this);
         binding.setViewModel(viewModel);
 
         ((IUpButtonNavHost) requireActivity()).useUpButton();

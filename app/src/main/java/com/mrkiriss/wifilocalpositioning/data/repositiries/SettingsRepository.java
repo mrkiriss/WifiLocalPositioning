@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData;
 import com.mrkiriss.wifilocalpositioning.data.sources.settings.SettingsManager;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.SettingsDao;
 
+import javax.inject.Inject;
+
 import lombok.Data;
 
 @Data
@@ -24,6 +26,7 @@ public class SettingsRepository {
     private int numberOfTryingToCopy;
     private final int requiredNumberOfTryingToCopy=7;
 
+    @Inject
     public SettingsRepository(SettingsDao settingsDao, SettingsManager settingsManager){
         this.settingsDao=settingsDao;
         this.settingsManager=settingsManager;

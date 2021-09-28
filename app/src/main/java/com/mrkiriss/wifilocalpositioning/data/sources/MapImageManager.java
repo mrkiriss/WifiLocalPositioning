@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import lombok.Data;
 
 @Data
@@ -56,6 +58,7 @@ public class MapImageManager {
 
     private final MutableLiveData<String> requestToRefreshFloor;
 
+    @Inject
     public MapImageManager(Context context){
         this.assetManager=context.getAssets();
 

@@ -11,12 +11,14 @@ import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchData;
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchItem;
 import com.mrkiriss.wifilocalpositioning.data.models.search.TypeOfSearchRequester;
+import com.mrkiriss.wifilocalpositioning.data.sources.ViewModelFactory;
 import com.mrkiriss.wifilocalpositioning.databinding.FragmentLocationDetectionBindingImpl;
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
@@ -31,7 +33,9 @@ import javax.inject.Inject;
 public class LocationDetectionFragment extends Fragment implements Serializable, IProcessingSelectedByFindLocation {
 
     @Inject
-    protected LocationDetectionViewModel viewModel;
+    protected ViewModelFactory viewModelFactory;
+
+    private LocationDetectionViewModel viewModel;
     private FragmentLocationDetectionBindingImpl binding;
 
     private TouchImageView touchImageView;
@@ -47,7 +51,8 @@ public class LocationDetectionFragment extends Fragment implements Serializable,
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        App.getInstance().getComponentManager().getLocationDetectionSubcomponent().inject(this);
+        App.getInstance().getComponentManager().getViewModelSubcomponent().inject(this);
+        viewModel = new ViewModelProvider(this, viewModelFactory).get(LocationDetectionViewModel.class);
 
         binding= DataBindingUtil.inflate(inflater, R.layout.fragment_location_detection, container, false);
         binding.setViewModel(viewModel);

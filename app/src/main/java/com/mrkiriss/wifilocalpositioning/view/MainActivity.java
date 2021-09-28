@@ -17,13 +17,16 @@ import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.mrkiriss.wifilocalpositioning.R;
+import com.mrkiriss.wifilocalpositioning.data.sources.ViewModelFactory;
 import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 import com.mrkiriss.wifilocalpositioning.di.App;
+import com.mrkiriss.wifilocalpositioning.viewmodel.LocationDetectionViewModel;
 import com.mrkiriss.wifilocalpositioning.viewmodel.MainViewModel;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
@@ -40,7 +43,9 @@ import javax.inject.Inject;
 public class MainActivity extends AppCompatActivity implements IUpButtonNavHost {
 
     @Inject
-    protected MainViewModel viewModel;
+    protected ViewModelFactory viewModelFactory;
+
+    private MainViewModel viewModel;
 
     private NavigationView navigationView;
     private AppBarConfiguration mAppBarConfiguration;
@@ -60,7 +65,8 @@ public class MainActivity extends AppCompatActivity implements IUpButtonNavHost 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        App.getInstance().getComponentManager().getMainActivitySubcomponent().inject(this);
+        App.getInstance().getComponentManager().getViewModelSubcomponent().inject(this);
+        viewModel = new ViewModelProvider(this, viewModelFactory).get(MainViewModel.class);
 
         initObservers();
 

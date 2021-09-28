@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
@@ -12,9 +13,11 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.mrkiriss.wifilocalpositioning.R;
+import com.mrkiriss.wifilocalpositioning.data.sources.ViewModelFactory;
 import com.mrkiriss.wifilocalpositioning.databinding.FragmentTrainingScanBinding;
 import com.mrkiriss.wifilocalpositioning.adapters.ScanResultsRVAdapter;
 import com.mrkiriss.wifilocalpositioning.di.App;
+import com.mrkiriss.wifilocalpositioning.viewmodel.LocationDetectionViewModel;
 import com.mrkiriss.wifilocalpositioning.viewmodel.TrainingScanViewModel;
 
 import org.jetbrains.annotations.NotNull;
@@ -23,16 +26,19 @@ import javax.inject.Inject;
 
 public class TrainingScanFragment extends Fragment {
 
-    private FragmentTrainingScanBinding binding;
     @Inject
-    protected TrainingScanViewModel viewModel;
+    protected ViewModelFactory viewModelFactory;
+
+    private TrainingScanViewModel viewModel;
+    private FragmentTrainingScanBinding binding;
     private ScanResultsRVAdapter adapter;
 
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        App.getInstance().getComponentManager().getTrainingScanSubcomponent().inject(this);
+        App.getInstance().getComponentManager().getViewModelSubcomponent().inject(this);
+        viewModel = new ViewModelProvider(this, viewModelFactory).get(TrainingScanViewModel.class);
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_training_scan, container, false);
         binding.setTrainingVM(viewModel);

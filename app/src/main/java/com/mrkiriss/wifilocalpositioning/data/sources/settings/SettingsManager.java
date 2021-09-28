@@ -5,10 +5,12 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
 import com.mrkiriss.wifilocalpositioning.data.models.settings.Settings;
-import com.mrkiriss.wifilocalpositioning.data.sources.api.AccessLevelApi;
+import com.mrkiriss.wifilocalpositioning.data.sources.remote.AccessLevelApi;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.SettingsDao;
 
 import org.jetbrains.annotations.NotNull;
+
+import javax.inject.Inject;
 
 import lombok.Data;
 import retrofit2.Call;
@@ -36,6 +38,7 @@ public class SettingsManager {
 
     private final MutableLiveData<Integer> requestToUpdateAccessLevel;
 
+    @Inject
     public SettingsManager(SettingsDao settingsDao, UUIDManager uuidManager, AccessLevelApi accessLevelApi){
         this.settingsDao=settingsDao;
         this.uuidManager=uuidManager;

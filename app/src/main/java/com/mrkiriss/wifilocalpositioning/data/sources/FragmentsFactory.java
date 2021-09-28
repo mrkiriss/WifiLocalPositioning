@@ -9,7 +9,12 @@ import com.mrkiriss.wifilocalpositioning.view.TrainingScanFragment;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class FragmentsFactory {
+
+    @Inject
+    public FragmentsFactory () {};
 
     public Fragment[] createFragments() {
         return new Fragment[]{new LocationDetectionFragment(),

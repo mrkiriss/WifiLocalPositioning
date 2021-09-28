@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
@@ -21,10 +22,12 @@ import android.widget.Toast;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.adapters.ScanInfoRVAdapter;
+import com.mrkiriss.wifilocalpositioning.data.sources.ViewModelFactory;
 import com.mrkiriss.wifilocalpositioning.databinding.FragmentTrainingMapBinding;
 import com.mrkiriss.wifilocalpositioning.adapters.MapPointsRVAdapter;
 import com.mrkiriss.wifilocalpositioning.databinding.TrainingModeSelectedPointContainerBinding;
 import com.mrkiriss.wifilocalpositioning.di.App;
+import com.mrkiriss.wifilocalpositioning.viewmodel.LocationDetectionViewModel;
 import com.mrkiriss.wifilocalpositioning.viewmodel.SelectedMapPointViewModel;
 import com.mrkiriss.wifilocalpositioning.viewmodel.TrainingMapViewModel;
 
@@ -35,9 +38,10 @@ import javax.inject.Inject;
 public class TrainingMapFragment extends Fragment {
 
     @Inject
-    protected TrainingMapViewModel viewModel;
-    @Inject
-    protected SelectedMapPointViewModel selectedMapPointViewModel;
+    protected ViewModelFactory viewModelFactory;
+
+    private TrainingMapViewModel viewModel;
+    private SelectedMapPointViewModel selectedMapPointViewModel;
 
     private FragmentTrainingMapBinding binding;
 
@@ -49,7 +53,9 @@ public class TrainingMapFragment extends Fragment {
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        App.getInstance().getComponentManager().getTrainingMapSubcomponent().inject(this);
+        App.getInstance().getComponentManager().getViewModelSubcomponent().inject(this);
+        viewModel = new ViewModelProvider(this, viewModelFactory).get(TrainingMapViewModel.class);
+        selectedMapPointViewModel = new ViewModelProvider(this, viewModelFactory).get(SelectedMapPointViewModel.class);
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_training_map, container, false);
 

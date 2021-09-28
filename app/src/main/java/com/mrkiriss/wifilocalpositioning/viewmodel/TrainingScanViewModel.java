@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.inject.Inject;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -40,6 +42,7 @@ public class TrainingScanViewModel extends ViewModel {
     private MutableLiveData<List<String>> requestToClearRV;
     private LiveData<Integer> remainingNumberOfScanningLD;
 
+    @Inject
     public TrainingScanViewModel(TrainingScanRepository repository){
 
         this.trainingScanRepository=repository;

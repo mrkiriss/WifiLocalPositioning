@@ -10,6 +10,8 @@ import com.mrkiriss.wifilocalpositioning.data.repositiries.SettingsRepository;
 
 import java.util.Objects;
 
+import javax.inject.Inject;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -29,6 +31,7 @@ public class SettingsViewModel extends ViewModel {
     private final LiveData<String> requestToUpdateCopyUUID;
     private final MutableLiveData<String> toastContent;
 
+    @Inject
     public SettingsViewModel(SettingsRepository repository){
 
         this.repository=repository;

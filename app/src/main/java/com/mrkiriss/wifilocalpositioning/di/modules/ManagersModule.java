@@ -4,9 +4,9 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 
-import com.mrkiriss.wifilocalpositioning.data.sources.api.AccessLevelApi;
+import com.mrkiriss.wifilocalpositioning.data.sources.remote.AccessLevelApi;
 import com.mrkiriss.wifilocalpositioning.data.sources.MapImageManager;
-import com.mrkiriss.wifilocalpositioning.data.sources.api.LocationDataApi;
+import com.mrkiriss.wifilocalpositioning.data.sources.remote.LocationDataApi;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.AbilitiesDao;
 import com.mrkiriss.wifilocalpositioning.data.sources.settings.SettingsManager;
 import com.mrkiriss.wifilocalpositioning.data.sources.settings.UUIDManager;

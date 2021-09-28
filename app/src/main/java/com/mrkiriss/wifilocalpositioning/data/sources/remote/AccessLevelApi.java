@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.data.sources.api;
+package com.mrkiriss.wifilocalpositioning.data.sources.remote;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

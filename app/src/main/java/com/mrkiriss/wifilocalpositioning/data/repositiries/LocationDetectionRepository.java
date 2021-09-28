@@ -15,7 +15,7 @@ import com.mrkiriss.wifilocalpositioning.data.models.search.TypeOfSearchRequeste
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.data.models.server.ListOfAllMapPoints;
 import com.mrkiriss.wifilocalpositioning.data.models.server.LocationPointInfo;
-import com.mrkiriss.wifilocalpositioning.data.sources.api.LocationDataApi;
+import com.mrkiriss.wifilocalpositioning.data.sources.remote.LocationDataApi;
 import com.mrkiriss.wifilocalpositioning.data.sources.MapImageManager;
 import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
@@ -36,6 +36,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import lombok.Data;
 import retrofit2.Call;
@@ -76,6 +78,7 @@ public class LocationDetectionRepository implements Serializable {
     private boolean showRoute; // VM изменяет, отвечает за идикацию необходимости рисовать маршрут
     private int currentFloorIdInt; // VM изменяет, текущий номер этажа
 
+    @Inject
     public LocationDetectionRepository(LocationDataApi retrofit, WifiScanner wifiScanner,
                                        ConnectionManager connectionManager, MapImageManager mapImageManager,
                                        SettingsManager settingsManager, MapPointsDao mapPointsDao,

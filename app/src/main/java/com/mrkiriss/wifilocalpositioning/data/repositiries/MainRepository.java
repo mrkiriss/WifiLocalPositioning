@@ -33,7 +33,7 @@ public class MainRepository {
     private final MutableLiveData<String> toastContent;
     private final MutableLiveData<Intent> requestToStartIntent;
 
-
+    @Inject
     public MainRepository(WifiScanner wifiScanner, SettingsManager settingsManager,
                           ScanningAbilitiesManager abilitiesManager, FragmentsFactory fragmentsFactory){
         this.wifiScanner=wifiScanner;

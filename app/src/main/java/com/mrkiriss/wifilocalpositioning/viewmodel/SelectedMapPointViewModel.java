@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModel;
 import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
 
+import javax.inject.Inject;
+
 import lombok.Data;
 
 @Data
@@ -19,6 +21,7 @@ public class SelectedMapPointViewModel extends ViewModel {
     private final ObservableField<String> pointsNameInHead;
     private final ObservableInt arrowImageRecourseId;
 
+    @Inject
     public SelectedMapPointViewModel() {
         showAllData = new ObservableBoolean(false);
         pointsNameInHead = new ObservableField<>("");

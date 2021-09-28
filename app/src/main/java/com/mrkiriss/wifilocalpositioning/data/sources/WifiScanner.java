@@ -21,6 +21,8 @@ import com.mrkiriss.wifilocalpositioning.utils.ConnectionManager;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import lombok.Data;
 
 @Data
@@ -52,6 +54,7 @@ public class WifiScanner {
 
     private final MutableLiveData<Boolean> wifiEnabledState; // для отправки состояния включение wifi
 
+    @Inject
     public WifiScanner(Context context, WifiManager wifiManager, ConnectionManager connectionManager, SettingsManager settingsManager){
         this.context=context;
         this.wifiManager=wifiManager;

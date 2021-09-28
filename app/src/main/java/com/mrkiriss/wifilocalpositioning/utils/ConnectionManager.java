@@ -15,6 +15,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.lang.reflect.Method;
 import java.util.Date;
 
+import javax.inject.Inject;
+
 public class ConnectionManager {
     private long delay_start_time ;
 
@@ -29,6 +31,7 @@ public class ConnectionManager {
             "Функционал приложения ограничен.\n\n";
 
 
+    @Inject
     public ConnectionManager(ConnectivityManager connectivityManager, WifiManager wifiManager){
         this.connectivityManager=connectivityManager;
         this.wifiManager=wifiManager;

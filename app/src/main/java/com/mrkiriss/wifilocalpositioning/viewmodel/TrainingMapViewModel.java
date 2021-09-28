@@ -19,6 +19,8 @@ import com.mrkiriss.wifilocalpositioning.data.repositiries.TrainingMapRepository
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -68,6 +70,7 @@ public class TrainingMapViewModel extends ViewModel {
     private final MutableLiveData<MapPoint> requestToAddSecondlyMapPointToRV;
     private final MutableLiveData<List<MapPoint>> requestToChangeSecondlyMapPointListInRV; // заполняется при ответе сервера или обнулении
 
+    @Inject
     public TrainingMapViewModel(TrainingMapRepository repository){
 
         this.repository=repository;

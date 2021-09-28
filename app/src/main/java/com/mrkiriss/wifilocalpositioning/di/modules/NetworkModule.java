@@ -2,8 +2,8 @@ package com.mrkiriss.wifilocalpositioning.di.modules;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.mrkiriss.wifilocalpositioning.data.sources.api.AccessLevelApi;
-import com.mrkiriss.wifilocalpositioning.data.sources.api.LocationDataApi;
+import com.mrkiriss.wifilocalpositioning.data.sources.remote.AccessLevelApi;
+import com.mrkiriss.wifilocalpositioning.data.sources.remote.LocationDataApi;
 
 import javax.inject.Singleton;
 

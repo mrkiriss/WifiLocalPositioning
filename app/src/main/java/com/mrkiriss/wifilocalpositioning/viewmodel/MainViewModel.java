@@ -15,6 +15,8 @@ import com.mrkiriss.wifilocalpositioning.data.repositiries.MainRepository;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import lombok.Data;
 
 @Data
@@ -26,6 +28,7 @@ public class MainViewModel extends ViewModel {
     private final LiveData<String> toastContent;
     private final LiveData<Intent> requestToStartIntent;
 
+    @Inject
     public MainViewModel(MainRepository repository){
         this.repository=repository;
 

@@ -11,8 +11,10 @@ import androidx.lifecycle.MutableLiveData;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.mrkiriss.wifilocalpositioning.data.models.server.StringResponse;
 import com.mrkiriss.wifilocalpositioning.data.models.settings.AbilitiesScanningData;
-import com.mrkiriss.wifilocalpositioning.data.sources.api.LocationDataApi;
+import com.mrkiriss.wifilocalpositioning.data.sources.remote.LocationDataApi;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.AbilitiesDao;
+
+import javax.inject.Inject;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,6 +45,7 @@ public class ScanningAbilitiesManager {
             "Подробную инструкцию вы можете просмотреть в видео по ссылке ниже\n\n\n"+
             "Приносим извинения за неудобства.\n\n";
 
+    @Inject
     public ScanningAbilitiesManager(AbilitiesDao abilitiesDao, LocationDataApi instructionApi){
         this.abilitiesDao=abilitiesDao;
         this.instructionApi=instructionApi;

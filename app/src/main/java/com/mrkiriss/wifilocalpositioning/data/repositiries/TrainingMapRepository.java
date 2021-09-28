@@ -4,8 +4,6 @@ import android.graphics.Bitmap;
 import android.net.wifi.ScanResult;
 import android.util.Log;
 
-import androidx.databinding.ObservableBoolean;
-import androidx.databinding.ObservableField;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -20,7 +18,7 @@ import com.mrkiriss.wifilocalpositioning.data.models.server.ListOfAllMapPoints;
 import com.mrkiriss.wifilocalpositioning.data.models.server.LocationPointInfo;
 import com.mrkiriss.wifilocalpositioning.data.models.server.ScanInformation;
 import com.mrkiriss.wifilocalpositioning.data.models.server.StringResponse;
-import com.mrkiriss.wifilocalpositioning.data.sources.api.LocationDataApi;
+import com.mrkiriss.wifilocalpositioning.data.sources.remote.LocationDataApi;
 import com.mrkiriss.wifilocalpositioning.data.sources.MapImageManager;
 import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 
@@ -29,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import lombok.Data;
 import retrofit2.Call;
@@ -55,6 +55,7 @@ public class TrainingMapRepository implements Serializable {
     private LiveData<Integer> remainingNumberOfScanning;
     private CalibrationLocationPoint calibrationLocationPoint;
 
+    @Inject
     public TrainingMapRepository(LocationDataApi retrofit, MapImageManager mapImageManager, WifiScanner wifiScanner){
         this.retrofit=retrofit;
         this.mapImageManager = mapImageManager;

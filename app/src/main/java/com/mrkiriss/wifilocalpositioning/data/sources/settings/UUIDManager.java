@@ -6,15 +6,19 @@ import android.util.Log;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import lombok.Data;
 
 @Data
 public class UUIDManager {
     private String mUUID;
 
+    @Inject
     public UUIDManager(Context context){
         this.mUUID=generateUUID(context);
     }
+
     private String generateUUID(Context context){
         String androidId = android.provider.Settings.Secure.getString(context.getContentResolver(),
                 android.provider.Settings.Secure.ANDROID_ID);

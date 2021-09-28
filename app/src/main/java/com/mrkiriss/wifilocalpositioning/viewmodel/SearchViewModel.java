@@ -14,6 +14,8 @@ import com.mrkiriss.wifilocalpositioning.data.repositiries.SearchRepository;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import lombok.Data;
 
 @Data
@@ -28,6 +30,7 @@ public class SearchViewModel extends ViewModel {
     private final LiveData<List<SearchItem>> requestToUpdateSearchContent;
     private final LiveData<String> requestToUpdateSearchInformation;
 
+    @Inject
     public SearchViewModel(SearchRepository repository) {
         this.rep = repository;
 

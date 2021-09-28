@@ -9,6 +9,7 @@ import androidx.databinding.ObservableField;
 import androidx.databinding.ObservableInt;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.data.models.map.FloorId;
@@ -23,10 +24,12 @@ import com.mrkiriss.wifilocalpositioning.data.repositiries.LocationDetectionRepo
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import lombok.Data;
 
 @Data
-public class LocationDetectionViewModel {
+public class LocationDetectionViewModel extends ViewModel {
 
     private final LocationDetectionRepository repository;
 
@@ -58,6 +61,7 @@ public class LocationDetectionViewModel {
     private final ObservableBoolean searchResultContainerIsDisplayed;
     private final ObservableField<MapPoint> searchResultContainer;
 
+    @Inject
     public LocationDetectionViewModel(LocationDetectionRepository locationDetectionRepository){
 
         this.repository=locationDetectionRepository;

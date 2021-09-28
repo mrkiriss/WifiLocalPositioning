@@ -11,11 +11,13 @@ import com.mrkiriss.wifilocalpositioning.data.models.server.CalibrationLocationP
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.data.models.server.DefinedLocationPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.StringResponse;
-import com.mrkiriss.wifilocalpositioning.data.sources.api.LocationDataApi;
+import com.mrkiriss.wifilocalpositioning.data.sources.remote.LocationDataApi;
 import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import lombok.Data;
 import retrofit2.Call;
@@ -39,7 +41,7 @@ public class TrainingScanRepository {
     private MutableLiveData<String> toastContent;
     private LiveData<Integer> remainingNumberOfScanning;
 
-
+    @Inject
     public TrainingScanRepository(LocationDataApi retrofit, WifiScanner wifiScanner){
         this.retrofit=retrofit;
         this.wifiScanner=wifiScanner;

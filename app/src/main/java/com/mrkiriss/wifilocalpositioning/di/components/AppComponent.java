@@ -12,10 +12,5 @@ import dagger.Component;
 @Component(modules = {AppContextModule.class, NetworkModule.class, ManagersModule.class, DatabaseModule.class})
 @Singleton
 public interface AppComponent {
-    TrainingScanSubcomponent.Builder trainingSubcomponentBuilder();
-    LocationDetectionSubcomponent.Builder locationDetectionSubcomponentBuilder();
-    MainActivitySubcomponent.Builder mainActivitySubcomponentBuilder();
-    TrainingMapSubcomponent.Builder trainingMapSubcomponent();
-    SettingsSubcomponent.Builder settingsSubcomponent();
-    SearchSubcomponent.Builder searchSubcomponent();
+    ViewModelSubcomponent.Builder getViewModelSubcomponentBuilder();
 }

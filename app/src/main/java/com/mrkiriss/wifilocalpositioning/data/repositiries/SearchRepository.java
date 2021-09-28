@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import lombok.Data;
 
 @Data
@@ -27,6 +29,7 @@ public class SearchRepository {
     private final MutableLiveData<List<SearchItem>> requestToUpdateSearchContent;
     private final MutableLiveData<String> requestToUpdateSearchInformation;
 
+    @Inject
     public SearchRepository() {
         prevViewedMapPoints = new ArrayList<>();
         availableForSearchMapPoints = new ArrayList<>();
