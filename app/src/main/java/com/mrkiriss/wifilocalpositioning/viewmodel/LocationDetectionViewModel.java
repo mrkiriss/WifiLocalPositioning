@@ -12,6 +12,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.mrkiriss.wifilocalpositioning.R;
+import com.mrkiriss.wifilocalpositioning.data.models.Event;
 import com.mrkiriss.wifilocalpositioning.data.models.map.FloorId;
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchData;
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchItem;
@@ -44,7 +45,7 @@ public class LocationDetectionViewModel extends ViewModel {
     private final LiveData<String> requestToChangeFindInput;
     private final LiveData<Integer> requestToChangeDepartureIcon;
     private final LiveData<Integer> requestToChangeDestinationIcon;
-    private final LiveData<SearchData> requestToLaunchSearchMode;
+    private final LiveData<Event<SearchData>> requestToLaunchSearchMode;
     private final LiveData<MapPoint> requestToUpdateSearchResultContainerData;
 
     private final MutableLiveData<String> requestToRefreshFloor;

@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.mrkiriss.wifilocalpositioning.R;
+import com.mrkiriss.wifilocalpositioning.data.models.Event;
 import com.mrkiriss.wifilocalpositioning.data.models.search.PreviousNameInput;
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchData;
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchItem;
@@ -37,6 +38,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import lombok.Data;
@@ -68,7 +70,7 @@ public class LocationDetectionRepository implements Serializable {
     private final MutableLiveData<String> requestToChangeFindInput;
     private final MutableLiveData<Integer> requestToChangeDepartureIcon;
     private final MutableLiveData<Integer> requestToChangeDestinationIcon;
-    private final MutableLiveData<SearchData> requestToLaunchSearchMode;
+    private final MutableLiveData<Event<SearchData>> requestToLaunchSearchMode;
     private final MutableLiveData<MapPoint> requestToUpdateSearchResultContainerData;
 
 
@@ -221,7 +223,7 @@ public class LocationDetectionRepository implements Serializable {
                     hint,
                     typeOfRequester);
 
-            requestToLaunchSearchMode.postValue(data);
+            requestToLaunchSearchMode.postValue(new Event<>(data));
         };
         new Thread(task).start();
     }
@@ -267,9 +269,11 @@ public class LocationDetectionRepository implements Serializable {
 
     }
 
-        // минипулирует данными поиска в зависимости от типа запросившего
-    public void processSelectedLocation(TypeOfSearchRequester typeOfRequester, SearchItem selectedLocation) {
-        Boolean isCurrentLocation = selectedLocation.getName().contains(MapPoint.CURRENT_LOCATION_ADDING);
+        // манипулирует данными поиска в зависимости от типа запросившего
+    public void processSelectedLocation(@Nullable TypeOfSearchRequester typeOfRequester, @Nullable SearchItem selectedLocation) {
+        if (typeOfRequester == null || selectedLocation == null) return;
+
+        boolean isCurrentLocation = selectedLocation.getName().contains(MapPoint.CURRENT_LOCATION_ADDING);
         String finalName = selectedLocation.getName().replace(MapPoint.CURRENT_LOCATION_ADDING, "");
 
         switch (typeOfRequester) {

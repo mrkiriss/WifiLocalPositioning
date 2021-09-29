@@ -23,11 +23,14 @@ import com.mrkiriss.wifilocalpositioning.di.App;
 import com.mrkiriss.wifilocalpositioning.viewmodel.LocationDetectionViewModel;
 import com.mrkiriss.wifilocalpositioning.viewmodel.MainViewModel;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -40,7 +43,7 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
-public class MainActivity extends AppCompatActivity implements IUpButtonNavHost {
+public class MainActivity extends AppCompatActivity {
 
     @Inject
     protected ViewModelFactory viewModelFactory;
@@ -48,10 +51,6 @@ public class MainActivity extends AppCompatActivity implements IUpButtonNavHost 
     private MainViewModel viewModel;
 
     private AppBarConfiguration mAppBarConfiguration;
-    private DrawerLayout drawer;
-    private NavHostFragment navHostFragment;
-
-    private int currentFragmentIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,17 +68,13 @@ public class MainActivity extends AppCompatActivity implements IUpButtonNavHost 
         checkPermissions();
         // проверка ограничений сканирования
         viewModel.checkAndroidVersionForShowingScanningAbilities(this);
-
-        // установка режима клавиатуры
-        //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-
     }
 
     private void createNavigationView(){
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        drawer = findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -90,11 +85,11 @@ public class MainActivity extends AppCompatActivity implements IUpButtonNavHost 
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            hideKeyboard(this);
 
-        Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(
-                R.drawable.ic_menu
-        );
+            Log.i("checkNavigation", "destination changed to " + destination.toString());
+        });
     }
 
     private void initObservers(){
@@ -134,50 +129,5 @@ public class MainActivity extends AppCompatActivity implements IUpButtonNavHost 
             view = new View(activity);
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
-
-    // Методы, отвечающие за функционал по созданию фрагмента с upArrow
-    private boolean isUpButton = false;
-    @Override
-    public void useUpButton() {
-        Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(
-                androidx.appcompat.R.drawable.abc_ic_ab_back_material
-        );
-        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        isUpButton = true;
-    }
-    @Override
-    public void useHamburgerButton() {
-        Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(
-                R.drawable.ic_menu
-        );
-        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-        isUpButton = false;
-
-        hideKeyboard(this);
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (isUpButton && item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            useHamburgerButton();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-    @Override
-    public void navigateTo(Fragment current, Fragment target, String fragmentName) {
-        navHostFragment.getChildFragmentManager().beginTransaction()
-                .hide(current)
-                .add(R.id.nav_host_fragment, target, fragmentName)
-                .addToBackStack(fragmentName)
-                .commit();
-    }
-    @Override
-    public void navigateBack(Fragment current, Fragment target) {
-        onBackPressed();
-        navHostFragment.getChildFragmentManager().beginTransaction()
-                .show(target)
-                .commit();
     }
 }

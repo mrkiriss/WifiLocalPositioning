@@ -37,16 +37,6 @@ public class MainViewModel extends ViewModel {
         requestToStartIntent = repository.getRequestToStartIntent();
     }
 
-    public Fragment[] createFragments() {
-        return repository.createFragments();
-    }
-    public String[] createFragmentTags() {
-        return repository.createFragmentTags();
-    }
-    public String[] createTypesOfRequestSources() {
-        return repository.createTypesOfRequestSources();
-    }
-
     public void watchYoutubeVideo(String id) {
         repository.watchYoutubeVideo(id);
     }

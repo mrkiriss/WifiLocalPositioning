@@ -18,7 +18,16 @@
         android:id="@+id/nav_search"
         android:name="com.mrkiriss.wifilocalpositioning.view.SearchFragment"
         android:label="@string/nav_search"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search" >
+        <argument
+            android:name="searchData"
+            app:argType="com.mrkiriss.wifilocalpositioning.data.models.search.SearchData"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_nav_search_to_nav_definition"
+            app:destination="@id/nav_definition" />
+    </fragment>
     <fragment
         android:id="@+id/nav_training"
         android:name="com.mrkiriss.wifilocalpositioning.view.TrainingScanFragment"

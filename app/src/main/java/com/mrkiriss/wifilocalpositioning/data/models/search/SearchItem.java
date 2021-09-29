@@ -7,10 +7,12 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.mrkiriss.wifilocalpositioning.R;
 
+import java.io.Serializable;
+
 import lombok.Data;
 
 @Data
-public class SearchItem implements Comparable<SearchItem> {
+public class SearchItem implements Comparable<SearchItem>, Serializable {
     private String name;
     private String description;
     private int icon;

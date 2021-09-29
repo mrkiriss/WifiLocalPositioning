@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.mrkiriss.wifilocalpositioning.R;
@@ -30,7 +31,7 @@ import java.io.Serializable;
 
 import javax.inject.Inject;
 
-public class LocationDetectionFragment extends Fragment implements Serializable, IProcessingSelectedByFindLocation {
+public class LocationDetectionFragment extends Fragment implements Serializable {
 
     @Inject
     protected ViewModelFactory viewModelFactory;
@@ -60,7 +61,12 @@ public class LocationDetectionFragment extends Fragment implements Serializable,
         createAndShowMapView();
         initObservers();
         viewModel.startFloorChanging();
-        NavHostFragment.findNavController(this);
+
+        if (getArguments() != null) {
+            SearchItem searchItem = (SearchItem) getArguments().getSerializable("selectedSearchItem");
+            TypeOfSearchRequester type = (TypeOfSearchRequester) getArguments().getSerializable("typeOfRequester");
+            processSelectedByFindLocation(type, searchItem);
+        }
 
         return binding.getRoot();
     }
@@ -105,7 +111,9 @@ public class LocationDetectionFragment extends Fragment implements Serializable,
         // прослушиваем запрос на изменение состояние прогресса по построению маршрута
         viewModel.getRequestToUpdateProgressStatusBuildingRoute().observe(getViewLifecycleOwner(), progress->viewModel.getProgressOfBuildingRouteStatus().set(progress));
         // прослушываем запрос на запуск фрагмента поиска локации
-        viewModel.getRequestToLaunchSearchMode().observe(getViewLifecycleOwner(), this::launchSearchModeFragment);
+        viewModel.getRequestToLaunchSearchMode().observe(getViewLifecycleOwner(), event -> {
+            if (!event.isHandled()) launchSearchModeFragment(event.getValue());
+        });
         // прослушываем запрос на обнавление данных в контейнере результатов поиска
         viewModel.getRequestToUpdateSearchResultContainerData().observe(getViewLifecycleOwner(), data -> viewModel.updateSearchResultContainerData(data));
     }
@@ -149,10 +157,15 @@ public class LocationDetectionFragment extends Fragment implements Serializable,
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
+
     private void launchSearchModeFragment(SearchData data) {
-        ((IUpButtonNavHost) requireActivity()).navigateTo(this, SearchFragment.newInstance(this, data), "searchFragment");
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("searchData", data);
+
+        Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+                .navigate(R.id.nav_search, bundle);
     }
-    @Override
+
     public void processSelectedByFindLocation(TypeOfSearchRequester typeOfRequester, SearchItem selectedSearchItem) {
         Log.i("searchMode", "start processing selectedSearchItem= "+selectedSearchItem.toString()+" in LocDefFragment");
 

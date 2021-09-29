@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
@@ -37,7 +38,6 @@ public class SearchFragment extends Fragment{
     private FragmentSearchBinding binding;
     private SearchRVAdapter searchRVAdapter;
 
-    private Fragment startFragment;
     private TypeOfSearchRequester typeOfRequester;
 
     public static SearchFragment newInstance(Fragment startFragment, SearchData searchData) {
@@ -59,7 +59,7 @@ public class SearchFragment extends Fragment{
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search, container, false);
         binding.setViewModel(viewModel);
 
-        ((IUpButtonNavHost) requireActivity()).useUpButton();
+//        ((IUpButtonNavHost) requireActivity()).useUpButton();
 
         initSearchAdapter();
         initObservers();
@@ -68,8 +68,7 @@ public class SearchFragment extends Fragment{
             // актуализируем данные для поиска
             SearchData data = (SearchData) getArguments().getSerializable("searchData");
             viewModel.saveSearchData(data);
-            // запоминаем пред.фрагмент и тип источника
-            startFragment = (Fragment) getArguments().getSerializable("startFragment");
+            // запоминаем тип источника
             typeOfRequester = data.getTypeOfRequester();
         }
 
@@ -93,14 +92,10 @@ public class SearchFragment extends Fragment{
     }
 
     private void processSelectedItem(SearchItem selectedSearchItem) {
-        ((IProcessingSelectedByFindLocation) startFragment).processSelectedByFindLocation(typeOfRequester, selectedSearchItem);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("selectedSearchItem", selectedSearchItem);
+        bundle.putSerializable("typeOfRequester", typeOfRequester);
 
-        ((IUpButtonNavHost) requireActivity()).navigateBack(this, startFragment);
-    }
-
-    @Override
-    public void onDestroy() {
-        ((IUpButtonNavHost) requireActivity()).useHamburgerButton();
-        super.onDestroy();
+        Navigation.findNavController(requireActivity(), R.id.nav_host_fragment).navigate(R.id.action_nav_search_to_nav_definition, bundle);
     }
 }
