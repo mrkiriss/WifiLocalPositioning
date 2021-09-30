@@ -11,6 +11,7 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.mrkiriss.wifilocalpositioning.utils.LiveData.Event;
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
 import com.mrkiriss.wifilocalpositioning.data.models.map.FloorId;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
@@ -22,12 +23,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import lombok.Data;
 
 @Data
+@Singleton
 public class MapImageManager {
 
     private final AssetManager assetManager;
@@ -56,7 +60,7 @@ public class MapImageManager {
     // данные о каждом этаже с прорисованным маршрутом
     private final Map<FloorId, Floor> routeFloors;
 
-    private final MutableLiveData<String> requestToRefreshFloor;
+    private final MutableLiveData<Event<String>> requestToRefreshFloor;
 
     @Inject
     public MapImageManager(Context context){
@@ -103,7 +107,7 @@ public class MapImageManager {
         routeFloors.clear();
         Map<FloorId, List<float[]>> requiredStrokes = createRequiredStrokes(info);
         createFloorsAccordingToRequirements(requiredStrokes);
-        requestToRefreshFloor.setValue("Маршрут построен");
+        requestToRefreshFloor.setValue(new Event<>("Маршрут построен"));
     }
     // создаёт требования для рисования на этажах
     private Map<FloorId, List<float[]>> createRequiredStrokes(List<LocationPointInfo> info){
@@ -112,11 +116,11 @@ public class MapImageManager {
         if (info.size()>0){ // требуем нарисовать изображения начала
             FloorId floorId = Floor.convertFloorIdToEnum(info.get(0).getFloorId());
             // проверка на наличие требования в карте
-            if (!requiredStrokes.containsKey(floorId)) requiredStrokes.put(floorId, new ArrayList<>());
+            requiredStrokes.put(floorId, new ArrayList<>());
 
             // добавление начала в требования этажа
             float[] departure = new float[]{info.get(0).getX(), info.get(0).getY(), -2, -2};
-            requiredStrokes.get(floorId).add(departure);
+            Objects.requireNonNull(requiredStrokes.get(floorId)).add(departure);
         }
 
         for (int i=0;i<info.size()-1;i++){
@@ -127,7 +131,7 @@ public class MapImageManager {
 
                 // добавление отрезка в требования этажа
                 float[] segment = new float[]{info.get(i).getX(), info.get(i).getY(), info.get(i+1).getX(), info.get(i+1).getY()};
-                requiredStrokes.get(floorId).add(segment);
+                Objects.requireNonNull(requiredStrokes.get(floorId)).add(segment);
             }else{ // не совпадает этаж - требовать рисовать лестницы на двух этажах
                 FloorId floorId1 = Floor.convertFloorIdToEnum(info.get(i).getFloorId());
                 FloorId floorId2 = Floor.convertFloorIdToEnum(info.get(i + 1).getFloorId());
@@ -139,8 +143,8 @@ public class MapImageManager {
                 // добавление лестниц в требования этажа
                 float[] ladder1 = new float[]{info.get(i).getX(), info.get(i).getY(), -1, -1};
                 float[] ladder2 = new float[]{info.get(i+1).getX(), info.get(i+1).getY(), -1, -1};
-                requiredStrokes.get(floorId1).add(ladder1);
-                requiredStrokes.get(floorId2).add(ladder2);
+                Objects.requireNonNull(requiredStrokes.get(floorId1)).add(ladder1);
+                Objects.requireNonNull(requiredStrokes.get(floorId2)).add(ladder2);
             }
         }
 

@@ -6,6 +6,7 @@ import android.content.Intent;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.mrkiriss.wifilocalpositioning.utils.LiveData.Event;
 import com.mrkiriss.wifilocalpositioning.data.repositiries.MainRepository;
 
 import javax.inject.Inject;
@@ -17,9 +18,9 @@ public class MainViewModel extends ViewModel {
 
     private final MainRepository repository;
 
-    private final LiveData<String> requestToOpenInstructionObYouTube;
-    private final LiveData<String> toastContent;
-    private final LiveData<Intent> requestToStartIntent;
+    private final LiveData<Event<String>> requestToOpenInstructionObYouTube;
+    private final LiveData<Event<String>> toastContent;
+    private final LiveData<Event<Intent>> requestToStartIntent;
 
     @Inject
     public MainViewModel(MainRepository repository){

@@ -57,6 +57,7 @@ public abstract class ViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(SelectedMapPointViewModel.class)
+    @ActivityScope
     abstract ViewModel bindSelectedMapPointViewModel(SelectedMapPointViewModel viewModel);
 
     @Binds

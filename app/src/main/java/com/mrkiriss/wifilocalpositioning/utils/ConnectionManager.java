@@ -16,7 +16,9 @@ import java.lang.reflect.Method;
 import java.util.Date;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
+@Singleton
 public class ConnectionManager {
     private long delay_start_time ;
 

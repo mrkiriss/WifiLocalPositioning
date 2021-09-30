@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchData;
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchItem;
+import com.mrkiriss.wifilocalpositioning.utils.LiveData.SingleLiveEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,7 +24,7 @@ public class SearchRepository {
     private SearchItem currentLocation;
 
     private final MutableLiveData<List<SearchItem>> requestToUpdateSearchContent;
-    private final MutableLiveData<String> requestToUpdateSearchInformation;
+    private final SingleLiveEvent<String> requestToUpdateSearchInformation;
 
     @Inject
     public SearchRepository() {
@@ -31,7 +32,7 @@ public class SearchRepository {
         availableForSearchMapPoints = new ArrayList<>();
 
         requestToUpdateSearchContent = new MutableLiveData<>();
-        requestToUpdateSearchInformation = new MutableLiveData<>();
+        requestToUpdateSearchInformation = new SingleLiveEvent<>();
     }
 
     public void saveSearchData(SearchData data) {

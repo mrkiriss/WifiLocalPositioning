@@ -53,13 +53,13 @@ public class SettingsViewModel extends ViewModel {
         repository.updateSettingValuesFromDB();
     }
     public void acceptSettingsChange(){
-        if (scanInterval.get().isEmpty()){
+        if (scanInterval.get() == null || scanInterval.get().isEmpty()){
             toastContent.setValue("Пустое поле недопустимо");
             scanInterval.set(String.valueOf(repository.getSettingsManager().defaultScanInterval));
             return;
         }
-        repository.acceptSettingsChange(Integer.parseInt(Objects.requireNonNull(scanInterval.get())),
-                numberOfScanning.get());
+
+        repository.acceptSettingsChange(scanInterval.get(), numberOfScanning.get());
     }
     public void requestToUpdateAccessLevel(){
         repository.requestToUpdateAccessLevel();

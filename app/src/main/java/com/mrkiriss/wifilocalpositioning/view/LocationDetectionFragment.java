@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -48,7 +49,7 @@ public class LocationDetectionFragment extends Fragment implements Serializable 
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         App.getInstance().getComponentManager().getViewModelSubcomponent().inject(this);
@@ -79,7 +80,9 @@ public class LocationDetectionFragment extends Fragment implements Serializable 
 
     private void initObservers(){
         // прослушиваем получение результата сканирования, вызываем обработчик данных
-        viewModel.getCompleteKitsOfScansResult().observe(getViewLifecycleOwner(), scanResults -> viewModel.startProcessingCompleteKitsOfScansResult(scanResults));
+        viewModel.getCompleteKitsOfScansResult().observe(getViewLifecycleOwner(), event -> {
+            if (event.isNotHandled()) viewModel.startProcessingCompleteKitsOfScansResult(event.getValue());
+        });
         // прослушиваем изменение пола, вызываем перерисовку
         viewModel.getRequestToChangeFloor().observe(getViewLifecycleOwner(), this::drawCurrentFloor);
         // прослышиваем запрос на изменение экрана с показом местоположения
@@ -97,22 +100,22 @@ public class LocationDetectionFragment extends Fragment implements Serializable 
         // прослушиваем запрос на уведомления через Toast
         viewModel.getToastContent().observe(getViewLifecycleOwner(), this::showToastContent);
         // прослушиваем запрос на обновление текущего этажа
-        viewModel.getRequestToRefreshFloor().observe(getViewLifecycleOwner(), s -> {
-            showToastContent(s);
-            viewModel.startFloorChanging();
+        viewModel.getRequestToRefreshFloor().observe(getViewLifecycleOwner(), event -> {
+            if (event.isNotHandled()) {
+                showToastContent(event.getValue());
+                viewModel.startFloorChanging();
+            }
         });
         // прослушиваем состояние включения wifi
-        viewModel.getWifiEnabledState().observe(getViewLifecycleOwner(), state->{
-            if (!state) viewModel.showWifiOffering(getContext());
+        viewModel.getWifiEnabledState().observe(getViewLifecycleOwner(), event -> {
+            if (event.isNotHandled() && !event.getValue()) viewModel.showWifiOffering(getContext());
         });
         // прослушиваем запрос на скрытие клавиатуры
         viewModel.getRequestToHideKeyboard().observe(getViewLifecycleOwner(), s->hideKeyboard(requireActivity()));
         // прослушиваем запрос на изменение состояние прогресса по построению маршрута
         viewModel.getRequestToUpdateProgressStatusBuildingRoute().observe(getViewLifecycleOwner(), progress->viewModel.getProgressOfBuildingRouteStatus().set(progress));
         // прослушываем запрос на запуск фрагмента поиска локации
-        viewModel.getRequestToLaunchSearchMode().observe(getViewLifecycleOwner(), event -> {
-            if (!event.isHandled()) launchSearchModeFragment(event.getValue());
-        });
+        viewModel.getRequestToLaunchSearchMode().observe(getViewLifecycleOwner(), this::launchSearchModeFragment);
         // прослушываем запрос на обнавление данных в контейнере результатов поиска
         viewModel.getRequestToUpdateSearchResultContainerData().observe(getViewLifecycleOwner(), data -> viewModel.updateSearchResultContainerData(data));
     }

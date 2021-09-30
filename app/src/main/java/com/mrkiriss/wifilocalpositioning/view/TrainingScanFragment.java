@@ -52,7 +52,9 @@ public class TrainingScanFragment extends Fragment {
 
     private void initObservers(){
         // подписавыемся на очередные небоработанные результаты сканирования
-        viewModel.getCompleteKitsOfScansResult().observe(getViewLifecycleOwner(), scanResults -> viewModel.startProcessingCompleteKitsOfScansResult(scanResults));
+        viewModel.getCompleteKitsOfScansResult().observe(getViewLifecycleOwner(), event -> {
+            if (event.isNotHandled()) viewModel.startProcessingCompleteKitsOfScansResult(event.getValue());
+        });
         // подписываемся на добавление обработанных результатов сканирвоания на экран
         viewModel.getRequestToAddAPs().observe(getViewLifecycleOwner(), this::addKitOfAPsOnRecyclerView);
         // подписываемся на результат калибровки наборов сканирования

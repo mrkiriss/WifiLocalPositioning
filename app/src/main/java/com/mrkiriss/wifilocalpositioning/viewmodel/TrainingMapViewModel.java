@@ -15,6 +15,8 @@ import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.data.models.server.ScanInformation;
 import com.mrkiriss.wifilocalpositioning.data.repositiries.TrainingMapRepository;
+import com.mrkiriss.wifilocalpositioning.utils.LiveData.Event;
+import com.mrkiriss.wifilocalpositioning.utils.LiveData.SingleLiveEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,11 +61,11 @@ public class TrainingMapViewModel extends ViewModel {
     private final LiveData<String> serverResponseRequest;
     private final MutableLiveData<String> requestToUpdateFloor;
 
-    private final MutableLiveData<String> toastContent;
+    private final SingleLiveEvent<String> toastContent;
     private final MutableLiveData<int[]> moveCamera;
 
     private final LiveData<List<ScanInformation>> requestToSetListOfScanInformation;
-    private final LiveData<CompleteKitsContainer> completeKitsOfScansResult;
+    private final LiveData<Event<CompleteKitsContainer>> completeKitsOfScansResult;
     private final LiveData<Integer> remainingNumberOfScanning;
 
     private final MutableLiveData<List<MapPoint>> serverConnectionsResponse;

@@ -15,6 +15,7 @@ import androidx.annotation.RequiresApi;
 import androidx.lifecycle.MutableLiveData;
 
 import com.mrkiriss.wifilocalpositioning.R;
+import com.mrkiriss.wifilocalpositioning.utils.LiveData.Event;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.data.sources.settings.SettingsManager;
 import com.mrkiriss.wifilocalpositioning.utils.ConnectionManager;
@@ -23,10 +24,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import lombok.Data;
 
 @Data
+@Singleton
 public class WifiScanner {
 
     private final Context context;
@@ -43,7 +46,7 @@ public class WifiScanner {
     private final long minScanDelay=100; // устанавливается после начала сканирований одной пачки
 
     private CompleteKitsContainer uncompleteKitsContainer;
-    private final MutableLiveData<CompleteKitsContainer> completeScanResults;
+    private final MutableLiveData<Event<CompleteKitsContainer>> completeScanResults;
 
     private final MutableLiveData<Integer> remainingNumberOfScanning;
     private List<List<ScanResult>> scanResultKits;
@@ -71,7 +74,7 @@ public class WifiScanner {
         }
     }
 
-    private final MutableLiveData<Boolean> wifiEnabledState; // для отправки состояния включение wifi
+    private final MutableLiveData<Event<Boolean>> wifiEnabledState; // для отправки состояния включение wifi
 
     @Inject
     public WifiScanner(Context context, WifiManager wifiManager, ConnectionManager connectionManager, SettingsManager settingsManager){
@@ -85,6 +88,8 @@ public class WifiScanner {
         this.handler = new Handler(Looper.getMainLooper());
         this.scanStarted=false;
         this.wifiEnabledState=new MutableLiveData<>();
+
+        Log.i("checkDI", "created WifiScanner");
     }
 
     public void setCurrentTypeOfRequestSource(int newLocationId){
@@ -97,13 +102,13 @@ public class WifiScanner {
             CompleteKitsContainer container = new CompleteKitsContainer();
             container.setCompleteKits(new ArrayList<>());
             container.setRequestSourceType(currentTypeOfRequestSource);
-            completeScanResults.setValue(container);
+            completeScanResults.setValue(new Event<>(container));
         }
     }
 
     // проверяет состояние wifi и наличия интернет соединения
     private void checkWifiEnabled(){
-        wifiEnabledState.postValue(connectionManager.checkWifiEnabled());
+        wifiEnabledState.postValue(new Event<>(connectionManager.checkWifiEnabled()));
     }
 
     public void startTrainingScan(int requiredNumberOfScans, TypeOfScanning typeOfRequestSource){
@@ -153,7 +158,7 @@ public class WifiScanner {
 
     }
     private long getScanIntervalFromSettings(){
-        return settingsManager.getScanInterval()*1000;
+        return settingsManager.getScanInterval()* 1000L;
     }
     private int getNumberOfScanningFromSettings(){
         return settingsManager.getNumberOfScanning();
@@ -176,7 +181,7 @@ public class WifiScanner {
                 }
 
                 // post data about all scans in kits
-                completeScanResults.postValue(container);
+                completeScanResults.postValue(new Event<>(container));
                 Log.i( "WifiScanner", "completeScanResults posted with data= "+container);
 
                 // недопускаем лишних сканирований

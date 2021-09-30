@@ -4,7 +4,12 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/prog/github/WifiLocalPositioning/app/src/main/res/layout/activity_main.xml" value="0.22192028985507245" />
+        <entry key="..\:/prog/github/WifiLocalPositioning/app/src/main/res/layout/app_bar_main.xml" value="0.21739130434782608" />
+        <entry key="..\:/prog/github/WifiLocalPositioning/app/src/main/res/layout/content_main.xml" value="0.21739130434782608" />
         <entry key="..\:/prog/github/WifiLocalPositioning/app/src/main/res/layout/fragment_training_map.xml" value="0.25416666666666665" />
+        <entry key="..\:/prog/github/WifiLocalPositioning/app/src/main/res/layout/item_map_point.xml" value="0.21739130434782608" />
+        <entry key="..\:/prog/github/WifiLocalPositioning/app/src/main/res/layout/item_scanning_info.xml" value="0.21739130434782608" />
+        <entry key="..\:/prog/github/WifiLocalPositioning/app/src/main/res/layout/nav_header_main.xml" value="0.21739130434782608" />
         <entry key="..\:/prog/github/WifiLocalPositioning/app/src/main/res/menu/activity_main_drawer.xml" value="0.25416666666666665" />
         <entry key="..\:/prog/github/WifiLocalPositioning/app/src/main/res/menu/main.xml" value="0.25416666666666665" />
         <entry key="..\:/prog/github/WifiLocalPositioning/app/src/main/res/menu/search_menu.xml" value="0.25416666666666665" />

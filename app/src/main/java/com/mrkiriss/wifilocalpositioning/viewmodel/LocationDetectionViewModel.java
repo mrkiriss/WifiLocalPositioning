@@ -11,7 +11,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.mrkiriss.wifilocalpositioning.R;
-import com.mrkiriss.wifilocalpositioning.data.models.Event;
+import com.mrkiriss.wifilocalpositioning.utils.LiveData.Event;
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchData;
@@ -19,6 +19,7 @@ import com.mrkiriss.wifilocalpositioning.data.models.search.SearchItem;
 import com.mrkiriss.wifilocalpositioning.data.models.search.TypeOfSearchRequester;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.data.repositiries.LocationDetectionRepository;
+import com.mrkiriss.wifilocalpositioning.utils.LiveData.SingleLiveEvent;
 
 import javax.inject.Inject;
 
@@ -29,10 +30,10 @@ public class LocationDetectionViewModel extends ViewModel {
 
     private final LocationDetectionRepository repository;
 
-    private final LiveData<CompleteKitsContainer> completeKitsOfScansResult;
+    private final LiveData<Event<CompleteKitsContainer>> completeKitsOfScansResult;
     private final LiveData<MapPoint> requestToChangeFloorByMapPoint; // изменяет этаж и камеру напрявляет на местоположение
     private final LiveData<Floor> requestToChangeFloor; // изменяет этаж
-    private final LiveData<Boolean> wifiEnabledState;
+    private final LiveData<Event<Boolean>> wifiEnabledState;
     private final LiveData<String> requestToHideKeyboard;
     private final LiveData<Boolean> requestToUpdateProgressStatusBuildingRoute;
     private final LiveData<String> requestToChangeDestinationInput;
@@ -40,11 +41,11 @@ public class LocationDetectionViewModel extends ViewModel {
     private final LiveData<String> requestToChangeFindInput;
     private final LiveData<Integer> requestToChangeDepartureIcon;
     private final LiveData<Integer> requestToChangeDestinationIcon;
-    private final LiveData<Event<SearchData>> requestToLaunchSearchMode;
+    private final LiveData<SearchData> requestToLaunchSearchMode;
     private final LiveData<MapPoint> requestToUpdateSearchResultContainerData;
 
-    private final MutableLiveData<String> requestToRefreshFloor;
-    private final MutableLiveData<String> toastContent;
+    private final MutableLiveData<Event<String>> requestToRefreshFloor;
+    private final LiveData<String> toastContent;
 
     private final ObservableInt floorNumber;
     private final ObservableField<String> findInput;
@@ -160,7 +161,7 @@ public class LocationDetectionViewModel extends ViewModel {
     // Методы для взаимодействия с контейнером построения маршрутов
     public void startBuildRoute(){
         if (departureInput.get().isEmpty() || destinationInput.get().isEmpty()){
-            requestToRefreshFloor.setValue("Не все поля заполены");
+            requestToRefreshFloor.setValue(new Event<>("Не все поля заполены"));
             return;
         }
         repository.requestRoute(departureInput.get(), destinationInput.get());

@@ -11,6 +11,7 @@ import com.mrkiriss.wifilocalpositioning.data.sources.remote.AccessLevelApi;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import lombok.Data;
 import retrofit2.Call;
@@ -18,6 +19,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 @Data
+@Singleton
 public class SettingsManager {
     private SettingsDao settingsDao;
     private UUIDManager uuidManager;

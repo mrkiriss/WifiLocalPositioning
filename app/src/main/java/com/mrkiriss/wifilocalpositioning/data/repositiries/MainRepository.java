@@ -8,6 +8,7 @@ import android.net.Uri;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.mrkiriss.wifilocalpositioning.utils.LiveData.Event;
 import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 import com.mrkiriss.wifilocalpositioning.data.sources.settings.SettingsManager;
 import com.mrkiriss.wifilocalpositioning.utils.ScanningAbilitiesManager;
@@ -22,9 +23,9 @@ public class MainRepository {
     private final WifiScanner wifiScanner;
     private final SettingsManager settingsManager;
     private final ScanningAbilitiesManager abilitiesManager;
-    private final LiveData<String> requestToOpenInstructionObYouTube;
-    private final MutableLiveData<String> toastContent;
-    private final MutableLiveData<Intent> requestToStartIntent;
+    private final LiveData<Event<String>> requestToOpenInstructionObYouTube;
+    private final MutableLiveData<Event<String>> toastContent;
+    private final MutableLiveData<Event<Intent>> requestToStartIntent;
 
     @Inject
     public MainRepository(WifiScanner wifiScanner, SettingsManager settingsManager,
@@ -44,18 +45,18 @@ public class MainRepository {
         Intent webIntent = new Intent(Intent.ACTION_VIEW,
                 Uri.parse("http://www.youtube.com/watch?v=" + id));
         try {
-            requestToStartIntent.setValue(appIntent);
+            requestToStartIntent.setValue(new Event<>(appIntent));
         } catch (ActivityNotFoundException ex) {
-            requestToStartIntent.setValue(webIntent);
+            requestToStartIntent.setValue(new Event<>(webIntent));
         }catch (Exception e){
-            toastContent.setValue("Извините, пока здесь ничего нет");
+            toastContent.setValue(new Event<>("Извините, пока здесь ничего нет"));
         }
     }
 
     // уведомляет об отсутсвии доступа к части приложения
     public void notifyAboutLackOfAccess() {
-        toastContent.setValue("Доступ запрещён.\n" +
-                "За подробной информацией обратитесь к владельцу приложения");
+        toastContent.setValue(new Event<>("Доступ запрещён.\n" +
+                "За подробной информацией обратитесь к владельцу приложения"));
     }
 
     // проверка наличия необходимого разрешения для открытия фрагмента

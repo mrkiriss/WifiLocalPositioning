@@ -6,20 +6,24 @@ import android.util.Log;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.mrkiriss.wifilocalpositioning.utils.LiveData.Event;
 import com.mrkiriss.wifilocalpositioning.data.models.server.StringResponse;
 import com.mrkiriss.wifilocalpositioning.data.models.settings.AbilitiesScanningData;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.AbilitiesDao;
 import com.mrkiriss.wifilocalpositioning.data.sources.remote.LocationDataApi;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+@Singleton
 public class ScanningAbilitiesManager {
 
     private final AbilitiesDao abilitiesDao;
@@ -27,23 +31,11 @@ public class ScanningAbilitiesManager {
 
     private boolean needShowInformationAboutAbilities = true;
 
-    public MutableLiveData<String> getRequestToOpenInstructionObYouTube() {
+    public MutableLiveData<Event<String>> getRequestToOpenInstructionObYouTube() {
         return requestToOpenInstructionObYouTube;
     }
 
-    private final MutableLiveData<String> requestToOpenInstructionObYouTube;
-
-    private final String androidV9MessageContent = "На устройстве обнаружена ОС Android версии 9.\n" +
-            "В связи с ограничениями версии приложение может запрашивать только 4 wi-fi сканирования в 2 минуты.\n" +
-            "Пожалуйста, имейте это ввиду, задавая настройки сканирования\n\n\n" +
-            "Приносим извинения за неудобства.\n\n";
-
-    private final String androidV10HMessageContent = "На устройстве обнаружена ОС Android версии 10 или выше.\n" +
-            "В связи с ограничениями версии приложение может запрашивать только 4 wi-fi сканирования в 2 минуты.\n\n" +
-            "Для отключения ограничений перейдите в \"Режим разработчика\" в настройках устройства " +
-            "и отключите \"WI-FI scan throttling\" \n\n" +
-            "Подробную инструкцию вы можете просмотреть в видео по ссылке ниже\n\n\n"+
-            "Приносим извинения за неудобства.\n\n";
+    private final MutableLiveData<Event<String>> requestToOpenInstructionObYouTube;
 
     @Inject
     public ScanningAbilitiesManager(AbilitiesDao abilitiesDao, LocationDataApi instructionApi){
@@ -105,6 +97,10 @@ public class ScanningAbilitiesManager {
         check.setElegantTextHeight(true);
         dialog.setView(check);
 
+        String androidV9MessageContent = "На устройстве обнаружена ОС Android версии 9.\n" +
+                "В связи с ограничениями версии приложение может запрашивать только 4 wi-fi сканирования в 2 минуты.\n" +
+                "Пожалуйста, имейте это ввиду, задавая настройки сканирования\n\n\n" +
+                "Приносим извинения за неудобства.\n\n";
         dialog.setMessage(androidV9MessageContent);
         dialog.setNeutralButton("Продолжить", (dialog12, which) -> {
             if (check.isChecked()){
@@ -126,15 +122,19 @@ public class ScanningAbilitiesManager {
         check.setElegantTextHeight(true);
         dialog.setView(check);
 
+        String androidV10HMessageContent = "На устройстве обнаружена ОС Android версии 10 или выше.\n" +
+                "В связи с ограничениями версии приложение может запрашивать только 4 wi-fi сканирования в 2 минуты.\n\n" +
+                "Для отключения ограничений перейдите в \"Режим разработчика\" в настройках устройства " +
+                "и отключите \"WI-FI scan throttling\" \n\n" +
+                "Подробную инструкцию вы можете просмотреть в видео по ссылке ниже\n\n\n" +
+                "Приносим извинения за неудобства.\n\n";
         dialog.setMessage(androidV10HMessageContent);
         dialog.setNeutralButton("Продолжить", (dialog12, which) -> {
             if (check.isChecked()){
                 updateDataAboutNeedToShowDialog();
             }
         });
-        dialog.setPositiveButton("Просмотреть инструкцию", (dialog1, which) -> {
-            startInstructionURL(context);
-        });
+        dialog.setPositiveButton("Просмотреть инструкцию", (dialog1, which) -> startInstructionURL(context));
 
         dialog.show();
     }
@@ -142,15 +142,15 @@ public class ScanningAbilitiesManager {
     private void startInstructionURL(Context context){
         instructionApi.getInstructionURL().enqueue(new Callback<StringResponse>() {
             @Override
-            public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
+            public void onResponse(@NonNull Call<StringResponse> call, @NonNull Response<StringResponse> response) {
                 if (response.body()==null || response.body().getResponse().isEmpty()){
                     Toast.makeText(context, "Извините, пока здесь ничего нет", Toast.LENGTH_SHORT).show();
                 }
-                requestToOpenInstructionObYouTube.setValue(response.body().getResponse());
+                requestToOpenInstructionObYouTube.setValue(new Event<>(response.body().getResponse()));
             }
 
             @Override
-            public void onFailure(Call<StringResponse> call, Throwable t) {
+            public void onFailure(@NonNull Call<StringResponse> call, @NonNull Throwable t) {
                 Toast.makeText(context, "Извините, пока здесь ничего нет", Toast.LENGTH_SHORT).show();
             }
         });

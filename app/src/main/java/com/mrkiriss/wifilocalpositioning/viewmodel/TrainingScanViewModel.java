@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.data.repositiries.TrainingScanRepository;
+import com.mrkiriss.wifilocalpositioning.utils.LiveData.Event;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,7 @@ public class TrainingScanViewModel extends ViewModel {
     private ObservableBoolean isScanningStarted;
     private ObservableInt selectedMod;
 
-    private final LiveData<CompleteKitsContainer> completeKitsOfScansResult;
+    private final LiveData<Event<CompleteKitsContainer>> completeKitsOfScansResult;
     private LiveData<String> requestToAddAPs;
     private MutableLiveData<String> resultOfScanningAfterCalibration;
     private MutableLiveData<String> toastContent;
@@ -75,11 +76,11 @@ public class TrainingScanViewModel extends ViewModel {
         convertScanningMode();
         switch (scanningMode.get()){
             case TrainingScanRepository.MODE_TRAINING_APS:
-                trainingScanRepository.runScanInManager(Integer.parseInt(Objects.requireNonNull(inputNumberOfScanKits.get())),
+                trainingScanRepository.runScanInManager(inputNumberOfScanKits.get(),
                         inputCabId.get(), scanningMode.get());
                 break;
             case TrainingScanRepository.MODE_DEFINITION:
-                trainingScanRepository.runScanInManager(Integer.parseInt(Objects.requireNonNull(inputNumberOfScanKits.get())), scanningMode.get());
+                trainingScanRepository.runScanInManager(inputNumberOfScanKits.get(), scanningMode.get());
                 break;
         }
     }

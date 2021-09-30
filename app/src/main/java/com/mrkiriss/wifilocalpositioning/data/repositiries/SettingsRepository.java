@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.mrkiriss.wifilocalpositioning.data.sources.db.SettingsDao;
 import com.mrkiriss.wifilocalpositioning.data.sources.settings.SettingsManager;
+import com.mrkiriss.wifilocalpositioning.utils.LiveData.SingleLiveEvent;
 
 import javax.inject.Inject;
 
@@ -14,11 +15,11 @@ public class SettingsRepository {
     private final SettingsDao settingsDao;
     private final SettingsManager settingsManager;
 
-    private final MutableLiveData<Integer> requestToUpdateNumberOfScanning;
-    private final MutableLiveData<String> requestToUpdateScanInterval;
+    private final SingleLiveEvent<Integer> requestToUpdateNumberOfScanning;
+    private final SingleLiveEvent<String> requestToUpdateScanInterval;
     private final MutableLiveData<Integer> requestToUpdateAccessLevel;
-    private final MutableLiveData<String> requestToUpdateCopyUUID;
-    private final MutableLiveData<String> toastContent;
+    private final SingleLiveEvent<String> requestToUpdateCopyUUID;
+    private final SingleLiveEvent<String> toastContent;
 
     private int currentSavedScanInterval;
     private int currentSavedNumberOfScanning;
@@ -31,11 +32,11 @@ public class SettingsRepository {
         this.settingsDao=settingsDao;
         this.settingsManager=settingsManager;
 
-        requestToUpdateNumberOfScanning =new MutableLiveData<>();
-        requestToUpdateScanInterval =new MutableLiveData<>();
+        requestToUpdateNumberOfScanning =new SingleLiveEvent<>();
+        requestToUpdateScanInterval =new SingleLiveEvent<>();
         requestToUpdateAccessLevel =settingsManager.getRequestToUpdateAccessLevel();
-        toastContent=new MutableLiveData<>();
-        requestToUpdateCopyUUID =new MutableLiveData<>();
+        toastContent=new SingleLiveEvent<>();
+        requestToUpdateCopyUUID =new SingleLiveEvent<>();
 
         updateDataFromSaved();
     }
@@ -60,10 +61,11 @@ public class SettingsRepository {
         }
     }
 
-    public void acceptSettingsChange(int scanInterval, int numberOfScanning){
+    public void acceptSettingsChange(String _scanInterval, int numberOfScanning){
 
+        int scanInterval = convertToValidSettingsData(_scanInterval, numberOfScanning);
         // check valid
-        if (!isValidSettingsData(scanInterval, numberOfScanning)) return;
+        if (scanInterval == -1) return;
 
         // change manager data
         settingsManager.setScanInterval(scanInterval);
@@ -78,12 +80,21 @@ public class SettingsRepository {
         // вставляем те же данные, чтобы кнопка обновилась
         requestToUpdateScanInterval.setValue(String.valueOf(currentSavedScanInterval));
     }
-    private boolean isValidSettingsData(int scanInterval, int numberOfScanning){
-        if (scanInterval<3 || numberOfScanning<0 || numberOfScanning>5){
-            requestToUpdateScanInterval.setValue(String.valueOf(settingsManager.defaultScanInterval));
-            toastContent.setValue("Неккоректные данные");
-            return false;
+    private int convertToValidSettingsData(String _scanInterval, int numberOfScanning){
+        int scanInterval = -1;
+        try {
+            scanInterval = Integer.parseInt(_scanInterval);
+
+            if (scanInterval < 3 || numberOfScanning < 0 || numberOfScanning > 5) {
+                requestToUpdateScanInterval.setValue(String.valueOf(settingsManager.defaultScanInterval));
+                toastContent.setValue("Неккоректные данные");
+                scanInterval = -1;
+            }
+        } catch (NumberFormatException | NullPointerException e) {
+            e.printStackTrace();
+            toastContent.setValue("Некорректный ввод");
         }
-        return true;
+
+        return scanInterval;
     }
 }

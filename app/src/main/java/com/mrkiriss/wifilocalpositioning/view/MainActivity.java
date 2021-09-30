@@ -71,23 +71,33 @@ public class MainActivity extends AppCompatActivity {
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             hideKeyboard(this);
 
+            Log.i("checkNavigation", "destination changed to " + destination.getLabel());
+
+            // проверяем разрешение доступа к только что открытому фрагменту
+            if (!viewModel.isPresentAccessPermission(destination.getId())) {
+                controller.navigateUp();
+                return;
+            }
+
             // изменяем тип сканирования
             viewModel.setCurrentTypeOfRequestSource(destination.getId());
 
-            // проверяем разрешение доступа к только что открытому фрагменту
-            if (!viewModel.isPresentAccessPermission(destination.getId())) navController.navigateUp();
-
-            Log.i("checkNavigation", "destination changed to " + destination.getId() + "definition id = " + R.id.nav_definition);
         });
     }
 
     private void initObservers(){
         // подписываемсян на запрос открытия видео-инструкции
-        viewModel.getRequestToOpenInstructionObYouTube().observe(this, id -> viewModel.watchYoutubeVideo(id));
+        viewModel.getRequestToOpenInstructionObYouTube().observe(this, event -> {
+            if (event.isNotHandled()) viewModel.watchYoutubeVideo(event.getValue());
+        });
         // подписываемся на данные Toast
-        viewModel.getToastContent().observe(this, this::showToastContent);
+        viewModel.getToastContent().observe(this, event -> {
+            if (event.isNotHandled()) showToastContent(event.getValue());
+        });
         // подписываемся на вызов Intent
-        viewModel.getRequestToStartIntent().observe(this, this::startActivity);
+        viewModel.getRequestToStartIntent().observe(this, event -> {
+            if (event.isNotHandled()) startActivity(event.getValue());
+        });
     }
 
     @Override

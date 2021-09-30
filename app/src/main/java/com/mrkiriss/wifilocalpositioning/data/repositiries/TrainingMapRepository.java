@@ -4,9 +4,11 @@ import android.graphics.Bitmap;
 import android.net.wifi.ScanResult;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.mrkiriss.wifilocalpositioning.utils.LiveData.Event;
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
 import com.mrkiriss.wifilocalpositioning.data.models.map.FloorId;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
@@ -21,6 +23,7 @@ import com.mrkiriss.wifilocalpositioning.data.models.server.StringResponse;
 import com.mrkiriss.wifilocalpositioning.data.sources.MapImageManager;
 import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 import com.mrkiriss.wifilocalpositioning.data.sources.remote.LocationDataApi;
+import com.mrkiriss.wifilocalpositioning.utils.LiveData.SingleLiveEvent;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -42,17 +45,18 @@ public class TrainingMapRepository implements Serializable {
     private final MapImageManager mapImageManager;
     private WifiScanner wifiScanner;
 
-    private final MutableLiveData<String> toastContent;
+    private final SingleLiveEvent<String> toastContent;
     private final MutableLiveData<Floor> changeFloor;
-    private final MutableLiveData<Boolean> requestToUpdateInteractionWithServerIsCarriedOut;
-    private final MutableLiveData<String> requestToUpdateDescriptionOfInteractionWithServer;
-    private final MutableLiveData<String> serverResponse;
+    private final SingleLiveEvent<Boolean> requestToUpdateInteractionWithServerIsCarriedOut;
+    private final SingleLiveEvent<String> requestToUpdateDescriptionOfInteractionWithServer;
+    private final SingleLiveEvent<String> serverResponse;
     private final MutableLiveData<List<MapPoint>> serverConnectionsResponse;
-    private final MutableLiveData<String> requestToUpdateFloor;
+    private final SingleLiveEvent<String> requestToUpdateFloor;
     private final MutableLiveData<List<ScanInformation>> requestToSetListOfScanInformation;
 
-    private final LiveData<CompleteKitsContainer> completeKitsOfScansResult;
+    private final LiveData<Event<CompleteKitsContainer>> completeKitsOfScansResult;
     private LiveData<Integer> remainingNumberOfScanning;
+
     private CalibrationLocationPoint calibrationLocationPoint;
 
     @Inject
@@ -61,13 +65,13 @@ public class TrainingMapRepository implements Serializable {
         this.mapImageManager = mapImageManager;
         this.wifiScanner=wifiScanner;
 
-        toastContent=new MutableLiveData<>();
+        toastContent=new SingleLiveEvent<>();
         changeFloor=new MutableLiveData<>();
-        requestToUpdateInteractionWithServerIsCarriedOut = new MutableLiveData<>();
-        requestToUpdateDescriptionOfInteractionWithServer = new MutableLiveData<>();
-        serverResponse=new MutableLiveData<>();
+        requestToUpdateInteractionWithServerIsCarriedOut = new SingleLiveEvent<>();
+        requestToUpdateDescriptionOfInteractionWithServer = new SingleLiveEvent<>();
+        serverResponse=new SingleLiveEvent<>();
         serverConnectionsResponse=new MutableLiveData<>();
-        requestToUpdateFloor=new MutableLiveData<>();
+        requestToUpdateFloor=new SingleLiveEvent<>();
         requestToSetListOfScanInformation=new MutableLiveData<>();
 
         completeKitsOfScansResult=wifiScanner.getCompleteScanResults();
@@ -171,7 +175,7 @@ public class TrainingMapRepository implements Serializable {
 
         retrofit.getListOfAllMapPoints().enqueue(new Callback<ListOfAllMapPoints>() {
             @Override
-            public void onResponse(Call<ListOfAllMapPoints> call, Response<ListOfAllMapPoints> response) {
+            public void onResponse(@NonNull Call<ListOfAllMapPoints> call, @NonNull Response<ListOfAllMapPoints> response) {
 
                 // обновление информации о запросе к серверу
                 requestToUpdateInteractionWithServerIsCarriedOut.setValue(false);
@@ -194,7 +198,7 @@ public class TrainingMapRepository implements Serializable {
             }
 
             @Override
-            public void onFailure(Call<ListOfAllMapPoints> call, Throwable t) {
+            public void onFailure(@NonNull Call<ListOfAllMapPoints> call, @NonNull Throwable t) {
                 Log.i("TrainingMapRep", "server error: "+ Arrays.toString(t.getStackTrace()));
 
                 // обновление информации о запросе к серверу
@@ -220,7 +224,7 @@ public class TrainingMapRepository implements Serializable {
 
         retrofit.postCalibrationLPInfo(locationPointInfo).enqueue(new Callback<StringResponse>() {
             @Override
-            public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
+            public void onResponse(@NonNull Call<StringResponse> call, @NonNull Response<StringResponse> response) {
                 Log.println(Log.INFO, "GOOD_TRAINING_CORD_ROOM",
                         String.format("Server response=%s", response.body()));
 
@@ -238,7 +242,7 @@ public class TrainingMapRepository implements Serializable {
                 toastContent.setValue("Локация добавлена");
             }
             @Override
-            public void onFailure(Call<StringResponse> call, Throwable t) {
+            public void onFailure(@NonNull Call<StringResponse> call, @NonNull Throwable t) {
                 // обновление информации о запросе к серверу
                 serverResponse.setValue(call.toString()+"\n"+t.getMessage());
                 requestToUpdateInteractionWithServerIsCarriedOut.setValue(false);
@@ -265,7 +269,7 @@ public class TrainingMapRepository implements Serializable {
 
         retrofit.postCalibrationLPWithAPs(calibrationLocationPoint).enqueue(new Callback<StringResponse>() {
             @Override
-            public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
+            public void onResponse(@NonNull Call<StringResponse> call, @NonNull Response<StringResponse> response) {
                 Log.println(Log.INFO, "GOOD_TRAINING_APs_ROOM",
                         String.format("Server response=%s", response.body()));
 
@@ -283,7 +287,7 @@ public class TrainingMapRepository implements Serializable {
 
             }
             @Override
-            public void onFailure(Call<StringResponse> call, Throwable t) {
+            public void onFailure(@NonNull Call<StringResponse> call, @NonNull Throwable t) {
 
                 // обновление информации о запросе к серверу
                 requestToUpdateInteractionWithServerIsCarriedOut.setValue(false);
@@ -308,7 +312,7 @@ public class TrainingMapRepository implements Serializable {
 
         retrofit.getScanningInfoAboutLocation(locationName).enqueue(new Callback<List<ScanInformation>>() {
             @Override
-            public void onResponse(Call<List<ScanInformation>> call, Response<List<ScanInformation>> response) {
+            public void onResponse(@NonNull Call<List<ScanInformation>> call,@NonNull  Response<List<ScanInformation>> response) {
                 Log.println(Log.INFO, "TrainingMapRepository",
                         String.format("Server response after getScanningInfoAboutLocation=%s", response.body()));
 
@@ -326,7 +330,7 @@ public class TrainingMapRepository implements Serializable {
             }
 
             @Override
-            public void onFailure(Call<List<ScanInformation>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<ScanInformation>> call, @NonNull Throwable t) {
                 // обновление информации о запросе к серверу
                 requestToUpdateInteractionWithServerIsCarriedOut.setValue(false);
                 serverResponse.setValue(call.toString()+"\n"+t.getMessage());
@@ -352,7 +356,7 @@ public class TrainingMapRepository implements Serializable {
 
         retrofit.getConnectionsByName(mainName).enqueue(new Callback<Connections>() {
             @Override
-            public void onResponse(Call<Connections> call, Response<Connections> response) {
+            public void onResponse(@NonNull Call<Connections> call, @NonNull Response<Connections> response) {
                 Log.println(Log.INFO, "TrainingMapRepository",
                         String.format("Server response after downloading connections=%s", response.body()));
 
@@ -373,7 +377,7 @@ public class TrainingMapRepository implements Serializable {
                 }
             }
             @Override
-            public void onFailure(Call<Connections> call, Throwable t) {
+            public void onFailure(@NonNull Call<Connections> call, @NonNull Throwable t) {
                 // обновление информации о запросе к серверу
                 requestToUpdateInteractionWithServerIsCarriedOut.setValue(false);
                 serverResponse.setValue(call.toString()+"\n"+t.getMessage());
@@ -391,7 +395,7 @@ public class TrainingMapRepository implements Serializable {
 
         retrofit.postConnections(Connections.convertToOnlyNameConnections(mainName, mapPoints)).enqueue(new Callback<StringResponse>() {
             @Override
-            public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
+            public void onResponse(@NonNull Call<StringResponse> call, @NonNull Response<StringResponse> response) {
                 Log.println(Log.INFO, "TrainingMapRepository",
                         String.format("Server response after postChangedConnections=%s", response.body()));
 
@@ -429,7 +433,7 @@ public class TrainingMapRepository implements Serializable {
 
         retrofit.deleteLPInfo(roomName).enqueue(new Callback<StringResponse>() {
             @Override
-            public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
+            public void onResponse(@NonNull Call<StringResponse> call, @NonNull Response<StringResponse> response) {
                 Log.println(Log.INFO, "TrainingMapRepository",
                         String.format("Server response after delete lpInfo=%s", response.body()));
 
@@ -447,7 +451,7 @@ public class TrainingMapRepository implements Serializable {
             }
 
             @Override
-            public void onFailure(Call<StringResponse> call, Throwable t) {
+            public void onFailure(@NonNull Call<StringResponse> call, @NonNull Throwable t) {
                 // обновление информации о запросе к серверу
                 requestToUpdateInteractionWithServerIsCarriedOut.setValue(false);
                 serverResponse.setValue(call.toString()+"\n"+t.getMessage());
@@ -466,7 +470,7 @@ public class TrainingMapRepository implements Serializable {
 
         retrofit.deleteLPAps(roomName).enqueue(new Callback<StringResponse>() {
             @Override
-            public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
+            public void onResponse(@NonNull Call<StringResponse> call, @NonNull Response<StringResponse> response) {
                 Log.println(Log.INFO, "TrainingMapRepository",
                         String.format("Server response after delete lpAPs=%s", response.body()));
 
@@ -485,7 +489,7 @@ public class TrainingMapRepository implements Serializable {
             }
 
             @Override
-            public void onFailure(Call<StringResponse> call, Throwable t) {
+            public void onFailure(@NonNull Call<StringResponse> call, @NonNull Throwable t) {
                 // обновление информации о запросе к серверу
                 requestToUpdateInteractionWithServerIsCarriedOut.setValue(false);
                 serverResponse.setValue(call.toString()+"\n"+t.getMessage());

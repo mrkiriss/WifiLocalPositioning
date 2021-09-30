@@ -8,7 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.mrkiriss.wifilocalpositioning.R;
-import com.mrkiriss.wifilocalpositioning.data.models.Event;
+import com.mrkiriss.wifilocalpositioning.utils.LiveData.Event;
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
 import com.mrkiriss.wifilocalpositioning.data.models.map.FloorId;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
@@ -29,6 +29,7 @@ import com.mrkiriss.wifilocalpositioning.data.sources.db.PreviousMapPointsDao;
 import com.mrkiriss.wifilocalpositioning.data.sources.remote.LocationDataApi;
 import com.mrkiriss.wifilocalpositioning.data.sources.settings.SettingsManager;
 import com.mrkiriss.wifilocalpositioning.utils.ConnectionManager;
+import com.mrkiriss.wifilocalpositioning.utils.LiveData.SingleLiveEvent;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -57,21 +58,21 @@ public class LocationDetectionRepository implements Serializable {
     private final MapPointsDao mapPointsDao;
     private final PreviousMapPointsDao previousInputDao;
 
-    private final LiveData<CompleteKitsContainer> completeKitsOfScansResult;
+    private final LiveData<Event<CompleteKitsContainer>> completeKitsOfScansResult;
     private final MutableLiveData<MapPoint> requestToChangeFloorByMapPoint;
     private final MutableLiveData<Floor> requestToChangeFloor;
-    private final MutableLiveData<String> toastContent;
-    private final MutableLiveData<String> requestToRefreshFloor;
-    private final MutableLiveData<Boolean> wifiEnabledState; // для отправки состояния включение wifi
-    private final MutableLiveData<String> requestToHideKeyboard;
-    private final MutableLiveData<Boolean> requestToUpdateProgressStatusBuildingRoute;
-    private final MutableLiveData<String> requestToChangeDepartureInput;
-    private final MutableLiveData<String> requestToChangeDestinationInput;
-    private final MutableLiveData<String> requestToChangeFindInput;
-    private final MutableLiveData<Integer> requestToChangeDepartureIcon;
-    private final MutableLiveData<Integer> requestToChangeDestinationIcon;
-    private final MutableLiveData<Event<SearchData>> requestToLaunchSearchMode;
-    private final MutableLiveData<MapPoint> requestToUpdateSearchResultContainerData;
+    private final SingleLiveEvent<String> toastContent;
+    private final MutableLiveData<Event<String>> requestToRefreshFloor;
+    private final MutableLiveData<Event<Boolean>> wifiEnabledState; // для отправки состояния включение wifi
+    private final SingleLiveEvent<String> requestToHideKeyboard;
+    private final SingleLiveEvent<Boolean> requestToUpdateProgressStatusBuildingRoute;
+    private final SingleLiveEvent<String> requestToChangeDepartureInput;
+    private final SingleLiveEvent<String> requestToChangeDestinationInput;
+    private final SingleLiveEvent<String> requestToChangeFindInput;
+    private final SingleLiveEvent<Integer> requestToChangeDepartureIcon;
+    private final SingleLiveEvent<Integer> requestToChangeDestinationIcon;
+    private final SingleLiveEvent<SearchData> requestToLaunchSearchMode;
+    private final SingleLiveEvent<MapPoint> requestToUpdateSearchResultContainerData;
 
 
     private List<LocationPointInfo> listOfSearchableLocations;
@@ -95,21 +96,20 @@ public class LocationDetectionRepository implements Serializable {
 
         completeKitsOfScansResult=wifiScanner.getCompleteScanResults();
         requestToRefreshFloor=mapImageManager.getRequestToRefreshFloor();
+        wifiEnabledState=wifiScanner.getWifiEnabledState();
 
         requestToChangeFloorByMapPoint =new MutableLiveData<>();
         requestToChangeFloor =new MutableLiveData<>();
-        toastContent=new MutableLiveData<>();
-        requestToHideKeyboard=new MutableLiveData<>();
-        requestToUpdateProgressStatusBuildingRoute=new MutableLiveData<>();
-        requestToChangeDepartureInput=new MutableLiveData<>();
-        requestToChangeDestinationInput=new MutableLiveData<>();
-        requestToChangeFindInput = new MutableLiveData<>();
-        requestToLaunchSearchMode = new MutableLiveData<>();
-        requestToUpdateSearchResultContainerData = new MutableLiveData<>();
-        requestToChangeDepartureIcon = new MutableLiveData<>();
-        requestToChangeDestinationIcon = new MutableLiveData<>();
-
-        wifiEnabledState=wifiScanner.getWifiEnabledState();
+        toastContent=new SingleLiveEvent<>();
+        requestToHideKeyboard=new SingleLiveEvent<>();
+        requestToUpdateProgressStatusBuildingRoute=new SingleLiveEvent<>();
+        requestToChangeDepartureInput=new SingleLiveEvent<>();
+        requestToChangeDestinationInput=new SingleLiveEvent<>();
+        requestToChangeFindInput = new SingleLiveEvent<>();
+        requestToLaunchSearchMode = new SingleLiveEvent<>();
+        requestToUpdateSearchResultContainerData = new SingleLiveEvent<>();
+        requestToChangeDepartureIcon = new SingleLiveEvent<>();
+        requestToChangeDestinationIcon = new SingleLiveEvent<>();
 
         wifiScanner.startDefiningScan(WifiScanner.TypeOfScanning.DEFINITION);
 
@@ -223,7 +223,7 @@ public class LocationDetectionRepository implements Serializable {
                     hint,
                     typeOfRequester);
 
-            requestToLaunchSearchMode.postValue(new Event<>(data));
+            requestToLaunchSearchMode.postValue(data);
         };
         new Thread(task).start();
     }

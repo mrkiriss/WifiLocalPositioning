@@ -136,7 +136,9 @@ public class TrainingMapFragment extends Fragment {
         // запрос на обновления ответа сервера в переменной Observable
         viewModel.getServerResponseRequest().observe(lifecycleOwner, s -> viewModel.getServerResponse().set(s));
         // запрос на обработку пакета сканирований
-        viewModel.getCompleteKitsOfScansResult().observe(lifecycleOwner, data->viewModel.processCompleteKitsOfScanResults(data));
+        viewModel.getCompleteKitsOfScansResult().observe(lifecycleOwner, event -> {
+            if (event.isNotHandled()) viewModel.processCompleteKitsOfScanResults(event.getValue());
+        });
         // запрос на обновления количества оставшихся сканирований
         viewModel.getRemainingNumberOfScanning().observe(lifecycleOwner, integer -> viewModel.getRemainingNumberOfScanKits().set(integer));
         // обработка событий, связанных с RV для mapPoints при изменении связей

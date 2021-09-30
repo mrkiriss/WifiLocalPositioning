@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.data.models;
+package com.mrkiriss.wifilocalpositioning.utils.LiveData;
 
 import androidx.annotation.NonNull;
 
@@ -20,7 +20,7 @@ public class Event<T> {
         }
     }
 
-    public boolean isHandled() {
-        return isHandled;
+    public boolean isNotHandled() {
+        return !isHandled;
     }
 }

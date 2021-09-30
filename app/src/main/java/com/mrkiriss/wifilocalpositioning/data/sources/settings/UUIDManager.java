@@ -6,10 +6,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import lombok.Data;
 
 @Data
+@Singleton
 public class UUIDManager {
     private String mUUID;
 
