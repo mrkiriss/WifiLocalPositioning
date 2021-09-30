@@ -3,12 +3,9 @@ package com.mrkiriss.wifilocalpositioning.data.sources.db;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.search.PreviousNameInput;
-import com.mrkiriss.wifilocalpositioning.data.models.server.LocationPointInfo;
 
 import java.util.List;
 

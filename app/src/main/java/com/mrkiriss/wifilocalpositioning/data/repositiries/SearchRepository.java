@@ -1,15 +1,11 @@
 package com.mrkiriss.wifilocalpositioning.data.repositiries;
 
-import android.app.Activity;
 import android.util.Log;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchData;
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchItem;
-import com.mrkiriss.wifilocalpositioning.data.models.search.TypeOfSearchRequester;
 
 import java.util.ArrayList;
 import java.util.Collections;

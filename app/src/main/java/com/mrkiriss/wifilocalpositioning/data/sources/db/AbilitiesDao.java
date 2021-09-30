@@ -6,7 +6,6 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 import com.mrkiriss.wifilocalpositioning.data.models.settings.AbilitiesScanningData;
-import com.mrkiriss.wifilocalpositioning.data.models.settings.Settings;
 
 @Dao
 public interface AbilitiesDao {

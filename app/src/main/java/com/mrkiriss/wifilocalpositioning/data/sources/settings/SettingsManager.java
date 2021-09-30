@@ -5,8 +5,8 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
 import com.mrkiriss.wifilocalpositioning.data.models.settings.Settings;
-import com.mrkiriss.wifilocalpositioning.data.sources.remote.AccessLevelApi;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.SettingsDao;
+import com.mrkiriss.wifilocalpositioning.data.sources.remote.AccessLevelApi;
 
 import org.jetbrains.annotations.NotNull;
 

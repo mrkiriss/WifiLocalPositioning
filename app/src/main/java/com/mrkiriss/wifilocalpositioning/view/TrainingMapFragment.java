@@ -3,14 +3,6 @@ package com.mrkiriss.wifilocalpositioning.view;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.os.Bundle;
-
-import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -19,15 +11,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.github.chrisbanes.photoview.PhotoView;
 import com.mrkiriss.wifilocalpositioning.R;
+import com.mrkiriss.wifilocalpositioning.adapters.MapPointsRVAdapter;
 import com.mrkiriss.wifilocalpositioning.adapters.ScanInfoRVAdapter;
 import com.mrkiriss.wifilocalpositioning.data.sources.ViewModelFactory;
 import com.mrkiriss.wifilocalpositioning.databinding.FragmentTrainingMapBinding;
-import com.mrkiriss.wifilocalpositioning.adapters.MapPointsRVAdapter;
-import com.mrkiriss.wifilocalpositioning.databinding.TrainingModeSelectedPointContainerBinding;
 import com.mrkiriss.wifilocalpositioning.di.App;
-import com.mrkiriss.wifilocalpositioning.viewmodel.LocationDetectionViewModel;
 import com.mrkiriss.wifilocalpositioning.viewmodel.SelectedMapPointViewModel;
 import com.mrkiriss.wifilocalpositioning.viewmodel.TrainingMapViewModel;
 

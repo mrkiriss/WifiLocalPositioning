@@ -1,7 +1,5 @@
 package com.mrkiriss.wifilocalpositioning.data.models.search;
 
-import android.graphics.drawable.Drawable;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 

@@ -1,7 +1,6 @@
 package com.mrkiriss.wifilocalpositioning.data.sources.settings;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;

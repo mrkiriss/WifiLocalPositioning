@@ -10,10 +10,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
-import com.mrkiriss.wifilocalpositioning.data.models.server.ScanInformation;
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
+import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
+import com.mrkiriss.wifilocalpositioning.data.models.server.ScanInformation;
 import com.mrkiriss.wifilocalpositioning.data.repositiries.TrainingMapRepository;
 
 import java.util.ArrayList;

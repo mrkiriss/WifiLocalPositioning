@@ -1,17 +1,15 @@
 package com.mrkiriss.wifilocalpositioning.view;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.adapters.SearchRVAdapter;
@@ -21,7 +19,6 @@ import com.mrkiriss.wifilocalpositioning.data.models.search.TypeOfSearchRequeste
 import com.mrkiriss.wifilocalpositioning.data.sources.ViewModelFactory;
 import com.mrkiriss.wifilocalpositioning.databinding.FragmentSearchBinding;
 import com.mrkiriss.wifilocalpositioning.di.App;
-import com.mrkiriss.wifilocalpositioning.viewmodel.LocationDetectionViewModel;
 import com.mrkiriss.wifilocalpositioning.viewmodel.SearchViewModel;
 
 import java.io.Serializable;

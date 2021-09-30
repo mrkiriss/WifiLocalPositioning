@@ -1,7 +1,6 @@
 package com.mrkiriss.wifilocalpositioning.di.components;
 
 import com.mrkiriss.wifilocalpositioning.di.annotations.ActivityScope;
-import com.mrkiriss.wifilocalpositioning.di.annotations.ViewModelKey;
 import com.mrkiriss.wifilocalpositioning.di.modules.ViewModelModule;
 import com.mrkiriss.wifilocalpositioning.view.LocationDetectionFragment;
 import com.mrkiriss.wifilocalpositioning.view.MainActivity;

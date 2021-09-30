@@ -1,7 +1,6 @@
 package com.mrkiriss.wifilocalpositioning.viewmodel;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.databinding.Observable;
 import androidx.databinding.ObservableBoolean;
@@ -13,17 +12,13 @@ import androidx.lifecycle.ViewModel;
 
 import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.data.models.Event;
-import com.mrkiriss.wifilocalpositioning.data.models.map.FloorId;
+import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
+import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchData;
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchItem;
 import com.mrkiriss.wifilocalpositioning.data.models.search.TypeOfSearchRequester;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
-import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
-import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
 import com.mrkiriss.wifilocalpositioning.data.repositiries.LocationDetectionRepository;
-
-import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -101,7 +96,7 @@ public class LocationDetectionViewModel extends ViewModel {
                 repository.setCurrentFloorIdInt(floorNumber.get());
             }
         });
-        floorNumber.set(2); // провоцируем начальное изменение при запуске
+        floorNumber.set(2); // указываем начальное изменение при запуске
     }
 
     public void startProcessingCompleteKitsOfScansResult(CompleteKitsContainer scanResults){

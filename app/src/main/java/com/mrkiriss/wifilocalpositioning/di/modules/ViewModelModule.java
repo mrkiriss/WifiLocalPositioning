@@ -3,8 +3,8 @@ package com.mrkiriss.wifilocalpositioning.di.modules;
 import androidx.lifecycle.ViewModel;
 
 import com.mrkiriss.wifilocalpositioning.data.sources.ViewModelFactory;
-import com.mrkiriss.wifilocalpositioning.di.annotations.ViewModelKey;
 import com.mrkiriss.wifilocalpositioning.di.annotations.ActivityScope;
+import com.mrkiriss.wifilocalpositioning.di.annotations.ViewModelKey;
 import com.mrkiriss.wifilocalpositioning.viewmodel.LocationDetectionViewModel;
 import com.mrkiriss.wifilocalpositioning.viewmodel.MainViewModel;
 import com.mrkiriss.wifilocalpositioning.viewmodel.SearchViewModel;

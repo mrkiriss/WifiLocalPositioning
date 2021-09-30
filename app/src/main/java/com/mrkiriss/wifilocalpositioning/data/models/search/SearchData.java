@@ -1,12 +1,6 @@
 package com.mrkiriss.wifilocalpositioning.data.models.search;
 
-import android.app.Activity;
-import android.graphics.drawable.Drawable;
-
-import androidx.core.content.res.ResourcesCompat;
-
 import com.mrkiriss.wifilocalpositioning.R;
-import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
 
 import java.io.Serializable;
 import java.util.List;

@@ -2,8 +2,8 @@ package com.mrkiriss.wifilocalpositioning.data.repositiries;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.mrkiriss.wifilocalpositioning.data.sources.settings.SettingsManager;
 import com.mrkiriss.wifilocalpositioning.data.sources.db.SettingsDao;
+import com.mrkiriss.wifilocalpositioning.data.sources.settings.SettingsManager;
 
 import javax.inject.Inject;
 

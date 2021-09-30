@@ -5,8 +5,6 @@ import androidx.lifecycle.ViewModel;
 
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
 
-import java.util.Map;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
