@@ -142,11 +142,11 @@ public class TrainingMapRepository implements Serializable {
     public void runScanInManager(int numberOfScanningKits, String roomName){
         calibrationLocationPoint=new CalibrationLocationPoint();
         calibrationLocationPoint.setRoomName(roomName);
-        wifiScanner.startTrainingScan(numberOfScanningKits, WifiScanner.TYPE_TRAINING);
+        wifiScanner.startTrainingScan(numberOfScanningKits, WifiScanner.TypeOfScanning.TRAINING);
     }
     public void processCompleteKitsOfScanResults(CompleteKitsContainer completeKitsContainer){
 
-        if (completeKitsContainer.getRequestSourceType()!=WifiScanner.TYPE_TRAINING) return;
+        if (completeKitsContainer.getRequestSourceType()!=WifiScanner.TypeOfScanning.TRAINING) return;
 
         for (List<ScanResult> oneScanResults: completeKitsContainer.getCompleteKits()) {
             List<AccessPoint> accessPoints = new ArrayList<>();

@@ -12,6 +12,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.mrkiriss.wifilocalpositioning.data.repositiries.MainRepository;
+import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 
 import java.util.List;
 
@@ -41,15 +42,11 @@ public class MainViewModel extends ViewModel {
         repository.watchYoutubeVideo(id);
     }
 
-    public void notifyAboutLackOfAccess() {
-        repository.notifyAboutLackOfAccess();
+    public boolean isPresentAccessPermission(int destinationID){
+        return repository.isPresentAccessPermission(destinationID);
     }
-
-    public boolean isPresentAccessPermission(String type){
-        return repository.isPresentAccessPermission(type);
-    }
-    public void setCurrentTypeOfRequestSource(String type){
-        repository.setCurrentTypeOfRequestSource(type);
+    public void setCurrentTypeOfRequestSource(int destinationID){
+        repository.setCurrentTypeOfRequestSource(destinationID);
     }
     public void checkAndroidVersionForShowingScanningAbilities(Context context){
         repository.checkAndroidVersionForShowingScanningAbilities(context);

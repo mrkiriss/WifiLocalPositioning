@@ -111,7 +111,7 @@ public class LocationDetectionRepository implements Serializable {
 
         wifiEnabledState=wifiScanner.getWifiEnabledState();
 
-        wifiScanner.startDefiningScan(WifiScanner.TYPE_DEFINITION);
+        wifiScanner.startDefiningScan(WifiScanner.TypeOfScanning.DEFINITION);
 
         requestListOfLocationPointsInfo();
     }
@@ -377,7 +377,7 @@ public class LocationDetectionRepository implements Serializable {
     // scanning
     public void startProcessingCompleteKitsOfScansResult(CompleteKitsContainer completeKitsContainer){
 
-        if (!completeKitsContainer.getRequestSourceType().equals(WifiScanner.TYPE_DEFINITION)) return;
+        if (!completeKitsContainer.getRequestSourceType().equals(WifiScanner.TypeOfScanning.DEFINITION)) return;
 
         CalibrationLocationPoint calibrationLocationPoint = new CalibrationLocationPoint();
         for (List<ScanResult> oneScanResults: completeKitsContainer.getCompleteKits()) {
@@ -397,7 +397,7 @@ public class LocationDetectionRepository implements Serializable {
     private void requestDefinitionLocation(CalibrationLocationPoint calibrationLocationPoint) {
 
         if (calibrationLocationPoint.getCalibrationSets()==null || calibrationLocationPoint.getCalibrationSets().size()==0){
-            wifiScanner.startDefiningScan(WifiScanner.TYPE_DEFINITION);
+            wifiScanner.startDefiningScan(WifiScanner.TypeOfScanning.DEFINITION);
             return;
         }
 
@@ -407,7 +407,7 @@ public class LocationDetectionRepository implements Serializable {
         retrofit.defineLocation(calibrationLocationPoint).enqueue(new Callback<DefinedLocationPoint>() {
             @Override
             public void onResponse(@NotNull Call<DefinedLocationPoint> call, @NotNull Response<DefinedLocationPoint> response) {
-                wifiScanner.startDefiningScan(WifiScanner.TYPE_DEFINITION);
+                wifiScanner.startDefiningScan(WifiScanner.TypeOfScanning.DEFINITION);
 
                 Log.println(Log.INFO, "LocationDetectionRep",
                         String.format("Server define location result=%s", response.body()));
@@ -436,7 +436,7 @@ public class LocationDetectionRepository implements Serializable {
             @Override
             public void onFailure(Call<DefinedLocationPoint> call, Throwable t) {
                 Log.e("SERVER_ERROR_LDRep", t.getMessage());
-                wifiScanner.startDefiningScan(WifiScanner.TYPE_DEFINITION);
+                wifiScanner.startDefiningScan(WifiScanner.TypeOfScanning.DEFINITION);
             }
         });
     }

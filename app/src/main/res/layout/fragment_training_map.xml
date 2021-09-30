@@ -126,8 +126,8 @@
                 android:layout_weight="7"
                 android:gravity="clip_vertical"
                 android:text="@{viewModel.descriptionOfInteractionWithServer}"
-                app:autoSizeTextType="uniform"
-                android:visibility="@{viewModel.interactionWithServerIsCarriedOut ? View.VISIBLE : View.GONE}"/>
+                android:visibility="@{viewModel.interactionWithServerIsCarriedOut ? View.VISIBLE : View.GONE}"
+                app:autoSizeTextType="uniform" />
 
             <ProgressBar
                 android:id="@+id/progressBar2"
@@ -135,7 +135,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:visibility="@{viewModel.interactionWithServerIsCarriedOut ? View.VISIBLE : View.GONE}"/>
+                android:visibility="@{viewModel.interactionWithServerIsCarriedOut ? View.VISIBLE : View.GONE}" />
         </LinearLayout>
 
         <ScrollView

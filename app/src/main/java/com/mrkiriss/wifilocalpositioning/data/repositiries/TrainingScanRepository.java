@@ -59,7 +59,7 @@ public class TrainingScanRepository {
 
         scanningMode=radioMode;
 
-        wifiScanner.startTrainingScan(numberOfScanningKits, WifiScanner.TYPE_TRAINING);
+        wifiScanner.startTrainingScan(numberOfScanningKits, WifiScanner.TypeOfScanning.TRAINING);
     }
     public void runScanInManager(int numberOfScanningKits, String roomName, int radioMode){
 
@@ -68,12 +68,12 @@ public class TrainingScanRepository {
 
         scanningMode=radioMode;
 
-        wifiScanner.startTrainingScan(numberOfScanningKits, WifiScanner.TYPE_TRAINING);
+        wifiScanner.startTrainingScan(numberOfScanningKits, WifiScanner.TypeOfScanning.TRAINING);
     }
 
     public void processCompleteKitsOfScanResults(CompleteKitsContainer completeKitsContainer){
 
-        if (completeKitsContainer.getRequestSourceType()!=WifiScanner.TYPE_TRAINING) return;
+        if (completeKitsContainer.getRequestSourceType() != WifiScanner.TypeOfScanning.TRAINING) return;
 
         int numberOfCurrentSuccessfulKits=0;
         for (List<ScanResult> oneScanResults: completeKitsContainer.getCompleteKits()) {

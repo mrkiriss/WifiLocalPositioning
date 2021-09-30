@@ -14,11 +14,13 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.data.sources.settings.SettingsManager;
 import com.mrkiriss.wifilocalpositioning.utils.ConnectionManager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -47,10 +49,28 @@ public class WifiScanner {
     private final MutableLiveData<Integer> remainingNumberOfScanning;
     private List<List<ScanResult>> scanResultKits;
 
-    private String currentTypeOfRequestSource;
-    public final static String TYPE_TRAINING="training";
-    public final static String TYPE_DEFINITION="definition";
-    public final static String TYPE_NO_SCAN="no_scan";
+    private TypeOfScanning currentTypeOfRequestSource;
+    public enum TypeOfScanning {
+        DEFINITION, TRAINING, NO_SCAN;
+
+        private static final int[] fragmentsOfDefinition = {R.id.nav_definition};
+        private static final int[] fragmentsOfTraining = {R.id.nav_training, R.id.nav_training2};
+        private static final int[] fragmentsOfNoScan = {R.id.nav_search, R.id.nav_settings};
+
+        public static TypeOfScanning defineTypeOfLocationByID(int id) {
+            if (contains(fragmentsOfDefinition, id)){
+                return DEFINITION;
+            } else if (contains(fragmentsOfTraining, id)){
+                return TRAINING;
+            } else {
+                return NO_SCAN;
+            }
+        }
+        private static boolean contains(int[] arr, int id) {
+            for (int i : arr) if (i == id) return true;
+            return false;
+        }
+    }
 
     private final MutableLiveData<Boolean> wifiEnabledState; // для отправки состояния включение wifi
 
@@ -68,15 +88,16 @@ public class WifiScanner {
         this.wifiEnabledState=new MutableLiveData<>();
     }
 
-    public void setCurrentTypeOfRequestSource(String type){
-        this.currentTypeOfRequestSource=type;
-        scanStarted=false;
-        Log.i("WifiScanner", "Change source type to "+type);
+    public void setCurrentTypeOfRequestSource(int newLocationId){
+        this.currentTypeOfRequestSource = TypeOfScanning.defineTypeOfLocationByID(newLocationId);
+
+        scanStarted = false;
+        Log.i("WifiScanner", "Change source type to " + currentTypeOfRequestSource);
         // оправялем пустой ответ для запуска бесконечного цикла сканирований для карты через запрос от DefinitionRepository
-        if (type.equals(TYPE_DEFINITION)){
+        if (currentTypeOfRequestSource == TypeOfScanning.DEFINITION){
             CompleteKitsContainer container = new CompleteKitsContainer();
             container.setCompleteKits(new ArrayList<>());
-            container.setRequestSourceType(type);
+            container.setRequestSourceType(currentTypeOfRequestSource);
             completeScanResults.setValue(container);
         }
     }
@@ -86,7 +107,7 @@ public class WifiScanner {
         wifiEnabledState.postValue(connectionManager.checkWifiEnabled());
     }
 
-    public void startTrainingScan(int requiredNumberOfScans, String typeOfRequestSource){
+    public void startTrainingScan(int requiredNumberOfScans, TypeOfScanning typeOfRequestSource){
         if (!typeOfRequestSource.equals(currentTypeOfRequestSource) || scanStarted) return;
         scanStarted=true;
 
@@ -108,7 +129,7 @@ public class WifiScanner {
         startScanningWithDelay();
 
     }
-    public void startDefiningScan(String typeOfRequestSource){
+    public void startDefiningScan(TypeOfScanning typeOfRequestSource){
         if (!typeOfRequestSource.equals(currentTypeOfRequestSource) || scanStarted) return;
         scanStarted=true;
 
@@ -204,7 +225,7 @@ public class WifiScanner {
                     //scanStarted=false;
 
                     // прекращение сканирований
-                    if (currentTypeOfRequestSource.equals(TYPE_NO_SCAN) || uncompleteKitsContainer.getCompleteKits()==null) return;
+                    if (currentTypeOfRequestSource == TypeOfScanning.NO_SCAN || uncompleteKitsContainer.getCompleteKits()==null) return;
 
                     uncompleteKitsContainer.addKitOfScan(wifiManager.getScanResults());
                     startScanningWithDelay();
@@ -232,7 +253,7 @@ public class WifiScanner {
                     //scanStarted=false;
 
                     // прекращение сканирований
-                    if (currentTypeOfRequestSource.equals(TYPE_NO_SCAN) || uncompleteKitsContainer.getCompleteKits()==null) return;
+                    if (currentTypeOfRequestSource == TypeOfScanning.NO_SCAN || uncompleteKitsContainer.getCompleteKits()==null) return;
 
                     uncompleteKitsContainer.addKitOfScan(wifiManager.getScanResults());
                     startScanningWithDelay();

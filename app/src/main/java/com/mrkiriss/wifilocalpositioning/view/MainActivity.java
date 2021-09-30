@@ -88,7 +88,13 @@ public class MainActivity extends AppCompatActivity {
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             hideKeyboard(this);
 
-            Log.i("checkNavigation", "destination changed to " + destination.toString());
+            // изменяем тип сканирования
+            viewModel.setCurrentTypeOfRequestSource(destination.getId());
+
+            // проверяем разрешение доступа к только что открытому фрагменту
+            if (!viewModel.isPresentAccessPermission(destination.getId())) navController.navigateUp();
+
+            Log.i("checkNavigation", "destination changed to " + destination.getId() + "definition id = " + R.id.nav_definition);
         });
     }
 

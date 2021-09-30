@@ -31,7 +31,7 @@ public class SettingsManager {
     private final Long settingID=0L;
     public final int defaultScanInterval=15; // in seconds
     public final int defaultNumberOfScanning = 1;
-    public final String[] keys = new String[]{"scanInterval", "variousOfNumberScans"};
+    public final String[] keys = {"scanInterval", "variousOfNumberScans"};
 
     // проверка, для существования только одного запроса в определённый момент
     private boolean checkSettingsNow;
@@ -141,12 +141,12 @@ public class SettingsManager {
     }
 
     public boolean isUser(){
-        return accessLevel==0;
+        return getAccessLevel() == 0;
     }
     public boolean isModerator(){
-        return accessLevel>0;
+        return getAccessLevel() > 0;
     }
     public boolean isAdmin(){
-        return accessLevel==2;
+        return getAccessLevel() == 2;
     }
 }
