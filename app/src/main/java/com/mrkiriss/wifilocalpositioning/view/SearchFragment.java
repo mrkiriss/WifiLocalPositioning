@@ -92,7 +92,6 @@ public class SearchFragment extends Fragment{
         bundle.putSerializable("selectedSearchItem", selectedSearchItem);
         bundle.putSerializable("typeOfRequester", typeOfRequester);
 
-        Log.i("checkStoppingUI", "navigate to definition started");
         Navigation.findNavController(requireActivity(), R.id.nav_host_fragment).navigate(R.id.action_nav_search_to_nav_definition, bundle);
     }
 }

@@ -43,6 +43,9 @@ public class SearchRepository {
     }
 
     public void responseToSearchInput(String input) {
+        input = input.toLowerCase();
+        String inputTransliterated = transliterate(input);
+
         List<SearchItem> result = new ArrayList<>();
 
         if (currentLocation != null) result.add(currentLocation);
@@ -58,8 +61,10 @@ public class SearchRepository {
         }else {
             if (availableForSearchMapPoints != null) {
                 for (SearchItem item : availableForSearchMapPoints) {
-                    if (item.getName().toLowerCase().contains(input.toLowerCase())
-                            || item.getDescription().toLowerCase().contains(input.toLowerCase())) {
+                    if (item.getName().toLowerCase().contains(input)
+                            || item.getDescription().toLowerCase().contains(input)
+                            || item.getName().equals(inputTransliterated)
+                            || item.getDescription().equals(inputTransliterated)) {
                         result.add(item);
                     }
                 }
@@ -77,5 +82,24 @@ public class SearchRepository {
 
         requestToUpdateSearchContent.setValue(result);
     }
+    private String transliterate(String message) {
+        char[] template = {'а', 'б', 'в', 'г', 'д', 'е', 'ё', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ъ', 'ы', 'ь', 'э', 'ю', 'я', 'a', 'b', 'v', 'g', 'd', 'e', 'e', 'z', 'i', 'y', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'f', 'h', 'i', 'e', 'u', 'a'};
+        String[] replacement = {"a", "b", "v", "g", "d", "e", "e", "z", "i", "y", "k", "l", "m", "n", "o", "p", "r", "s", "t", "u", "f", "h", "", "i", "", "e", "u", "a", "а", "б", "в", "г", "д", "е", "ё", "з", "и", "й", "к", "л", "м", "н", "о", "п", "р", "с", "т", "у", "ф", "х", "ы", "э", "ю", "я"};
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < message.length(); i++) {
+            boolean replaced = false;
+            for (int j = 0; j < template.length; j++) {
+                if (message.charAt(i) == template[j]) {
+                    builder.append(replacement[j]);
+                    replaced = true;
+                    break;
+                }
+            }
+            if (!replaced) {
+                builder.append(message.charAt(i));
+            }
+        }
 
+        return builder.toString();
+    }
 }

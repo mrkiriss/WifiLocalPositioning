@@ -2,6 +2,7 @@ package com.mrkiriss.wifilocalpositioning.data.repositiries;
 
 import android.content.Context;
 import android.net.wifi.ScanResult;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -337,8 +338,7 @@ public class LocationDetectionRepository implements Serializable {
         requestToChangeDestinationInput.setValue(destinationName);
     }
 
-    // db
-        // for previousSearchInput
+        // DB для предыдущих выборов в фрагменте поиска
     public void addSelectedSearchInputInDB(SearchItem searchItem) {
         PreviousNameInput previousNameInput = new PreviousNameInput();
         previousNameInput.setInputName(searchItem.getName());
