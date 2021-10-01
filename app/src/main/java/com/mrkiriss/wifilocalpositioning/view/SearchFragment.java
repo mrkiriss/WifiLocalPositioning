@@ -1,6 +1,7 @@
 package com.mrkiriss.wifilocalpositioning.view;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,8 +57,6 @@ public class SearchFragment extends Fragment{
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search, container, false);
         binding.setViewModel(viewModel);
 
-//        ((IUpButtonNavHost) requireActivity()).useUpButton();
-
         initSearchAdapter();
         initObservers();
 
@@ -74,6 +73,11 @@ public class SearchFragment extends Fragment{
         return binding.getRoot();
     }
 
+    private void initSearchAdapter() {
+        searchRVAdapter = new SearchRVAdapter();
+        binding.findResultsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        binding.findResultsRecyclerView.setAdapter(searchRVAdapter);
+    }
     private void initObservers() {
         // подписываемся на обновление контента в строке поиска
         viewModel.getRequestToUpdateSearchContent().observe(getViewLifecycleOwner(), content -> searchRVAdapter.replaceContent(content));
@@ -82,17 +86,13 @@ public class SearchFragment extends Fragment{
         // подписываемся на запрос на обновление информации о состоянии поиска
         viewModel.getRequestToUpdateSearchInformation().observe(getViewLifecycleOwner(), content -> viewModel.getSearchInformation().set(content));
     }
-    private void initSearchAdapter() {
-        searchRVAdapter = new SearchRVAdapter();
-        binding.findResultsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        binding.findResultsRecyclerView.setAdapter(searchRVAdapter);
-    }
 
     private void processSelectedItem(SearchItem selectedSearchItem) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("selectedSearchItem", selectedSearchItem);
         bundle.putSerializable("typeOfRequester", typeOfRequester);
 
+        Log.i("checkStoppingUI", "navigate to definition started");
         Navigation.findNavController(requireActivity(), R.id.nav_host_fragment).navigate(R.id.action_nav_search_to_nav_definition, bundle);
     }
 }

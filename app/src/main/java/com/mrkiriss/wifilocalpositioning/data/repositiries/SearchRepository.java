@@ -1,7 +1,5 @@
 package com.mrkiriss.wifilocalpositioning.data.repositiries;
 
-import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
 
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchData;
@@ -42,8 +40,6 @@ public class SearchRepository {
 
         // переворачиваем, чтобы последний введённый был первым
         Collections.reverse(prevViewedMapPoints);
-
-        Log.i("searchMode", "availableForSearchMapPoints in saveSearchDate: "+ availableForSearchMapPoints.toString());
     }
 
     public void responseToSearchInput(String input) {
@@ -78,8 +74,6 @@ public class SearchRepository {
         if (!result.isEmpty()) {
             requestToUpdateSearchInformation.setValue("");
         }
-
-        Log.i("searchMode", "result of filtering after responseToSearchInput: "+ result.toString());
 
         requestToUpdateSearchContent.setValue(result);
     }

@@ -12,21 +12,20 @@
         tools:layout="@layout/fragment_location_detection">
         <action
             android:id="@+id/action_nav_definition_to_nav_search"
-            app:destination="@id/nav_search" />
+            app:destination="@id/nav_search"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left" />
     </fragment>
     <fragment
         android:id="@+id/nav_search"
         android:name="com.mrkiriss.wifilocalpositioning.view.SearchFragment"
         android:label="@string/nav_search"
         tools:layout="@layout/fragment_search" >
-        <argument
-            android:name="searchData"
-            app:argType="com.mrkiriss.wifilocalpositioning.data.models.search.SearchData"
-            app:nullable="true"
-            android:defaultValue="@null" />
         <action
             android:id="@+id/action_nav_search_to_nav_definition"
-            app:destination="@id/nav_definition" />
+            app:destination="@id/nav_definition"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right" />
     </fragment>
     <fragment
         android:id="@+id/nav_training"

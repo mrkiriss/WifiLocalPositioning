@@ -47,7 +47,6 @@ public class SearchViewModel extends ViewModel {
         searchLineInput.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
             @Override
             public void onPropertyChanged(Observable sender, int propertyId) {
-                Log.i("searchMode", "searchLineInput change, new content = "+searchLineInput.get());
                 rep.responseToSearchInput(searchLineInput.get());
             }
         });

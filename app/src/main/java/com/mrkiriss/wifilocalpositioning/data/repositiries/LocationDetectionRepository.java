@@ -2,7 +2,6 @@ package com.mrkiriss.wifilocalpositioning.data.repositiries;
 
 import android.content.Context;
 import android.net.wifi.ScanResult;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -151,10 +150,8 @@ public class LocationDetectionRepository implements Serializable {
         }
 
         if (requiredFloor==null){
-            Log.e("LocationDetectionRep", "required floor is null");
             return null;
         }
-        Log.i("LocationDetectionRep", "required floor is="+requiredFloor);
         return requiredFloor;
     }
     private Floor defineNecessaryFloorForShowCurrentLocation(){
@@ -401,25 +398,17 @@ public class LocationDetectionRepository implements Serializable {
             return;
         }
 
-        Log.println(Log.INFO, "LocationDetectionRep",
-                String.format("start definition location with data=%s", calibrationLocationPoint));
-
         retrofit.defineLocation(calibrationLocationPoint).enqueue(new Callback<DefinedLocationPoint>() {
             @Override
             public void onResponse(@NotNull Call<DefinedLocationPoint> call, @NotNull Response<DefinedLocationPoint> response) {
                 wifiScanner.startDefiningScan(WifiScanner.TypeOfScanning.DEFINITION);
 
-                Log.println(Log.INFO, "LocationDetectionRep",
-                        String.format("Server define location result=%s", response.body()));
                 try {
                     if (response.body() == null || response.body().getFloorId() == -1 || response.body().getRoomName() == null)
                         return;
 
                     // сохраняет в поле репозитория
                     resultOfDefinition = convertToMapPoint(response.body());
-
-                    Log.println(Log.INFO, "convert result= ",
-                            resultOfDefinition.toString());
 
                     // уведомление о имени через тост
                     // + обновление строки ввода начала маршруту в меню построения маршрута
@@ -435,7 +424,6 @@ public class LocationDetectionRepository implements Serializable {
             }
             @Override
             public void onFailure(Call<DefinedLocationPoint> call, Throwable t) {
-                Log.e("SERVER_ERROR_LDRep", t.getMessage());
                 wifiScanner.startDefiningScan(WifiScanner.TypeOfScanning.DEFINITION);
             }
         });
@@ -458,11 +446,8 @@ public class LocationDetectionRepository implements Serializable {
         retrofit.getRoute(start, end).enqueue(new Callback<List<LocationPointInfo>>() {
             @Override
             public void onResponse(Call<List<LocationPointInfo>> call, Response<List<LocationPointInfo>> response) {
-                Log.println(Log.INFO, "LocationDetectionRep",
-                        String.format("Server route=%s", response.body()));
 
                 if (response.body()==null){
-                    Log.e("SERVER_ERROR_LDRep", "Response body is null");
                     toastContent.setValue("Маршрут построить не удалось");
                     return;
                 }
@@ -476,7 +461,6 @@ public class LocationDetectionRepository implements Serializable {
 
             @Override
             public void onFailure(Call<List<LocationPointInfo>> call, Throwable t) {
-                Log.e("SERVER_ERROR", t.getMessage());
                 toastContent.setValue("Маршрут построить не удалось");
                 // обновляем состяоние процесса построения маршурат (кнопка включается, прогрессбар скрывается)
                 requestToUpdateProgressStatusBuildingRoute.setValue(false);
@@ -489,14 +473,12 @@ public class LocationDetectionRepository implements Serializable {
             @Override
             public void onResponse(Call<ListOfAllMapPoints> call, Response<ListOfAllMapPoints> response) {
                 if (response.body()==null) {
-                    Log.i("LocationDetectionRep", "server response about listOfLPIs: is null");
 
                     // повторный запрос на точки из локальной бд
                     requestListOfLocationPointsInfoFromDB();
 
                     return;
                 }
-                Log.i("LocationDetectionRep", "server response about allInfo: "+response.body().toString());
                 // обрабатываем
                 processListOfLPI(response.body());
                 // актуализируем в локальной бд
@@ -507,8 +489,6 @@ public class LocationDetectionRepository implements Serializable {
             public void onFailure(Call<ListOfAllMapPoints> call, Throwable t) {
                 // повторный запрос на точки из локальной бд
                 requestListOfLocationPointsInfoFromDB();
-
-                Log.i("LocationDetectionRep", "server error: "+ Arrays.toString(t.getStackTrace()));
             }
         });
     }
@@ -518,8 +498,6 @@ public class LocationDetectionRepository implements Serializable {
             List<LocationPointInfo> currentDbData = mapPointsDao.findAll();
             ListOfAllMapPoints container = new ListOfAllMapPoints();
             container.setLocationPointInfos(currentDbData);
-
-            Log.i("LocationDetectionRep", "mapPointsFromDB: "+ currentDbData.toString());
 
             processListOfLPI(container);
         };
@@ -533,7 +511,6 @@ public class LocationDetectionRepository implements Serializable {
             // удаляем старые
             mapPointsDao.deleteAll();
             // сохраняем новые
-            Log.i("LocationDetectionRep", "save mapPoints to BD: "+ data.toString());
             mapPointsDao.saveAll(data.getLocationPointInfos());
         };
         new Thread(task).start();

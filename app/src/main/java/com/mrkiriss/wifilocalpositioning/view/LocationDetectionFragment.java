@@ -142,11 +142,9 @@ public class LocationDetectionFragment extends Fragment implements Serializable 
         viewModel.getFloorNumber().set(mapPoint.getFloorIdInt());
 
         drawCurrentLocation(mapPoint);
-        Log.i("LocationDetectionFrg", "showCurrentLocation");
 
         float x = (float) mapPoint.getX() / mapPoint.getFloorWithPointer().getFloorSchema().getWidth();
         float y = (float) mapPoint.getY() / mapPoint.getFloorWithPointer().getFloorSchema().getHeight();
-        Log.i("changeZoom", "x="+x+" y="+y);
         touchImageView.setZoom(6, x, y);
     }
 
@@ -164,13 +162,12 @@ public class LocationDetectionFragment extends Fragment implements Serializable 
         Bundle bundle = new Bundle();
         bundle.putSerializable("searchData", data);
 
+        Log.i("checkStoppingUI", "navigate to search started");
         Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
-                .navigate(R.id.nav_search, bundle);
+                .navigate(R.id.action_nav_definition_to_nav_search, bundle);
     }
 
     public void processSelectedByFindLocation(TypeOfSearchRequester typeOfRequester, SearchItem selectedSearchItem) {
-        Log.i("searchMode", "start processing selectedSearchItem= "+selectedSearchItem.toString()+" in LocDefFragment");
-
         viewModel.processSelectedLocation(typeOfRequester, selectedSearchItem);
     }
 }
