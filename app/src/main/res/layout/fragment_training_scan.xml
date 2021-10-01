@@ -14,7 +14,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:weightSum="13"
-        tools:context=".view.TrainingScanFragment">
+        tools:context=".view.TrainingScanFragment"
+        android:animateLayoutChanges="true">
 
         <LinearLayout
             android:id="@+id/scanning"

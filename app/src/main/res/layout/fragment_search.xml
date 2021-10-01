@@ -12,7 +12,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="4dp"
-        tools:context=".view.SearchFragment">
+        tools:context=".view.SearchFragment"
+        android:animateLayoutChanges="true">
 
         <EditText
             android:id="@+id/editTextTextPersonName2"

@@ -14,7 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="4dp">
+        android:padding="4dp"
+        android:animateLayoutChanges="true">
 
         <LinearLayout
             android:id="@+id/mapUpdateContainer"

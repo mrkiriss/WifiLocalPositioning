@@ -18,7 +18,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipChildren="false"
-        tools:context=".view.LocationDetectionFragment">
+        tools:context=".view.LocationDetectionFragment"
+        android:animateLayoutChanges="true">
 
         <com.ortiz.touchview.TouchImageView
             android:id="@+id/zoomImageView"
