@@ -306,7 +306,7 @@ public class LocationDetectionRepository implements Serializable {
 
         return null;
     }
-        // показывает локацию на карте, предварительно проводя поиск по названию в карте доступных локаций
+        // показывает локацию на карте, предварительно проводя поиск по названию в Map'e доступных локаций
     public void showLocationOnMap(String name){
             // получает базовый этаж и вставялет его в объект точки, чтобы получить внутри фрагмента и прорисовать этаж
 
@@ -410,12 +410,6 @@ public class LocationDetectionRepository implements Serializable {
                     // сохраняет в поле репозитория
                     resultOfDefinition = convertToMapPoint(response.body());
 
-                    // уведомление о имени через тост
-                    // + обновление строки ввода начала маршруту в меню построения маршрута
-                    if (resultOfDefinition.isRoom() || settingsManager.isModerator()) {
-                        // toastContent.setValue("Местоположение: " + resultOfDefinition.getRoomName());
-                        requestToChangeDepartureInput.setValue(resultOfDefinition.getRoomName());
-                    }
                     // требует изменение картинки этажа в соответсвии со всеми параметрами
                     changeFloor();
                 }catch (Exception e){
