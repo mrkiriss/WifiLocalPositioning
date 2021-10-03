@@ -14,35 +14,50 @@
             type="com.mrkiriss.wifilocalpositioning.viewmodel.LocationDetectionViewModel" />
     </data>
 
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/frameLayout2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
         android:clipChildren="false"
-        tools:context=".view.LocationDetectionFragment"
-        android:animateLayoutChanges="true">
+        tools:context=".view.LocationDetectionFragment">
 
         <com.ortiz.touchview.TouchImageView
             android:id="@+id/zoomImageView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
             android:id="@+id/routeContainer"
             style="@style/Theme.WifiLocalPositioning.NonTransparentContainer"
-            android:layout_width="match_parent"
-            android:layout_height="152dp"
-            android:layout_marginLeft="16dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="4dp"
             android:elevation="3dp"
             android:orientation="vertical"
-            android:visibility="@{viewModel.searchLineIsDisplayed ? View.GONE : View.VISIBLE}">
+            android:visibility="@{viewModel.searchLineIsDisplayed ? View.GONE : View.VISIBLE}"
+            app:layout_constrainedHeight="true"
+            app:layout_constraintBottom_toTopOf="@+id/changeFloorContainer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
 
             <TextView
                 android:id="@+id/textView20"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:text="@string/buildRouteContainerTitle"
                 android:textSize="14sp" />
@@ -50,11 +65,12 @@
             <LinearLayout
                 android:id="@+id/departureContainer"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:layout_marginRight="2dp"
                 android:layout_marginBottom="1dp"
                 android:layout_weight="4"
+                android:minHeight="40dp"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -82,11 +98,12 @@
             <LinearLayout
                 android:id="@+id/destinationContainer"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
                 android:layout_marginEnd="2dp"
                 android:layout_marginBottom="2dp"
                 android:layout_weight="4"
+                android:minHeight="40dp"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -113,20 +130,20 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_margin="2dp"
                 android:layout_weight="4">
 
                 <ProgressBar
                     android:id="@+id/progressBar"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:visibility="@{viewModel.progressOfBuildingRouteStatus ? View.VISIBLE : View.GONE}" />
 
                 <Button
                     android:id="@+id/button9"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="2dp"
                     android:layout_weight="3"
@@ -135,7 +152,7 @@
 
                 <Button
                     android:id="@+id/buildRoute"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="2dp"
                     android:layout_weight="5"
@@ -149,14 +166,21 @@
 
         <FrameLayout
             android:id="@+id/findLineContainer"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginLeft="16dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
+            android:clipChildren="false"
             android:elevation="3dp"
             android:visibility="@{viewModel.searchLineIsDisplayed ? View.VISIBLE : View.GONE}"
-            android:clipChildren="false">
+            app:layout_constrainedHeight="true"
+            app:layout_constraintBottom_toTopOf="@+id/changeFloorContainer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintWidth_default="spread">
 
             <Button
                 android:id="@+id/findLine"
@@ -176,23 +200,27 @@
                 android:layout_gravity="right|center_vertical"
                 android:layout_marginEnd="8dp"
                 android:clickable="false"
+                android:elevation="2dp"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/ic_search_location"
-                android:elevation="2dp"/>
+                app:srcCompat="@drawable/ic_search_location" />
 
         </FrameLayout>
 
         <LinearLayout
             android:id="@+id/changeFloorContainer"
             style="@style/Theme.WifiLocalPositioning.NonTransparentContainer"
-            android:layout_width="48dp"
-            android:layout_height="120dp"
-            android:layout_gravity="bottom|right"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="208dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="16dp"
             android:elevation="2dp"
             android:orientation="vertical"
-            android:weightSum="3">
+            android:weightSum="3"
+            app:layout_constraintBottom_toTopOf="@+id/showCurrentLocationButton"
+            app:layout_constraintEnd_toEndOf="@+id/showCurrentLocationButton"
+            app:layout_constraintHeight_percent="0.15"
+            app:layout_constraintStart_toStartOf="@+id/showCurrentLocationButton"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed">
 
             <ImageButton
                 android:id="@+id/imageButton"
@@ -213,8 +241,8 @@
                 android:gravity="center"
                 android:text="@{String.valueOf(viewModel.floorNumber)}"
                 android:textAlignment="center"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:autoSizeTextType="uniform" />
 
             <ImageButton
                 android:id="@+id/imageButton2"
@@ -230,95 +258,120 @@
 
         <ImageButton
             android:id="@+id/showCurrentLocationButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="bottom|right"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="144dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="16dp"
             android:background="@drawable/circle_border"
             android:elevation="2dp"
             android:onClick="@{()->viewModel.onShowCurrentLocation()}"
             android:padding="10dp"
             android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.075"
+            app:layout_constraintTop_toBottomOf="@+id/changeFloorContainer"
             app:srcCompat="@drawable/ic_cursor" />
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/searchResultContainer"
             style="@style/Theme.WifiLocalPositioning.NonTransparentContainer"
-            android:layout_width="match_parent"
-            android:layout_height="96dp"
-            android:layout_gravity="bottom"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
             android:elevation="3dp"
             android:padding="8dp"
-            android:visibility="@{viewModel.searchResultContainerIsDisplayed ? View.VISIBLE : View.GONE}">
+            android:visibility="@{viewModel.searchResultContainerIsDisplayed ? View.VISIBLE : View.GONE}"
+            app:layout_constrainedHeight="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_min="120dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/showCurrentLocationButton"
+            app:layout_constraintVertical_bias="1.0">
 
             <ImageView
                 android:id="@+id/imageView2"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:onClick="@{() -> viewModel.closeSearchContainer()}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_max="30dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_max="30dp"
                 app:srcCompat="@drawable/ic_x_mark" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_toLeftOf="@id/showCurrentSearchResult"
-                android:orientation="vertical"
-                android:padding="2dp">
 
-                <TextView
-                    android:id="@+id/nameSearchResult"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="5"
-                    android:gravity="start"
-                    android:text="@{viewModel.searchResultContainer.getFullRoomName()}"
-                    android:textSize="34sp"
-                    android:textStyle="bold" />
+            <TextView
+                android:id="@+id/nameSearchResult"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="start"
+                android:text="@{viewModel.searchResultContainer.getFullRoomName()}"
+                android:textSize="40sp"
+                android:textStyle="bold"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintEnd_toStartOf="@+id/showCurrentSearchResult"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_default="spread" />
 
-                <TextView
-                    android:id="@+id/descriptionSearchResult"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="3"
-                    android:gravity="start"
-                    android:text="@{viewModel.searchResultContainer.getDescription()}"
-                    android:textSize="16sp" />
-            </LinearLayout>
+            <TextView
+                android:id="@+id/descriptionSearchResult"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="start"
+                android:text="@{viewModel.searchResultContainer.getDescription()}"
+                android:textSize="20sp"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintEnd_toStartOf="@+id/showCurrentSearchResult"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/nameSearchResult"
+                app:layout_constraintWidth_default="spread" />
+
 
             <ImageButton
                 android:id="@+id/showCurrentSearchResult"
                 style="@style/Theme.WifiLocalPositioning.ImageButton"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_alignParentBottom="true"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp"
-                android:layout_toLeftOf="@id/showRouteContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:layout_marginEnd="2dp"
                 android:onClick="@{() -> viewModel.showCurrentSearchedLocation()}"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_show"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/showRouteContainer"
+                app:layout_constraintHeight_max="56dp"
+                app:layout_constraintWidth_max="56dp"
                 tools:src="@drawable/ic_show" />
 
             <ImageButton
                 android:id="@+id/showRouteContainer"
                 style="@style/Theme.WifiLocalPositioning.ImageButton"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:layout_marginEnd="2dp"
+                android:minWidth="40dp"
+                android:minHeight="40dp"
                 android:onClick="@{() -> viewModel.showBuildingMenuWithCurrentSearchedLocationData()}"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_route"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_max="56dp"
+                app:layout_constraintWidth_max="56dp"
                 tools:src="@drawable/ic_route" />
-        </RelativeLayout>
 
-    </FrameLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

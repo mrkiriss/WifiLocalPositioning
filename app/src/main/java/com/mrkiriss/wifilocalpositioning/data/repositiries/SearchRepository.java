@@ -1,5 +1,7 @@
 package com.mrkiriss.wifilocalpositioning.data.repositiries;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchData;
@@ -9,6 +11,7 @@ import com.mrkiriss.wifilocalpositioning.utils.LiveData.SingleLiveEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -61,10 +64,12 @@ public class SearchRepository {
         }else {
             if (availableForSearchMapPoints != null) {
                 for (SearchItem item : availableForSearchMapPoints) {
-                    if (item.getName().toLowerCase().contains(input)
-                            || item.getDescription().toLowerCase().contains(input)
-                            || item.getName().equals(inputTransliterated)
-                            || item.getDescription().equals(inputTransliterated)) {
+                    String itemName = item.getName().toLowerCase();
+                    String itemDescription = item.getDescription().toLowerCase();
+                    if (itemName.contains(input)
+                            || itemDescription.contains(input)
+                            || itemName.contains(inputTransliterated)
+                            || itemDescription.contains(inputTransliterated)) {
                         result.add(item);
                     }
                 }
