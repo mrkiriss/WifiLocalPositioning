@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.utils.LiveData;
+package com.mrkiriss.wifilocalpositioning.utils.livedata;
 
 import androidx.annotation.NonNull;
 

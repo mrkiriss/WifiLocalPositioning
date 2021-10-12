@@ -11,7 +11,7 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.mrkiriss.wifilocalpositioning.utils.LiveData.Event;
+import com.mrkiriss.wifilocalpositioning.utils.livedata.Event;
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
 import com.mrkiriss.wifilocalpositioning.data.models.map.FloorId;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;

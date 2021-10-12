@@ -43,7 +43,7 @@
     <string name="inputFloorNumberDescription">Номер этажа</string>
     <string name="hintY">Y</string>
     <string name="hintX">X</string>
-    <string-array name="isRoomSpinner">
+    <string-array name="isRoomSpinners">
         <item>Кабинет</item>
         <item>Коридор</item>
     </string-array>

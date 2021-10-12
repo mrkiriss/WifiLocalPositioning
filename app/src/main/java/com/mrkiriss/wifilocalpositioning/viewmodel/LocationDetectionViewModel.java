@@ -11,7 +11,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.mrkiriss.wifilocalpositioning.R;
-import com.mrkiriss.wifilocalpositioning.utils.LiveData.Event;
+import com.mrkiriss.wifilocalpositioning.utils.livedata.Event;
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchData;
@@ -19,7 +19,6 @@ import com.mrkiriss.wifilocalpositioning.data.models.search.SearchItem;
 import com.mrkiriss.wifilocalpositioning.data.models.search.TypeOfSearchRequester;
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.data.repositiries.LocationDetectionRepository;
-import com.mrkiriss.wifilocalpositioning.utils.LiveData.SingleLiveEvent;
 
 import javax.inject.Inject;
 

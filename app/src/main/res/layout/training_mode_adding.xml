@@ -139,7 +139,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
-                    android:entries="@array/isRoomSpinner"
+                    android:entries="@array/isRoomSpinners"
                     android:selectedItemPosition="@={viewModel.selectedRoomType}"
                     android:textAlignment="viewEnd" />
 

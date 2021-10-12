@@ -11,11 +11,12 @@
 
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
         android:orientation="vertical"
-        android:padding="4dp"
-        android:animateLayoutChanges="true">
+        android:padding="4dp">
 
         <LinearLayout
             android:id="@+id/mapUpdateContainer"
@@ -58,6 +59,7 @@
                 android:layout_gravity="center" />
 
             <LinearLayout
+                android:id="@+id/changeFloorContainer"
                 android:layout_width="30dp"
                 android:layout_height="100dp"
                 android:layout_gravity="bottom|right"
@@ -147,6 +149,7 @@
             android:background="@drawable/round_border">
 
             <LinearLayout
+                android:id="@+id/modeContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"

@@ -9,11 +9,10 @@ import androidx.lifecycle.ViewModel;
 
 import com.mrkiriss.wifilocalpositioning.data.models.server.CompleteKitsContainer;
 import com.mrkiriss.wifilocalpositioning.data.repositiries.TrainingScanRepository;
-import com.mrkiriss.wifilocalpositioning.utils.LiveData.Event;
+import com.mrkiriss.wifilocalpositioning.utils.livedata.Event;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import javax.inject.Inject;
 

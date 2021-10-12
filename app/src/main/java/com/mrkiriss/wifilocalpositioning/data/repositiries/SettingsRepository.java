@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.mrkiriss.wifilocalpositioning.data.sources.db.SettingsDao;
 import com.mrkiriss.wifilocalpositioning.data.sources.settings.SettingsManager;
-import com.mrkiriss.wifilocalpositioning.utils.LiveData.SingleLiveEvent;
+import com.mrkiriss.wifilocalpositioning.utils.livedata.SingleLiveEvent;
 
 import javax.inject.Inject;
 

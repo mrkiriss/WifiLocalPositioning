@@ -14,8 +14,8 @@ import com.mrkiriss.wifilocalpositioning.data.models.server.DefinedLocationPoint
 import com.mrkiriss.wifilocalpositioning.data.models.server.StringResponse;
 import com.mrkiriss.wifilocalpositioning.data.sources.WifiScanner;
 import com.mrkiriss.wifilocalpositioning.data.sources.remote.LocationDataApi;
-import com.mrkiriss.wifilocalpositioning.utils.LiveData.Event;
-import com.mrkiriss.wifilocalpositioning.utils.LiveData.SingleLiveEvent;
+import com.mrkiriss.wifilocalpositioning.utils.livedata.Event;
+import com.mrkiriss.wifilocalpositioning.utils.livedata.SingleLiveEvent;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,17 +1,14 @@
 package com.mrkiriss.wifilocalpositioning.data.repositiries;
 
-import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
 
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchData;
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchItem;
-import com.mrkiriss.wifilocalpositioning.utils.LiveData.SingleLiveEvent;
+import com.mrkiriss.wifilocalpositioning.utils.livedata.SingleLiveEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
