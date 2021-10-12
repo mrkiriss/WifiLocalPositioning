@@ -1,5 +1,7 @@
 package com.mrkiriss.wifilocalpositioning.data.models.search;
 
-public enum TypeOfSearchRequester {
+import java.io.Serializable;
+
+public enum TypeOfSearchRequester implements Serializable {
     FIND, DEPARTURE, DESTINATION;
 }

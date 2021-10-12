@@ -66,6 +66,7 @@ public class LocationDetectionFragment extends Fragment implements Serializable 
             SearchItem searchItem = (SearchItem) getArguments().getSerializable("selectedSearchItem");
             TypeOfSearchRequester type = (TypeOfSearchRequester) getArguments().getSerializable("typeOfRequester");
             processSelectedByFindLocation(type, searchItem);
+            setArguments(null);
         }
 
         return binding.getRoot();
@@ -117,7 +118,10 @@ public class LocationDetectionFragment extends Fragment implements Serializable 
         // прослушываем запрос на запуск фрагмента поиска локации
         viewModel.getRequestToLaunchSearchMode().observe(getViewLifecycleOwner(), this::launchSearchModeFragment);
         // прослушываем запрос на обнавление данных в контейнере результатов поиска
-        viewModel.getRequestToUpdateSearchResultContainerData().observe(getViewLifecycleOwner(), data -> viewModel.updateSearchResultContainerData(data));
+        viewModel.getRequestToUpdateSearchResultContainerData().observe(getViewLifecycleOwner(), data -> {
+            viewModel.updateSearchResultContainerData(data);
+            Log.i("checkSingle", "observe checked");
+        });
     }
 
     private void showToastContent(String content){
