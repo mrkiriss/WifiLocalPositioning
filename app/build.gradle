@@ -69,6 +69,7 @@ dependencies {
 
     implementation 'com.github.MikeOrtiz:TouchImageView:1.4.1'
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
+    implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.3'
 
     implementation "android.arch.persistence.room:runtime:1.1.1"
     annotationProcessor "android.arch.persistence.room:compiler:1.1.1"

@@ -1,5 +1,8 @@
 package com.mrkiriss.wifilocalpositioning.viewmodel;
 
+import android.view.View;
+
+import androidx.databinding.ObservableBoolean;
 import androidx.databinding.ObservableField;
 import androidx.databinding.ObservableInt;
 import androidx.lifecycle.LiveData;
@@ -24,6 +27,8 @@ public class SettingsViewModel extends ViewModel {
     private final ObservableField<String> scanInterval;
     private final ObservableInt numberOfScanning;
     private final ObservableInt accessLevel;
+    private final ObservableBoolean scanParamsHintIsVisible;
+    private final ObservableBoolean accessLevelHintIsVisible;
 
     private final LiveData<Integer> requestToUpdateNumberOfScanning;
     private final LiveData<String> requestToUpdateScanInterval;
@@ -39,6 +44,8 @@ public class SettingsViewModel extends ViewModel {
         scanInterval=new ObservableField<>("");
         numberOfScanning =new ObservableInt(0);
         accessLevel=new ObservableInt(0);
+        scanParamsHintIsVisible = new ObservableBoolean(false);
+        accessLevelHintIsVisible = new ObservableBoolean(false);
 
         requestToUpdateNumberOfScanning =repository.getRequestToUpdateNumberOfScanning();
         requestToUpdateScanInterval = repository.getRequestToUpdateScanInterval();
@@ -47,6 +54,15 @@ public class SettingsViewModel extends ViewModel {
         toastContent=repository.getToastContent();
 
         initSettingValuesFromDB();
+    }
+
+    public boolean changeScanParamsHintVisibility() {
+        scanParamsHintIsVisible.set(!scanParamsHintIsVisible.get());
+        return true;
+    }
+    public boolean changeAccessLevelHintVisibility() {
+        accessLevelHintIsVisible.set(!accessLevelHintIsVisible.get());
+        return true;
     }
 
     private void initSettingValuesFromDB(){
