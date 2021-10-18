@@ -46,7 +46,6 @@ public abstract class ViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(SearchViewModel.class)
-    @ActivityScope
     abstract ViewModel bindSearchViewModel(SearchViewModel viewModel);
 
     @Binds
