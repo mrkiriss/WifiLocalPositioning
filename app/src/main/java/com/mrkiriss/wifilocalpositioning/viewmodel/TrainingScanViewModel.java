@@ -28,12 +28,7 @@ public class TrainingScanViewModel extends ViewModel {
 
     private ObservableInt remainingNumberOfScanning;
     private ObservableField<String> inputNumberOfScanKits;
-    private ObservableField<String> inputY;
-    private ObservableField<String> inputX;
-    private ObservableField<String> inputCabId;
-    private ObservableInt scanningMode;
     private ObservableBoolean isScanningStarted;
-    private ObservableInt selectedMod;
 
     private final LiveData<Event<CompleteKitsContainer>> completeKitsOfScansResult;
     private LiveData<String> requestToAddAPs;
@@ -55,43 +50,20 @@ public class TrainingScanViewModel extends ViewModel {
 
         remainingNumberOfScanning=new ObservableInt(0);
         inputNumberOfScanKits=new ObservableField<>("");
-        inputY =new ObservableField<>("");
-        inputX =new ObservableField<>("");
         requestToClearRV=new MutableLiveData<>();
-        scanningMode =new ObservableInt();
-        inputCabId=new ObservableField<>("");
         isScanningStarted=new ObservableBoolean(false);
-        selectedMod=new ObservableInt(0);
     }
 
     public void startScanning(){
-        if ((inputNumberOfScanKits.get().equals("") && scanningMode.get()!=3) ||
-                (inputNumberOfScanKits.get().equals("") && inputCabId.get().equals("") && scanningMode.get()==1)){
+        if (inputNumberOfScanKits.get().equals("")){
             toastContent.setValue("Заполните все поля!");
             return;
         }
+
         resetElements();
         changeScanningStatus(true);
-        convertScanningMode();
-        switch (scanningMode.get()){
-            case TrainingScanRepository.MODE_TRAINING_APS:
-                trainingScanRepository.runScanInManager(inputNumberOfScanKits.get(),
-                        inputCabId.get(), scanningMode.get());
-                break;
-            case TrainingScanRepository.MODE_DEFINITION:
-                trainingScanRepository.runScanInManager(inputNumberOfScanKits.get(), scanningMode.get());
-                break;
-        }
-    }
-    private void convertScanningMode(){
-        switch (selectedMod.get()){
-            case 0:
-                scanningMode.set(TrainingScanRepository.MODE_TRAINING_APS);
-                break;
-            case 1:
-                scanningMode.set(TrainingScanRepository.MODE_DEFINITION);
-                break;
-        }
+
+        trainingScanRepository.runScanInManager(inputNumberOfScanKits.get());
     }
 
 

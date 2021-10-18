@@ -34,9 +34,6 @@ public class TrainingScanRepository {
     private WifiScanner wifiScanner;
 
     private CalibrationLocationPoint calibrationLocationPoint;
-    private int scanningMode;
-    public static final int MODE_TRAINING_APS=1;
-    public static final int MODE_DEFINITION=3;
 
     private final LiveData<Event<CompleteKitsContainer>> completeKitsOfScansResult;
     private MutableLiveData<String> requestToAddAPs;
@@ -57,37 +54,18 @@ public class TrainingScanRepository {
         toastContent=new SingleLiveEvent<>();
     }
 
-    public void runScanInManager(String _numberOfScanningKits, int radioMode){
+    public void runScanInManager(String _numberOfScanningKits){
         try {
             int numberOfScanningKits = Integer.parseInt(_numberOfScanningKits);
 
             calibrationLocationPoint = new CalibrationLocationPoint();
 
-            scanningMode = radioMode;
-
             wifiScanner.startTrainingScan(numberOfScanningKits, WifiScanner.TypeOfScanning.TRAINING);
         } catch (NumberFormatException | NullPointerException e) {
             e.printStackTrace();
             toastContent.setValue("Некорректный ввод");
         }
     }
-    public void runScanInManager(String _numberOfScanningKits, String roomName, int radioMode){
-
-        try {
-            int numberOfScanningKits = Integer.parseInt(_numberOfScanningKits);
-
-            calibrationLocationPoint=new CalibrationLocationPoint();
-            calibrationLocationPoint.setRoomName(roomName);
-
-            scanningMode=radioMode;
-
-            wifiScanner.startTrainingScan(numberOfScanningKits, WifiScanner.TypeOfScanning.TRAINING);
-        } catch (NumberFormatException | NullPointerException e) {
-            e.printStackTrace();
-            toastContent.setValue("Некорректный ввод");
-        }
-    }
-
 
     public void processCompleteKitsOfScanResults(CompleteKitsContainer completeKitsContainer){
 
@@ -106,7 +84,7 @@ public class TrainingScanRepository {
             calibrationLocationPoint.addOneCalibrationSet(accessPoints);
         }
 
-        chosePostCalibrationLPToServer();
+        postFromDefinitionLocation();
     }
     private String convertKitToString(List<AccessPoint> accessPoints, int number){
         String result="Набор №"+number+"\n";
@@ -114,38 +92,6 @@ public class TrainingScanRepository {
             result+=accessPoint.toString()+"\n";
         }
         return result;
-    }
-
-    private void chosePostCalibrationLPToServer(){
-        switch (scanningMode){
-            case MODE_TRAINING_APS:
-                postFromTrainingWithAPs();
-                break;
-            case MODE_DEFINITION:
-                postFromDefinitionLocation();
-                break;
-        }
-    }
-
-    private void postFromTrainingWithAPs(){
-        toastContent.setValue("Обучение точкам доступа началось");
-        retrofit.postCalibrationLPWithAPs(calibrationLocationPoint).enqueue(new Callback<StringResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<StringResponse> call, @NonNull Response<StringResponse> response) {
-                Log.println(Log.INFO, "GOOD_TRAINING_APs_ROOM",
-                        String.format("Server response=%s", response.body()));
-                if (response.body()==null){
-                    serverResponse.setValue("Response body is null");
-                    return;
-                }
-                serverResponse.setValue(response.body().getResponse());
-            }
-            @Override
-            public void onFailure(@NonNull Call<StringResponse> call, @NonNull Throwable t) {
-                serverResponse.setValue(call.toString()+"\n"+t.getMessage());
-                Log.e("SERVER_ERROR", t.getMessage());
-            }
-        });
     }
     private void postFromDefinitionLocation(){
         toastContent.setValue("Определение комнаты началось");
