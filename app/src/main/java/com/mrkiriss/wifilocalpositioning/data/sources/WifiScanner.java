@@ -43,7 +43,8 @@ public class WifiScanner {
     private final Handler handler;
     private boolean scanStarted;
     private long scanDelay;
-    private final long minScanDelay=100; // устанавливается после начала сканирований одной пачки
+    private final long minScanDelay = 100; // устанавливается после начала сканирований одной пачки
+    private final long trainingScanDelay = 250;
 
     private CompleteKitsContainer uncompleteKitsContainer;
     private final MutableLiveData<Event<CompleteKitsContainer>> completeScanResults;
@@ -64,9 +65,11 @@ public class WifiScanner {
                 return DEFINITION;
             } else if (contains(fragmentsOfTraining, id)){
                 return TRAINING;
-            } else {
+            } else if (contains(fragmentsOfNoScan, id)){
                 return NO_SCAN;
             }
+
+            return NO_SCAN;
         }
         private static boolean contains(int[] arr, int id) {
             for (int i : arr) if (i == id) return true;
@@ -89,14 +92,17 @@ public class WifiScanner {
         this.scanStarted=false;
         this.wifiEnabledState=new MutableLiveData<>();
 
-        Log.i("checkDI", "created WifiScanner");
+        Log.i("WifiScanner", "created WifiScanner");
     }
 
     public void setCurrentTypeOfRequestSource(int newLocationId){
         this.currentTypeOfRequestSource = TypeOfScanning.defineTypeOfLocationByID(newLocationId);
 
+        // отменяем запущенные сканирования
         scanStarted = false;
+        remainingNumberOfScanning.setValue(0);
         Log.i("WifiScanner", "Change source type to " + currentTypeOfRequestSource);
+
         // оправялем пустой ответ для запуска бесконечного цикла сканирований для карты через запрос от DefinitionRepository
         if (currentTypeOfRequestSource == TypeOfScanning.DEFINITION){
             CompleteKitsContainer container = new CompleteKitsContainer();
@@ -112,19 +118,19 @@ public class WifiScanner {
     }
 
     public void startTrainingScan(int requiredNumberOfScans, TypeOfScanning typeOfRequestSource){
-        if (!typeOfRequestSource.equals(currentTypeOfRequestSource) || scanStarted) return;
+        if (currentTypeOfRequestSource != typeOfRequestSource || scanStarted) return;
         scanStarted=true;
 
-        Log.i("startScan", "start scanning from training");
+        Log.i("WifiScanner", "start scanning from training");
 
-        uncompleteKitsContainer =new CompleteKitsContainer();
+        uncompleteKitsContainer = new CompleteKitsContainer();
         uncompleteKitsContainer.setRequestSourceType(typeOfRequestSource);
         uncompleteKitsContainer.setMaxNumberOfScans(requiredNumberOfScans);
 
-        scanDelay=getScanIntervalFromSettings();
+        scanDelay = trainingScanDelay;
         remainingNumberOfScanning.setValue(requiredNumberOfScans);
 
-        // выход, если сканирований не планируется
+        // выход, если сканирований не планируется (именно в этом месте, чтобы остановить пред. запросы)
         if (requiredNumberOfScans==0) return;
         registerListeners();
 
@@ -134,7 +140,7 @@ public class WifiScanner {
 
     }
     public void startDefiningScan(TypeOfScanning typeOfRequestSource){
-        if (!typeOfRequestSource.equals(currentTypeOfRequestSource) || scanStarted) return;
+        if (currentTypeOfRequestSource != typeOfRequestSource || scanStarted) return;
         scanStarted=true;
 
         Log.i("WifiScanner", "start scanning from definition");
@@ -151,14 +157,13 @@ public class WifiScanner {
         uncompleteKitsContainer.setRequestSourceType(typeOfRequestSource);
         uncompleteKitsContainer.setMaxNumberOfScans(numberOfScanning);
 
-
         Log.i("WifiScanner", "definition scan start with settingDelay="+scanDelay+" and requiredNUmberOfScan="+numberOfScanning);
 
         startScanningWithDelay();
 
     }
     private long getScanIntervalFromSettings(){
-        return settingsManager.getScanInterval()* 1000L;
+        return settingsManager.getScanInterval() * 1000L;
     }
     private int getNumberOfScanningFromSettings(){
         return settingsManager.getNumberOfScanning();
@@ -167,22 +172,22 @@ public class WifiScanner {
     private void startScanningWithDelay(){
         checkWifiEnabled();
         Runnable task = () -> {
-            if (remainingNumberOfScanning.getValue()>0){ // если данные в remainingNumberOfScanning успели дойти
+            if (remainingNumberOfScanning.getValue() > 0){ // если данные в remainingNumberOfScanning успели дойти
                 Log.i( "WifiScanner", "successful continue, remainingNumberOfScanning "+ remainingNumberOfScanning.getValue());
                 remainingNumberOfScanning.postValue(remainingNumberOfScanning.getValue()-1);
             }else{ // комплект собран, отправка на обработку и далее на сервер
 
                 Log.i( "WifiScanner", "unsuccessful continue (scanStarted="+scanStarted +"), start creating datablock, remainingNumberOfScanning  "+remainingNumberOfScanning.getValue());
 
-
+                // не пропускаем невалидные данные
                 CompleteKitsContainer container = uncompleteKitsContainer;
-                if (container.getRequestSourceType()==null || !container.getRequestSourceType().equals(currentTypeOfRequestSource) || container.getCompleteKits().size()==0) {
+                if (container.getRequestSourceType()==null || container.getRequestSourceType() != currentTypeOfRequestSource || container.getCompleteKits().size()==0) {
                     return;
                 }
 
-                // post data about all scans in kits
+                // отправляем данные подписчикам
                 completeScanResults.postValue(new Event<>(container));
-                Log.i( "WifiScanner", "completeScanResults posted with data= "+container);
+                Log.i( "WifiScanner", "completeScanResults posted with data= " + container);
 
                 // недопускаем лишних сканирований
                 unregisterListeners();
@@ -196,8 +201,10 @@ public class WifiScanner {
             requestScanResults();
         };
         handler.postDelayed(task, scanDelay);
-        // после первого запуска обнуляем задержку, чтобы пачка прошла разом
-        if (scanDelay!=50) scanDelay=minScanDelay;
+
+        // Если сканирования для ОПРЕДЕЛЕНИЯ, то
+        // после запуска первого сканирования задержка становиться минимальной, чтобы оставшиеся сканирования в блоке прошли сразу вместе
+        if (currentTypeOfRequestSource == TypeOfScanning.DEFINITION) scanDelay = minScanDelay;
     }
 
     private void requestScanResults(){

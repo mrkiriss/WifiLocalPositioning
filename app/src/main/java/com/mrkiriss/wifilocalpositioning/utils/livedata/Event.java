@@ -20,6 +20,10 @@ public class Event<T> {
         }
     }
 
+    public T getNotNullValue() {
+        return value;
+    }
+
     public boolean isNotHandled() {
         return !isHandled;
     }

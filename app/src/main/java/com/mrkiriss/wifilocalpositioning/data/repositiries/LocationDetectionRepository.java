@@ -2,6 +2,7 @@ package com.mrkiriss.wifilocalpositioning.data.repositiries;
 
 import android.content.Context;
 import android.net.wifi.ScanResult;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -371,8 +372,7 @@ public class LocationDetectionRepository implements Serializable {
 
     // scanning
     public void startProcessingCompleteKitsOfScansResult(CompleteKitsContainer completeKitsContainer){
-
-        if (!completeKitsContainer.getRequestSourceType().equals(WifiScanner.TypeOfScanning.DEFINITION)) return;
+        if (completeKitsContainer.getRequestSourceType() != WifiScanner.TypeOfScanning.DEFINITION) return;
 
         CalibrationLocationPoint calibrationLocationPoint = new CalibrationLocationPoint();
         for (List<ScanResult> oneScanResults: completeKitsContainer.getCompleteKits()) {
@@ -390,7 +390,7 @@ public class LocationDetectionRepository implements Serializable {
 
     // server
     private void requestDefinitionLocation(CalibrationLocationPoint calibrationLocationPoint) {
-
+        // запускаем очередное сканирование для определения местоположения, если пришёл пустой запрос - индикатор начала цикла сканирований для определениея местоположения
         if (calibrationLocationPoint.getCalibrationSets()==null || calibrationLocationPoint.getCalibrationSets().size()==0){
             wifiScanner.startDefiningScan(WifiScanner.TypeOfScanning.DEFINITION);
             return;

@@ -17,8 +17,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
-import com.getkeepsafe.taptargetview.TapTarget;
-import com.getkeepsafe.taptargetview.TapTargetView;
 import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
@@ -44,8 +42,6 @@ public class LocationDetectionFragment extends Fragment implements Serializable 
     private FragmentLocationDetectionBindingImpl binding;
 
     private TouchImageView touchImageView;
-
-    //private AutoCompleteAdapter autoCompleteAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -86,7 +82,7 @@ public class LocationDetectionFragment extends Fragment implements Serializable 
     private void initObservers(){
         // прослушиваем получение результата сканирования, вызываем обработчик данных
         viewModel.getCompleteKitsOfScansResult().observe(getViewLifecycleOwner(), event -> {
-            if (event.isNotHandled()) viewModel.startProcessingCompleteKitsOfScansResult(event.getValue());
+            viewModel.startProcessingCompleteKitsOfScansResult(event.getNotNullValue());
         });
         // прослушиваем изменение пола, вызываем перерисовку
         viewModel.getRequestToChangeFloor().observe(getViewLifecycleOwner(), this::drawCurrentFloor);
