@@ -59,7 +59,7 @@ public class LocationDetectionRepository implements Serializable {
 
     private final LiveData<Event<CompleteKitsContainer>> completeKitsOfScansResult;
     private final MutableLiveData<MapPoint> requestToChangeFloorByMapPoint;
-    private final MutableLiveData<Floor> requestToChangeFloor;
+    private final MutableLiveData<Event<Floor>> requestToChangeFloor;
     private final SingleLiveEvent<String> toastContent;
     private final MutableLiveData<Event<String>> requestToRefreshFloor;
     private final MutableLiveData<Event<Boolean>> wifiEnabledState; // для отправки состояния включение wifi
@@ -124,7 +124,7 @@ public class LocationDetectionRepository implements Serializable {
     public void changeFloor(){
         Floor requiredFloor = defineNecessaryFloor();
         if (requiredFloor==null) return;
-        requestToChangeFloor.setValue(requiredFloor);
+        requestToChangeFloor.setValue(new Event<>(requiredFloor));
     }
     private Floor defineNecessaryFloor(){
         Floor requiredFloor;
@@ -184,6 +184,7 @@ public class LocationDetectionRepository implements Serializable {
         }
 
         resultOfDefinition.setFloorWithPointer(necessaryFloor);
+
         requestToChangeFloorByMapPoint.setValue(resultOfDefinition);
     }
 

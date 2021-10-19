@@ -31,7 +31,7 @@ public class LocationDetectionViewModel extends ViewModel {
 
     private final LiveData<Event<CompleteKitsContainer>> completeKitsOfScansResult;
     private final LiveData<MapPoint> requestToChangeFloorByMapPoint; // изменяет этаж и камеру напрявляет на местоположение
-    private final LiveData<Floor> requestToChangeFloor; // изменяет этаж
+    private final LiveData<Event<Floor>> requestToChangeFloor; // изменяет этаж
     private final LiveData<Event<Boolean>> wifiEnabledState;
     private final LiveData<String> requestToHideKeyboard;
     private final LiveData<Boolean> requestToUpdateProgressStatusBuildingRoute;

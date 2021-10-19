@@ -85,7 +85,9 @@ public class LocationDetectionFragment extends Fragment implements Serializable 
             viewModel.startProcessingCompleteKitsOfScansResult(event.getNotNullValue());
         });
         // прослушиваем изменение пола, вызываем перерисовку
-        viewModel.getRequestToChangeFloor().observe(getViewLifecycleOwner(), this::drawCurrentFloor);
+        viewModel.getRequestToChangeFloor().observe(getViewLifecycleOwner(), event -> {
+            if (event.isNotHandled()) drawCurrentFloor(event.getValue());
+        });
         // прослышиваем запрос на изменение экрана с показом местоположения
         viewModel.getRequestToChangeFloorByMapPoint().observe(getViewLifecycleOwner(), this::showCurrentLocation);
         // прослушиваем обновление строки точки старта в меню построения маршрута
