@@ -3,6 +3,7 @@ package com.mrkiriss.wifilocalpositioning.utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
@@ -25,18 +26,24 @@ public class ConnectionManager {
     private final ConnectivityManager connectivityManager;
     private NetworkInfo netInfo;
     private final WifiManager wifiManager;
+    private final LocationManager locationManager;
 
     private boolean showNow;
     private Method mobileDataCheckMethod;
 
-    private final String messageContent= "Отсутствует подключение к сети Интернет или доступ к сканированию Wi-fi.\n\n" +
+    private boolean wifiEnabledDialogFlag = true;
+    private boolean mobileEnabledDialogFlag = true;
+    private boolean locationEnabledDialogFlag = true;
+
+    private final String messageContent= "Отсутствует подключение к сети Интернет или доступ к данным о местоположении.\n\n" +
             "Функционал приложения ограничен.\n\n";
 
 
     @Inject
-    public ConnectionManager(ConnectivityManager connectivityManager, WifiManager wifiManager){
+    public ConnectionManager(ConnectivityManager connectivityManager, WifiManager wifiManager, LocationManager locationManager){
         this.connectivityManager=connectivityManager;
         this.wifiManager=wifiManager;
+        this.locationManager = locationManager;
 
         // получение метода для проверки мобильного соединения
         try {
@@ -64,8 +71,16 @@ public class ConnectionManager {
             }
         }
 
-        // интерент есть и есть одно из видов соединения
-        return  (netInfo != null && netInfo.isConnected() && (wifiManager.isWifiEnabled() || mobileDataEnabled));
+        // проверка доступа к данным о местоположении
+        boolean locationManagerProviderEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+        // обновление данных для актуализации диалогов
+        wifiEnabledDialogFlag = wifiManager.isWifiEnabled();
+        mobileEnabledDialogFlag = mobileDataEnabled;
+        locationEnabledDialogFlag = locationManagerProviderEnabled;
+
+        // интерент есть и есть одно из видов соединения И доступ к данным о местоположении
+        return  (netInfo != null && netInfo.isConnected() && (wifiManager.isWifiEnabled() || mobileDataEnabled) && locationManagerProviderEnabled);
     }
     public void showOfferSetting(Context context) {
         // проверить, показывается ли уже
@@ -78,22 +93,29 @@ public class ConnectionManager {
 
         MaterialAlertDialogBuilder dialog = new MaterialAlertDialogBuilder(context);
         dialog.setCancelable(false);
-        dialog.setTitle("Требуется соединеие");
+        dialog.setTitle("Требуется соединение");
         CheckBox check = new CheckBox(dialog.getContext());
         check.setText("Не показывать следующие 10 минут");
         dialog.setView(check);
 
         dialog.setMessage(messageContent);
-        dialog.setNeutralButton("Продолжить", (dialog12, which) -> {
+        dialog.setNeutralButton("Продолжить", (dialog1, which) -> {
             showNow=false;
             if (check.isChecked()){
                 delay_start_time=date.getTime();
             }
         });
-        dialog.setPositiveButton("Настроить подключение", (dialog1, which) -> {
-            showNow=false;
-            context.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-        });
+        if (!mobileEnabledDialogFlag && !wifiEnabledDialogFlag)
+            dialog.setPositiveButton("Настроки Интернет-соединения", (dialog1, which) -> {
+                showNow=false;
+                context.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+            });
+
+        if (!locationEnabledDialogFlag)
+            dialog.setNegativeButton("Настройки местоположения", (dialog1, which) -> {
+                showNow=false;
+                context.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+            });
 
         showNow=true;
         dialog.show();
