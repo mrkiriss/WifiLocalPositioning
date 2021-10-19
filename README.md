@@ -11,3 +11,6 @@ IMLocation - Android-приложения для навигации в поме�
 ✅ Retrofit2  
   
 ✅ Dagger2
+
+# Демо-ролик
+[![Short demonstration of the project](https://img.youtube.com/vi/YM6bWViVhCI/maxresdefault.jpg)](https://youtu.be/YM6bWViVhCI)
