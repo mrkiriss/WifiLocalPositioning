@@ -2,13 +2,11 @@ package com.mrkiriss.wifilocalpositioning.data.repositiries;
 
 import android.content.Context;
 import android.net.wifi.ScanResult;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.mrkiriss.wifilocalpositioning.R;
-import com.mrkiriss.wifilocalpositioning.utils.livedata.Event;
 import com.mrkiriss.wifilocalpositioning.data.models.map.Floor;
 import com.mrkiriss.wifilocalpositioning.data.models.map.FloorId;
 import com.mrkiriss.wifilocalpositioning.data.models.map.MapPoint;
@@ -29,6 +27,7 @@ import com.mrkiriss.wifilocalpositioning.data.sources.db.PreviousMapPointsDao;
 import com.mrkiriss.wifilocalpositioning.data.sources.remote.LocationDataApi;
 import com.mrkiriss.wifilocalpositioning.data.sources.settings.SettingsManager;
 import com.mrkiriss.wifilocalpositioning.utils.ConnectionManager;
+import com.mrkiriss.wifilocalpositioning.utils.livedata.Event;
 import com.mrkiriss.wifilocalpositioning.utils.livedata.SingleLiveEvent;
 
 import org.jetbrains.annotations.NotNull;

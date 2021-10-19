@@ -6,8 +6,8 @@ import android.content.Intent;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.mrkiriss.wifilocalpositioning.utils.livedata.Event;
 import com.mrkiriss.wifilocalpositioning.data.repositiries.MainRepository;
+import com.mrkiriss.wifilocalpositioning.utils.livedata.Event;
 
 import javax.inject.Inject;
 

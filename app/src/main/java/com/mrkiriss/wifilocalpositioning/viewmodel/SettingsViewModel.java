@@ -1,7 +1,5 @@
 package com.mrkiriss.wifilocalpositioning.viewmodel;
 
-import android.view.View;
-
 import androidx.databinding.ObservableBoolean;
 import androidx.databinding.ObservableField;
 import androidx.databinding.ObservableInt;
@@ -10,8 +8,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.mrkiriss.wifilocalpositioning.data.repositiries.SettingsRepository;
-
-import java.util.Objects;
 
 import javax.inject.Inject;
 

@@ -1,7 +1,5 @@
 package com.mrkiriss.wifilocalpositioning.viewmodel;
 
-import android.util.Log;
-
 import androidx.databinding.Observable;
 import androidx.databinding.ObservableField;
 import androidx.lifecycle.LiveData;
