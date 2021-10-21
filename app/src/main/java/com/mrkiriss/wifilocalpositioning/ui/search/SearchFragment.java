@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.view;
+package com.mrkiriss.wifilocalpositioning.ui.search;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,14 +12,12 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.mrkiriss.wifilocalpositioning.R;
-import com.mrkiriss.wifilocalpositioning.adapters.SearchRVAdapter;
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchData;
 import com.mrkiriss.wifilocalpositioning.data.models.search.SearchItem;
 import com.mrkiriss.wifilocalpositioning.data.models.search.TypeOfSearchRequester;
 import com.mrkiriss.wifilocalpositioning.data.sources.ViewModelFactory;
 import com.mrkiriss.wifilocalpositioning.databinding.FragmentSearchBinding;
 import com.mrkiriss.wifilocalpositioning.di.App;
-import com.mrkiriss.wifilocalpositioning.viewmodel.SearchViewModel;
 
 import java.io.Serializable;
 

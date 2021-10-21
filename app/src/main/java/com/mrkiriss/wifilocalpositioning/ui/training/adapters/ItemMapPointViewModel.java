@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.viewmodel;
+package com.mrkiriss.wifilocalpositioning.ui.training.adapters;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;

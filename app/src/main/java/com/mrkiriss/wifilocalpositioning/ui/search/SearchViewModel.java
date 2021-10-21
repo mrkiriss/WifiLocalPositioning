@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.viewmodel;
+package com.mrkiriss.wifilocalpositioning.ui.search;
 
 import androidx.databinding.Observable;
 import androidx.databinding.ObservableField;

@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.viewmodel;
+package com.mrkiriss.wifilocalpositioning.ui.training;
 
 import android.util.Log;
 

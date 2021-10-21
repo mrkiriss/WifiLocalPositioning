@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.view;
+package com.mrkiriss.wifilocalpositioning.ui;
 
 import android.Manifest;
 import android.app.Activity;
@@ -22,7 +22,6 @@ import com.google.android.material.navigation.NavigationView;
 import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.data.sources.ViewModelFactory;
 import com.mrkiriss.wifilocalpositioning.di.App;
-import com.mrkiriss.wifilocalpositioning.viewmodel.MainViewModel;
 
 import javax.inject.Inject;
 

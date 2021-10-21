@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/nav_definition"
-        android:name="com.mrkiriss.wifilocalpositioning.view.LocationDetectionFragment"
+        android:name="com.mrkiriss.wifilocalpositioning.ui.detection.LocationDetectionFragment"
         android:label="@string/nav_definition"
         tools:layout="@layout/fragment_location_detection">
         <action
@@ -20,7 +20,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_search"
-        android:name="com.mrkiriss.wifilocalpositioning.view.SearchFragment"
+        android:name="com.mrkiriss.wifilocalpositioning.ui.search.SearchFragment"
         android:label="@string/nav_search"
         tools:layout="@layout/fragment_search" >
         <action
@@ -31,17 +31,17 @@
     </fragment>
     <fragment
         android:id="@+id/nav_training"
-        android:name="com.mrkiriss.wifilocalpositioning.view.TrainingScanFragment"
+        android:name="com.mrkiriss.wifilocalpositioning.ui.scanconsole.TrainingScanFragment"
         android:label="@string/nav_training_scan"
         tools:layout="@layout/fragment_training_scan" />
     <fragment
         android:id="@+id/nav_training2"
-        android:name="com.mrkiriss.wifilocalpositioning.view.TrainingMapFragment"
+        android:name="com.mrkiriss.wifilocalpositioning.ui.training.TrainingMapFragment"
         android:label="@string/nav_training_map"
         tools:layout="@layout/fragment_training_map" />
     <fragment
         android:id="@+id/nav_settings"
-        android:name="com.mrkiriss.wifilocalpositioning.view.SettingsFragment"
+        android:name="com.mrkiriss.wifilocalpositioning.ui.settings.SettingsFragment"
         android:label="@string/nav_settings"
         tools:layout="@layout/fragment_settings" />
 </navigation>

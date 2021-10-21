@@ -6,13 +6,13 @@
         <import type="android.view.View"/>
         <variable
             name="trainingVM"
-            type="com.mrkiriss.wifilocalpositioning.viewmodel.TrainingScanViewModel" />
+            type="com.mrkiriss.wifilocalpositioning.ui.scanconsole.TrainingScanViewModel" />
     </data>
 
     <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".view.TrainingScanFragment"
+            tools:context=".ui.scanconsole.TrainingScanFragment"
             android:animateLayoutChanges="true">
 
             <LinearLayout

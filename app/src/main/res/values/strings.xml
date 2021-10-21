@@ -3,7 +3,7 @@
     <string name="title_activity_main">IMLocation</string>
     <string name="nav_training_scan">Консоль сканирований</string>
     <string name="nav_training_map">Обучение системы</string>
-    <string name="nav_definition">Определение</string>
+    <string name="nav_definition">Навигация</string>
     <string name="nav_search">Поиск локации</string>
     <string name="nav_settings">Настройки</string>
 

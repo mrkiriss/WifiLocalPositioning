@@ -11,7 +11,7 @@
 
         <variable
             name="viewModel"
-            type="com.mrkiriss.wifilocalpositioning.viewmodel.LocationDetectionViewModel" />
+            type="com.mrkiriss.wifilocalpositioning.ui.detection.LocationDetectionViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,7 +20,7 @@
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
         android:clipChildren="false"
-        tools:context=".view.LocationDetectionFragment">
+        tools:context=".ui.detection.LocationDetectionFragment">
 
         <com.ortiz.touchview.TouchImageView
             android:id="@+id/zoomImageView"

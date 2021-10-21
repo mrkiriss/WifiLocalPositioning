@@ -5,7 +5,7 @@
         <import type="android.view.View"/>
         <variable
             name="viewModel"
-            type="com.mrkiriss.wifilocalpositioning.viewmodel.SelectedMapPointViewModel" />
+            type="com.mrkiriss.wifilocalpositioning.ui.training.SelectedMapPointViewModel" />
     </data>
 
     <LinearLayout

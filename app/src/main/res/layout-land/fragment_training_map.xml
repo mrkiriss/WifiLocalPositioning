@@ -6,7 +6,7 @@
         <import type="android.view.View"/>
         <variable
             name="viewModel"
-            type="com.mrkiriss.wifilocalpositioning.viewmodel.TrainingMapViewModel" />
+            type="com.mrkiriss.wifilocalpositioning.ui.training.TrainingMapViewModel" />
     </data>
 
 
@@ -55,7 +55,7 @@
                 android:layout_weight="10"
                 android:background="@drawable/round_border"
                 android:clipChildren="false"
-                tools:context=".view.LocationDetectionFragment">
+                tools:context=".ui.detection.LocationDetectionFragment">
 
                 <com.github.chrisbanes.photoview.PhotoView
                     android:id="@+id/photoViewTraining"

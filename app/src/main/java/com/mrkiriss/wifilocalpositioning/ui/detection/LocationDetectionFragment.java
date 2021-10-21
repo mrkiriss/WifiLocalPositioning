@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.view;
+package com.mrkiriss.wifilocalpositioning.ui.detection;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -24,7 +24,6 @@ import com.mrkiriss.wifilocalpositioning.data.models.search.TypeOfSearchRequeste
 import com.mrkiriss.wifilocalpositioning.data.sources.ViewModelFactory;
 import com.mrkiriss.wifilocalpositioning.databinding.FragmentLocationDetectionBindingImpl;
 import com.mrkiriss.wifilocalpositioning.di.App;
-import com.mrkiriss.wifilocalpositioning.viewmodel.LocationDetectionViewModel;
 import com.ortiz.touchview.TouchImageView;
 
 import java.io.Serializable;

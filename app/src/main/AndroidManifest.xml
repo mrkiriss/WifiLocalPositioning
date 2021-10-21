@@ -19,7 +19,7 @@
         android:usesCleartextTraffic="true">
         <activity
             android:windowSoftInputMode="stateHidden|adjustPan"
-            android:name=".view.MainActivity"
+            android:name=".ui.MainActivity"
             android:icon="@drawable/ic_location"
             android:label="@string/title_activity_main"
             android:theme="@style/Theme.WifiLocalPositioning.NoActionBar">

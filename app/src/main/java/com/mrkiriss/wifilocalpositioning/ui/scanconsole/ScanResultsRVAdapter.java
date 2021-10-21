@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.adapters;
+package com.mrkiriss.wifilocalpositioning.ui.scanconsole;
 
 import android.view.LayoutInflater;
 import android.view.View;

@@ -2,12 +2,12 @@ package com.mrkiriss.wifilocalpositioning.di.components;
 
 import com.mrkiriss.wifilocalpositioning.di.annotations.ActivityScope;
 import com.mrkiriss.wifilocalpositioning.di.modules.ViewModelModule;
-import com.mrkiriss.wifilocalpositioning.view.LocationDetectionFragment;
-import com.mrkiriss.wifilocalpositioning.view.MainActivity;
-import com.mrkiriss.wifilocalpositioning.view.SearchFragment;
-import com.mrkiriss.wifilocalpositioning.view.SettingsFragment;
-import com.mrkiriss.wifilocalpositioning.view.TrainingMapFragment;
-import com.mrkiriss.wifilocalpositioning.view.TrainingScanFragment;
+import com.mrkiriss.wifilocalpositioning.ui.detection.LocationDetectionFragment;
+import com.mrkiriss.wifilocalpositioning.ui.MainActivity;
+import com.mrkiriss.wifilocalpositioning.ui.search.SearchFragment;
+import com.mrkiriss.wifilocalpositioning.ui.settings.SettingsFragment;
+import com.mrkiriss.wifilocalpositioning.ui.training.TrainingMapFragment;
+import com.mrkiriss.wifilocalpositioning.ui.scanconsole.TrainingScanFragment;
 
 import dagger.Subcomponent;
 

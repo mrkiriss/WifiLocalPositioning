@@ -6,7 +6,7 @@
         <import type="android.view.View"/>
         <variable
             name="viewModel"
-            type="com.mrkiriss.wifilocalpositioning.viewmodel.SettingsViewModel" />
+            type="com.mrkiriss.wifilocalpositioning.ui.settings.SettingsViewModel" />
     </data>
 
 

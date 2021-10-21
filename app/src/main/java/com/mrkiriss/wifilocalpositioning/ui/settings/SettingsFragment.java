@@ -1,4 +1,4 @@
-package com.mrkiriss.wifilocalpositioning.view;
+package com.mrkiriss.wifilocalpositioning.ui.settings;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -17,7 +17,7 @@ import com.mrkiriss.wifilocalpositioning.R;
 import com.mrkiriss.wifilocalpositioning.data.sources.ViewModelFactory;
 import com.mrkiriss.wifilocalpositioning.databinding.FragmentSettingsBinding;
 import com.mrkiriss.wifilocalpositioning.di.App;
-import com.mrkiriss.wifilocalpositioning.viewmodel.SettingsViewModel;
+import com.mrkiriss.wifilocalpositioning.ui.settings.SettingsViewModel;
 
 import javax.inject.Inject;
 

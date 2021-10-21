@@ -5,13 +5,13 @@ import androidx.lifecycle.ViewModel;
 import com.mrkiriss.wifilocalpositioning.data.sources.ViewModelFactory;
 import com.mrkiriss.wifilocalpositioning.di.annotations.ActivityScope;
 import com.mrkiriss.wifilocalpositioning.di.annotations.ViewModelKey;
-import com.mrkiriss.wifilocalpositioning.viewmodel.LocationDetectionViewModel;
-import com.mrkiriss.wifilocalpositioning.viewmodel.MainViewModel;
-import com.mrkiriss.wifilocalpositioning.viewmodel.SearchViewModel;
-import com.mrkiriss.wifilocalpositioning.viewmodel.SelectedMapPointViewModel;
-import com.mrkiriss.wifilocalpositioning.viewmodel.SettingsViewModel;
-import com.mrkiriss.wifilocalpositioning.viewmodel.TrainingMapViewModel;
-import com.mrkiriss.wifilocalpositioning.viewmodel.TrainingScanViewModel;
+import com.mrkiriss.wifilocalpositioning.ui.detection.LocationDetectionViewModel;
+import com.mrkiriss.wifilocalpositioning.ui.MainViewModel;
+import com.mrkiriss.wifilocalpositioning.ui.search.SearchViewModel;
+import com.mrkiriss.wifilocalpositioning.ui.training.SelectedMapPointViewModel;
+import com.mrkiriss.wifilocalpositioning.ui.settings.SettingsViewModel;
+import com.mrkiriss.wifilocalpositioning.ui.training.TrainingMapViewModel;
+import com.mrkiriss.wifilocalpositioning.ui.scanconsole.TrainingScanViewModel;
 
 import java.util.Map;
 
